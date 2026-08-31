@@ -2,6 +2,7 @@
   "name": "@secondbrain/backend",
   "version": "1.0.0",
   "description": "",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -28,6 +29,7 @@
     "zod": "^4.5.4"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "^26.4.0",
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
