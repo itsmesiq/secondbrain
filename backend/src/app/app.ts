@@ -5,7 +5,7 @@ import { serializerCompiler, validatorCompiler } from 'fastify-type-provider-zod
 import { registerCors } from '../lib/cors.js';
 import { logger } from '../lib/logger.js';
 import { registerSwagger } from '../lib/swagger.js';
-import { healthRoute } from '../routes/health.js';
+import { registerRoutes } from '../routes/index.js';
 
 const app = Fastify({
     logger,
@@ -18,6 +18,6 @@ await registerCors(app);
 
 await registerSwagger(app);
 
-await app.register(healthRoute, { prefix: '/health' });
+await registerRoutes(app);
 
 export { app };

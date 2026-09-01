@@ -6,7 +6,7 @@ import { HealthCheck, HealthCheckSchema } from '../schemas/index.js';
 export async function healthRoute(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().route({
         method: 'GET',
-        url: '/',
+        url: '/health',
         schema: {
             operationId: 'healthCheck',
             tags: ['Health'],
