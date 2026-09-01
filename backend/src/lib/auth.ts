@@ -21,6 +21,10 @@ export const auth = betterAuth({
             clientId: env.GOOGLE_CLIENT_ID! as string,
             clientSecret: env.GOOGLE_CLIENT_SECRET! as string,
         },
+        notion: {
+            clientId: env.NOTION_CLIENT_ID! as string,
+            clientSecret: env.NOTION_CLIENT_SECRET! as string,
+        },
     },
 
     trustedOrigins: [env.WEB_APP_BASE_URL! as string],
