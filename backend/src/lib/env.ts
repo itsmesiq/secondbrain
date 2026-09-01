@@ -8,11 +8,10 @@ const envSchema = z.object({
         .string()
         .refine(value => value.startsWith('postgresql://') || value.startsWith('postgres://')),
     BETTER_AUTH_SECRET: z.string(),
+    NOTION_CLIENT_ID: z.string(),
+    NOTION_CLIENT_SECRET: z.string(),
+    BETTER_AUTH_URL: z.url(),
     API_BASE_URL: z.url().default('http://localhost:3000'),
-    GOOGLE_CLIENT_ID: z.string(),
-    GOOGLE_CLIENT_SECRET: z.string(),
-    GITHUB_CLIENT_ID: z.string(),
-    GITHUB_CLIENT_SECRET: z.string(),
     WEB_APP_BASE_URL: z.url().default('http://localhost:3001'),
     NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
