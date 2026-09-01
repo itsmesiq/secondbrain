@@ -11,7 +11,10 @@
         "lint:fix": "eslint src --fix && pnpm typecheck",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "db:generate": "drizzle-kit generate",
+        "db:migrate": "drizzle-kit migrate",
+        "db:studio": "drizzle-kit studio"
     },
     "keywords": [],
     "author": "",
