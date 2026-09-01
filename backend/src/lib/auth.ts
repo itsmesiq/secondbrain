@@ -13,9 +13,9 @@ export const auth = betterAuth({
     }),
     baseURL: env.BETTER_AUTH_URL! as string,
     socialProviders: {
-        notion: {
-            clientId: env.NOTION_CLIENT_ID! as string,
-            clientSecret: env.NOTION_CLIENT_SECRET! as string,
+        google: {
+            clientId: env.GOOGLE_CLIENT_ID! as string,
+            clientSecret: env.GOOGLE_CLIENT_SECRET! as string,
         },
     },
 

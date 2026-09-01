@@ -10,6 +10,8 @@ const envSchema = z.object({
     BETTER_AUTH_SECRET: z.string(),
     NOTION_CLIENT_ID: z.string(),
     NOTION_CLIENT_SECRET: z.string(),
+    GOOGLE_CLIENT_ID: z.string(),
+    GOOGLE_CLIENT_SECRET: z.string(),
     BETTER_AUTH_URL: z.url(),
     API_BASE_URL: z.url().default('http://localhost:3000'),
     WEB_APP_BASE_URL: z.url().default('http://localhost:3001'),
