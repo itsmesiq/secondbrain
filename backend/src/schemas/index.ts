@@ -25,3 +25,16 @@ export const NotionStatusSchema = z.object({
 });
 
 export type NotionStatus = z.infer<typeof NotionStatusSchema>;
+
+export const NotionPageSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    url: z.url(),
+});
+
+export const NotionPagesSchema = z.object({
+    pages: z.array(NotionPageSchema),
+});
+
+export type NotionPage = z.infer<typeof NotionPageSchema>;
+export type NotionPages = z.infer<typeof NotionPagesSchema>;
