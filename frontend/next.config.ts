@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
+    allowedDevOrigins: [''],
     /* config options here */
     // Configuração para o Turbopack (Usado em ambiente de desenvolvimento)
     turbopack: {

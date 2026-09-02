@@ -5,6 +5,55 @@
     --background: #ffffff;
     --foreground: #171717;
     --primary: #ff0a54;
+
+    /* Widgets */
+    --notion-background-light: #ffffff;
+    --notion-background-dark: #191919;
+
+    --widget-background-light: #f7f6f3;
+    --widget-background-dark: #0f0e0e;
+    --widget-foreground-light: #191919;
+    --widget-foreground-dark: #ffffff;
+
+    --accent-pink: #ff33d3;
+    --accent-purple: #ab5aff;
+    --accent-blue: #47ceff;
+    --accent-green: #c2ff6c;
+    --accent-yellow: #ffcb20;
+}
+
+/* Widgets Themes */
+[data-theme='light'] {
+    --notion-background: var(--notion-background-light);
+    --widget-background: var(--widget-background-light);
+    --widget-foreground: var(--widget-foreground-light);
+}
+
+[data-theme='dark'] {
+    --notion-background: var(--notion-background-dark);
+    --widget-background: var(--widget-background-dark);
+    --widget-foreground: var(--widget-foreground-dark);
+}
+
+/* Widgets Accent Color */
+[data-color='pink'] {
+    --accent-color: var(--accent-pink);
+}
+
+[data-color='purple'] {
+    --accent-color: var(--accent-purple);
+}
+
+[data-color='blue'] {
+    --accent-color: var(--accent-blue);
+}
+
+[data-color='green'] {
+    --accent-color: var(--accent-green);
+}
+
+[data-color='yellow'] {
+    --accent-color: var(--accent-yellow);
 }
 
 @theme inline {
@@ -13,6 +62,13 @@
     --color-primary: var(--primary);
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
+
+    /* Widgets */
+    --color-notion-background: var(--notion-background);
+    --color-widget-background: var(--widget-background);
+    --color-widget-foreground: var(--widget-foreground);
+    --color-widget-accent: var(--accent-color);
+    --font-orbitron: var(--font-orbitron);
 }
 
 @media (prefers-color-scheme: dark) {
