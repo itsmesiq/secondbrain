@@ -17,7 +17,7 @@ export async function notionRoutes(app: FastifyInstance) {
         preHandler: requireAuth,
         schema: {
             operationId: 'getNotionStatus',
-            description: 'Get the Notion connection status for the authenticated user',
+            summary: 'Get the Notion connection status for the authenticated user',
             tags: ['Notion'],
             response: {
                 200: NotionStatusSchema,
