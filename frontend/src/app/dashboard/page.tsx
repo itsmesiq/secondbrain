@@ -8,7 +8,7 @@ export default function DashboardPage() {
     const handleNotionConnect = async () => {
         await authClient.linkSocial({
             provider: 'notion',
-            callbackURL: `${process.env.NEXT_PUBLIC_BASE_URL}/`,
+            callbackURL: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`,
         });
     };
 
