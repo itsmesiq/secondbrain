@@ -19,3 +19,9 @@ export const UserSchema = z.object({
 });
 
 export type User = z.infer<typeof UserSchema>;
+
+export const NotionStatusSchema = z.object({
+    connected: z.boolean(),
+});
+
+export type NotionStatus = z.infer<typeof NotionStatusSchema>;
