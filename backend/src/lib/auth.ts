@@ -15,6 +15,14 @@ export const auth = betterAuth({
     emailAndPassword: {
         enabled: true,
     },
+    account: {
+        accountLinking: {
+            enabled: true,
+            trustedProviders: ['notion'],
+            allowDifferentEmails: true,
+        },
+    },
+
     socialProviders: {
         google: {
             prompt: 'select_account',

@@ -57,6 +57,9 @@ importers:
       prettier-plugin-tailwindcss:
         specifier: ^0.8.1
         version: 0.8.1(prettier@3.9.6)
+      tailwind-plugin-typed:
+        specifier: ^1.1.2
+        version: 1.1.2(tailwindcss@4.3.3)
       tailwindcss:
         specifier: ^4
         version: 4.3.3
@@ -2902,6 +2905,11 @@ packages:
     resolution: {integrity: sha512-8SQMzdrvWaD8deUmrnYB+ASyxBVgWUOilg+A75nE/76WdLpj6LopCwiAVvkzkcqy/9b7t2Mg7faFLjg0ZRcZ3w==}
     engines: {node: '>=14.0.0'}
     hasBin: true
+
+  tailwind-plugin-typed@1.1.2:
+    resolution: {integrity: sha512-+/SIosEhjFWS4E1kn2rmtAWxFM3pMpNXfgcpLwZuWg05icTkLjcdcKA41eET2QN3Bm++B0/5rg1ymSjwoBkJXw==}
+    peerDependencies:
+      tailwindcss: ^3.0.0 || ^4.0.0
 
   tailwindcss@4.3.3:
     resolution: {integrity: sha512-gOhV3P7ufE62QDGg1zVaTgCR+EtPv92k2nIhVcVKcLmxT1sUBsQGhnZj175j+MqRt4zLF7ic+sCYjfhxMxj7YQ==}
@@ -6073,6 +6081,10 @@ snapshots:
       csso: 5.0.5
       picocolors: 1.1.1
       sax: 1.6.1
+
+  tailwind-plugin-typed@1.1.2(tailwindcss@4.3.3):
+    dependencies:
+      tailwindcss: 4.3.3
 
   tailwindcss@4.3.3: {}
 

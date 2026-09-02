@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@plugin 'tailwind-plugin-typed';
 
 :root {
     --background: #ffffff;
