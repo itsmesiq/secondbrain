@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect } from 'react';
 
 import { authClient } from '../_lib/auth-client';
+import { WidgetAuthContext } from './_lib/context';
 
 export default function WidgetsLayout({ children }: Readonly<{ children: React.ReactNode }>) {
     const router = useRouter();
@@ -26,5 +27,5 @@ export default function WidgetsLayout({ children }: Readonly<{ children: React.R
         return null;
     }
 
-    return children;
+    return <WidgetAuthContext.Provider value={{ token }}>{children}</WidgetAuthContext.Provider>;
 }
