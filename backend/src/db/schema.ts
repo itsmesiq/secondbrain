@@ -77,9 +77,28 @@ export const verification = pgTable(
     table => [index('verification_identifier_idx').on(table.identifier)],
 );
 
+export const embedToken = pgTable(
+    'embed_token',
+    {
+        id: text('id').primaryKey(),
+        tokenHash: text('token_hash').notNull().unique(),
+        userId: text('user_id')
+            .notNull()
+            .unique()
+            .references(() => user.id, { onDelete: 'cascade' }),
+        createdAt: timestamp('created_at').defaultNow().notNull(),
+        updatedAt: timestamp('updated_at')
+            .defaultNow()
+            .$onUpdate(() => /* @__PURE__ */ new Date())
+            .notNull(),
+    },
+    table => [index('embed_token_userId_idx').on(table.userId)],
+);
+
 export const userRelations = relations(user, ({ many }) => ({
     sessions: many(session),
     accounts: many(account),
+    embedTokens: many(embedToken),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -92,6 +111,13 @@ export const sessionRelations = relations(session, ({ one }) => ({
 export const accountRelations = relations(account, ({ one }) => ({
     user: one(user, {
         fields: [account.userId],
+        references: [user.id],
+    }),
+}));
+
+export const embedTokenRelations = relations(embedToken, ({ one }) => ({
+    user: one(user, {
+        fields: [embedToken.userId],
         references: [user.id],
     }),
 }));

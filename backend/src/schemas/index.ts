@@ -38,3 +38,9 @@ export const NotionPagesSchema = z.object({
 
 export type NotionPage = z.infer<typeof NotionPageSchema>;
 export type NotionPages = z.infer<typeof NotionPagesSchema>;
+
+export const EmbedTokenSchema = z.object({
+    token: z.string(),
+});
+
+export type EmbedToken = z.infer<typeof EmbedTokenSchema>;
