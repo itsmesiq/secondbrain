@@ -3,12 +3,21 @@ import { LoaderCircle } from 'lucide-react';
 
 import { Logo, NotionIcon } from '@/components/icons';
 
+type DashboardSection = 'widgets' | 'account';
+
 interface SidebarProps {
     notionConnected: boolean | null;
     handleNotionConnect: () => Promise<void>;
+    activeSection: DashboardSection;
+    onSectionChange: (section: DashboardSection) => void;
 }
 
-export default function Sidebar({ notionConnected, handleNotionConnect }: SidebarProps) {
+export default function Sidebar({
+    notionConnected,
+    handleNotionConnect,
+    activeSection,
+    onSectionChange,
+}: SidebarProps) {
     return (
         <aside className="relative flex h-screen w-[25%] flex-col items-center justify-between gap-8 bg-surface px-8 py-16">
             <div className="mt-10">
@@ -46,9 +55,17 @@ export default function Sidebar({ notionConnected, handleNotionConnect }: Sideba
             <div className="flex w-full flex-col items-center gap-4">
                 <button
                     type="button"
-                    className="w-full cursor-pointer rounded-full border border-primary/20 bg-primary/10 py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 hover:border-primary/40 hover:bg-primary/30"
+                    onClick={() => onSectionChange('widgets')}
+                    className={`w-full cursor-pointer rounded-full border py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 ${activeSection === 'widgets' ? 'border-primary/20 bg-primary font-semibold text-foreground' : 'border-foreground/10 text-foreground/60 hover:border-primary/20 hover:bg-primary/5'}`}
                 >
                     Widgets
+                </button>
+                <button
+                    type="button"
+                    onClick={() => onSectionChange('account')}
+                    className={`w-full cursor-pointer rounded-full border py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 ${activeSection === 'account' ? 'border-primary/20 bg-primary font-semibold text-foreground' : 'border-foreground/10 text-foreground/60 hover:border-primary/20 hover:bg-primary/5'}`}
+                >
+                    Account
                 </button>
             </div>
         </aside>
