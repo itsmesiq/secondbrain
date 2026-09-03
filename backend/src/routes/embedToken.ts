@@ -1,4 +1,3 @@
-import { eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 
@@ -6,7 +5,7 @@ import { db } from '../db/index.js';
 import { embedToken } from '../db/schema.js';
 import { generateEmbedToken, hashEmbedToken } from '../lib/embedToken.js';
 import { requireAuth } from '../plugins/requireAuth.js';
-import { EmbedTokenSchema, ErrorSchema } from '../schemas/index.js';
+import { EmbedTokenSchema, ErrorSchema, GenerateEmbedTokenSchema } from '../schemas/index.js';
 
 export async function embedTokenRoutes(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().route({
@@ -17,6 +16,7 @@ export async function embedTokenRoutes(app: FastifyInstance) {
             operationId: 'generateEmbedToken',
             summary: 'Generate an embed token for the authenticated user',
             tags: ['Embed Token'],
+            body: GenerateEmbedTokenSchema,
             response: {
                 200: EmbedTokenSchema,
                 401: ErrorSchema,
@@ -27,12 +27,11 @@ export async function embedTokenRoutes(app: FastifyInstance) {
             const token = generateEmbedToken();
             const tokenHash = hashEmbedToken(token);
 
-            await db.delete(embedToken).where(eq(embedToken.userId, request.user!.id));
-
             await db.insert(embedToken).values({
                 id: crypto.randomUUID(),
                 tokenHash,
                 userId: request.user!.id,
+                widgetId: request.body.widgetId,
             });
 
             return {

@@ -10,6 +10,7 @@ export async function validateEmbedToken(token: string) {
     const result = await db
         .select({
             userId: embedToken.userId,
+            widgetId: embedToken.widgetId,
         })
         .from(embedToken)
         .where(eq(embedToken.tokenHash, tokenHash))

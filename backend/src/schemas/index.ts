@@ -45,6 +45,12 @@ export const EmbedTokenSchema = z.object({
 
 export type EmbedToken = z.infer<typeof EmbedTokenSchema>;
 
+export const GenerateEmbedTokenSchema = z.object({
+    widgetId: z.string(),
+});
+
+export type GenerateEmbedToken = z.infer<typeof GenerateEmbedTokenSchema>;
+
 export const WidgetClockSchema = z.object({
     message: z.string(),
     userId: z.string(),

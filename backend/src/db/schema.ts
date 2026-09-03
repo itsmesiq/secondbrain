@@ -84,8 +84,8 @@ export const embedToken = pgTable(
         tokenHash: text('token_hash').notNull().unique(),
         userId: text('user_id')
             .notNull()
-            .unique()
             .references(() => user.id, { onDelete: 'cascade' }),
+        widgetId: text('widget_id').notNull(),
         createdAt: timestamp('created_at').defaultNow().notNull(),
         updatedAt: timestamp('updated_at')
             .defaultNow()

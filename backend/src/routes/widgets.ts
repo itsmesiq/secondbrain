@@ -8,7 +8,7 @@ export async function widgetRoutes(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().route({
         method: 'GET',
         url: '/api/widgets/clock',
-        preHandler: requireWidgetAuth,
+        preHandler: requireWidgetAuth('clock'),
         schema: {
             operationId: 'getWidgetClock',
             summary: 'Get the clock widget data for the authenticated user.',
