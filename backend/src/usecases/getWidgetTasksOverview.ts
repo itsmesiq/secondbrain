@@ -53,6 +53,12 @@ export async function getWidgetTasksOverview({ userId }: GetTaskOverview) {
             continue;
         }
 
+        const parentItem = result.properties['Item principal'];
+
+        if (parentItem?.type === 'relation' && parentItem.relation.length > 0) {
+            continue;
+        }
+
         total++;
 
         const status = result.properties.Status;
