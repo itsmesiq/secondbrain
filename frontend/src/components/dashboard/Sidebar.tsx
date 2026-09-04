@@ -3,7 +3,7 @@ import { LoaderCircle } from 'lucide-react';
 
 import { Logo, NotionIcon } from '@/components/icons';
 
-type DashboardSection = 'widgets' | 'account';
+type DashboardSection = 'widgets' | 'templates' | 'account';
 
 interface SidebarProps {
     notionConnected: boolean | null;
@@ -59,6 +59,13 @@ export default function Sidebar({
                     className={`w-full cursor-pointer rounded-full border py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 ${activeSection === 'widgets' ? 'border-primary/20 bg-primary font-semibold text-foreground' : 'border-foreground/10 text-foreground/60 hover:border-primary/20 hover:bg-primary/5'}`}
                 >
                     Widgets
+                </button>
+                <button
+                    type="button"
+                    onClick={() => onSectionChange('templates')}
+                    className={`w-full cursor-pointer rounded-full border py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 ${activeSection === 'templates' ? 'border-primary/20 bg-primary font-semibold text-foreground' : 'border-foreground/10 text-foreground/60 hover:border-primary/20 hover:bg-primary/5'}`}
+                >
+                    Templates
                 </button>
                 <button
                     type="button"
