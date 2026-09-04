@@ -57,3 +57,13 @@ export const WidgetClockSchema = z.object({
 });
 
 export type WidgetClock = z.infer<typeof WidgetClockSchema>;
+
+export const WidgetTasksOverviewSchema = z.object({
+    total: z.number(),
+    completed: z.number(),
+    pending: z.number(),
+    completionRate: z.number(),
+    currentStreak: z.number(),
+});
+
+export type WidgetTasksOverview = z.infer<typeof WidgetTasksOverviewSchema>;
