@@ -8,5 +8,5 @@
 import type { GetNotionPages200PagesItem } from './getNotionPages200PagesItem';
 
 export type GetNotionPages200 = {
-  pages: GetNotionPages200PagesItem[];
+    pages: GetNotionPages200PagesItem[];
 };

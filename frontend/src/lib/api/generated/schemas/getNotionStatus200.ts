@@ -7,5 +7,5 @@
  */
 
 export type GetNotionStatus200 = {
-  connected: boolean;
+    connected: boolean;
 };

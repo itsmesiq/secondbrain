@@ -7,7 +7,7 @@
  */
 
 export type GetUserData401 = {
-  error: string;
-  message: string;
-  code: string;
+    error: string;
+    message: string;
+    code: string;
 };

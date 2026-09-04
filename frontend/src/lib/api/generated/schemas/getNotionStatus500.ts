@@ -7,7 +7,7 @@
  */
 
 export type GetNotionStatus500 = {
-  error: string;
-  message: string;
-  code: string;
+    error: string;
+    message: string;
+    code: string;
 };

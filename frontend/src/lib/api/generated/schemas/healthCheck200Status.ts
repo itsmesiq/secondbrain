@@ -6,9 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type HealthCheck200Status = typeof HealthCheck200Status[keyof typeof HealthCheck200Status];
-
+export type HealthCheck200Status = (typeof HealthCheck200Status)[keyof typeof HealthCheck200Status];
 
 export const HealthCheck200Status = {
-  ok: 'ok',
+    ok: 'ok',
 } as const;

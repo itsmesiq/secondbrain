@@ -3,6 +3,7 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
+import TasksOverview from '@/components/widgets/tasksOverview';
 import { getWidgetTheme } from '@/lib/widgets/config';
 
 import { useWidgetApi } from '../_lib/api';
@@ -34,9 +35,7 @@ export default function TasksOverviewPage() {
             data-theme={urlTheme}
             className="flex h-screen w-full items-center justify-center bg-notion-background"
         >
-            <div>
-                <h1>Tasks Overview</h1>
-            </div>
+            <TasksOverview />
         </section>
     );
 }

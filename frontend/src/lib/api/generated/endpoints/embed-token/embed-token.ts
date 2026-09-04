@@ -6,128 +6,144 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  MutationFunction,
-  QueryClient,
-  UseMutationOptions,
-  UseMutationResult
+    MutationFunction,
+    QueryClient,
+    UseMutationOptions,
+    UseMutationResult,
 } from '@tanstack/react-query';
-import {
-  useMutation
-} from '@tanstack/react-query';
+import { useMutation } from '@tanstack/react-query';
 
 import { customFetch } from '../../../fetch';
 import type {
-  GenerateEmbedToken200,
-  GenerateEmbedToken401,
-  GenerateEmbedToken500,
-  GenerateEmbedTokenBody
+    GenerateEmbedToken200,
+    GenerateEmbedToken401,
+    GenerateEmbedToken500,
+    GenerateEmbedTokenBody,
 } from '../../schemas';
-
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-
-
 export type generateEmbedTokenResponse200 = {
-  data: GenerateEmbedToken200
-  status: 200
-}
+    data: GenerateEmbedToken200;
+    status: 200;
+};
 
 export type generateEmbedTokenResponse401 = {
-  data: GenerateEmbedToken401
-  status: 401
-}
+    data: GenerateEmbedToken401;
+    status: 401;
+};
 
 export type generateEmbedTokenResponse500 = {
-  data: GenerateEmbedToken500
-  status: 500
-}
-
-export type generateEmbedTokenResponseSuccess = (generateEmbedTokenResponse200) & {
-  headers: Headers;
-};
-export type generateEmbedTokenResponseError = (generateEmbedTokenResponse401 | generateEmbedTokenResponse500) & {
-  headers: Headers;
+    data: GenerateEmbedToken500;
+    status: 500;
 };
 
-export type generateEmbedTokenResponse = (generateEmbedTokenResponseSuccess | generateEmbedTokenResponseError)
+export type generateEmbedTokenResponseSuccess = generateEmbedTokenResponse200 & {
+    headers: Headers;
+};
+export type generateEmbedTokenResponseError = (
+    generateEmbedTokenResponse401 | generateEmbedTokenResponse500
+) & {
+    headers: Headers;
+};
+
+export type generateEmbedTokenResponse =
+    generateEmbedTokenResponseSuccess | generateEmbedTokenResponseError;
 
 export const getGenerateEmbedTokenUrl = () => {
-
-
-
-
-  return `/api/embed-token`
-}
+    return `/api/embed-token`;
+};
 
 /**
  * @summary Generate an embed token for the authenticated user
  */
-export const generateEmbedToken = async (generateEmbedTokenBody: GenerateEmbedTokenBody, options?: Parameters<typeof customFetch>[1]): Promise<generateEmbedTokenResponse> => {
-
-    const getHeaders = (h?: NonNullable<RequestInit['headers']>): Record<string, string | readonly string[]> => {
-    if (!h) return {};
-    if (h instanceof Headers) return Object.fromEntries(h.entries());
-    if (Array.isArray(h)) return Object.fromEntries(h);
-    return h;
-  };
-return customFetch<generateEmbedTokenResponse>(getGenerateEmbedTokenUrl(),
-  {
-    ...options,
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
-    body: JSON.stringify(generateEmbedTokenBody)
-  }
-);}
-
-
-
-
+export const generateEmbedToken = async (
+    generateEmbedTokenBody: GenerateEmbedTokenBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<generateEmbedTokenResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<generateEmbedTokenResponse>(getGenerateEmbedTokenUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(generateEmbedTokenBody),
+    });
+};
 
 export const getGenerateEmbedTokenMutationKey = () => ['generateEmbedToken'] as const;
 
-export const getGenerateEmbedTokenMutationOptions = <TError = GenerateEmbedToken401 | GenerateEmbedToken500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateEmbedToken>>, TError,GenerateEmbedTokenMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
-): UseMutationOptions<Awaited<ReturnType<typeof generateEmbedToken>>, TError,GenerateEmbedTokenMutationVariables, TContext> => {
-
-const mutationKey = getGenerateEmbedTokenMutationKey();
-const {mutation: mutationOptions, request: requestOptions} = options ?
-      options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey ?
-      options
-      : {...options, mutation: {...options.mutation, mutationKey}}
-      : {mutation: { mutationKey, }, request: undefined};
-
-
-
-
-      const mutationFn: MutationFunction<Awaited<ReturnType<typeof generateEmbedToken>>, GenerateEmbedTokenMutationVariables> = (props) => {
-          const {data} = props ?? {};
-
-          return  generateEmbedToken(data,requestOptions)
-        }
-
-
-
-
-
-
-  return  { mutationFn, ...mutationOptions }}
-
-    export type GenerateEmbedTokenMutationResult = NonNullable<Awaited<ReturnType<typeof generateEmbedToken>>>
-    export type GenerateEmbedTokenMutationBody = GenerateEmbedTokenBody
-    export type GenerateEmbedTokenMutationError = GenerateEmbedToken401 | GenerateEmbedToken500
-    export type GenerateEmbedTokenMutationVariables = {data: GenerateEmbedTokenBody}
-
-    /**
- * @summary Generate an embed token for the authenticated user
- */
-export const useGenerateEmbedToken = <TError = GenerateEmbedToken401 | GenerateEmbedToken500,
-    TContext = unknown>(options?: { mutation?:UseMutationOptions<Awaited<ReturnType<typeof generateEmbedToken>>, TError,GenerateEmbedTokenMutationVariables, TContext>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient): UseMutationResult<
+export const getGenerateEmbedTokenMutationOptions = <
+    TError = GenerateEmbedToken401 | GenerateEmbedToken500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
         Awaited<ReturnType<typeof generateEmbedToken>>,
         TError,
         GenerateEmbedTokenMutationVariables,
         TContext
-      > => {
-      return useMutation(getGenerateEmbedTokenMutationOptions(options), queryClient);
-    }
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof generateEmbedToken>>,
+    TError,
+    GenerateEmbedTokenMutationVariables,
+    TContext
+> => {
+    const mutationKey = getGenerateEmbedTokenMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof generateEmbedToken>>,
+        GenerateEmbedTokenMutationVariables
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return generateEmbedToken(data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type GenerateEmbedTokenMutationResult = NonNullable<
+    Awaited<ReturnType<typeof generateEmbedToken>>
+>;
+export type GenerateEmbedTokenMutationBody = GenerateEmbedTokenBody;
+export type GenerateEmbedTokenMutationError = GenerateEmbedToken401 | GenerateEmbedToken500;
+export type GenerateEmbedTokenMutationVariables = { data: GenerateEmbedTokenBody };
+
+/**
+ * @summary Generate an embed token for the authenticated user
+ */
+export const useGenerateEmbedToken = <
+    TError = GenerateEmbedToken401 | GenerateEmbedToken500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof generateEmbedToken>>,
+            TError,
+            GenerateEmbedTokenMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof generateEmbedToken>>,
+    TError,
+    GenerateEmbedTokenMutationVariables,
+    TContext
+> => {
+    return useMutation(getGenerateEmbedTokenMutationOptions(options), queryClient);
+};

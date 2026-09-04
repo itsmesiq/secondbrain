@@ -7,5 +7,5 @@
  */
 
 export type GenerateEmbedToken200 = {
-  token: string;
+    token: string;
 };

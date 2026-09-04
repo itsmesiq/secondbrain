@@ -7,7 +7,7 @@
  */
 
 export type GetWidgetTasksOverview404 = {
-  error: string;
-  message: string;
-  code: string;
+    error: string;
+    message: string;
+    code: string;
 };

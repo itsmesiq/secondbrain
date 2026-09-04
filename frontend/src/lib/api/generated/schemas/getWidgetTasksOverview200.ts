@@ -7,9 +7,9 @@
  */
 
 export type GetWidgetTasksOverview200 = {
-  total: number;
-  completed: number;
-  pending: number;
-  completionRate: number;
-  currentStreak: number;
+    total: number;
+    completed: number;
+    pending: number;
+    completionRate: number;
+    currentStreak: number;
 };

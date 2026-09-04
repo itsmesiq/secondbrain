@@ -7,5 +7,5 @@
  */
 
 export type GenerateEmbedTokenBody = {
-  widgetId: string;
+    widgetId: string;
 };

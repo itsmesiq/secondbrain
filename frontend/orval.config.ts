@@ -18,5 +18,8 @@ export default defineConfig({
                 },
             },
         },
+        hooks: {
+            afterAllFilesWrite: ['eslint --fix', 'prettier --write'],
+        },
     },
 });

@@ -7,7 +7,7 @@
  */
 
 export type GenerateEmbedToken500 = {
-  error: string;
-  message: string;
-  code: string;
+    error: string;
+    message: string;
+    code: string;
 };

@@ -7,7 +7,7 @@
  */
 
 export type GetWidgetClock500 = {
-  error: string;
-  message: string;
-  code: string;
+    error: string;
+    message: string;
+    code: string;
 };

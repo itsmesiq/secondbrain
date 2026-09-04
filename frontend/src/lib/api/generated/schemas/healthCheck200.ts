@@ -8,5 +8,5 @@
 import type { HealthCheck200Status } from './healthCheck200Status';
 
 export type HealthCheck200 = {
-  status: HealthCheck200Status;
+    status: HealthCheck200Status;
 };

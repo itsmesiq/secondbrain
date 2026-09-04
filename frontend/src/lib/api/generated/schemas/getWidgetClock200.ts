@@ -7,6 +7,6 @@
  */
 
 export type GetWidgetClock200 = {
-  message: string;
-  userId: string;
+    message: string;
+    userId: string;
 };

@@ -6,165 +6,168 @@
  * OpenAPI spec version: 1.0.0
  */
 import type {
-  DataTag,
-  DefinedInitialDataOptions,
-  DefinedUseQueryResult,
-  QueryClient,
-  QueryFunction,
-  QueryKey,
-  UndefinedInitialDataOptions,
-  UseQueryOptions,
-  UseQueryResult
+    DataTag,
+    DefinedInitialDataOptions,
+    DefinedUseQueryResult,
+    QueryClient,
+    QueryFunction,
+    QueryKey,
+    UndefinedInitialDataOptions,
+    UseQueryOptions,
+    UseQueryResult,
 } from '@tanstack/react-query';
-import {
-  useQuery
-} from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 
 import { customFetch } from '../../../fetch';
-import type {
-  GetUserData200,
-  GetUserData401,
-  GetUserData500
-} from '../../schemas';
-
+import type { GetUserData200, GetUserData401, GetUserData500 } from '../../schemas';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
 
-
-
 const withQueryKey = <T extends object, K>(query: T, queryKey: K): T & { queryKey: K } => {
-  const result = { queryKey } as T & { queryKey: K };
-  for (const key of Object.keys(query)) {
-    // The explicit queryKey always wins, matching the previous
-    // `{ ...query, queryKey }` spread where it was set last.
-    if (key === 'queryKey') continue;
-    Object.defineProperty(result, key, {
-      enumerable: true,
-      configurable: true,
-      get: () => (query as Record<string, unknown>)[key],
-    });
-  }
-  return result;
+    const result = { queryKey } as T & { queryKey: K };
+    for (const key of Object.keys(query)) {
+        // The explicit queryKey always wins, matching the previous
+        // `{ ...query, queryKey }` spread where it was set last.
+        if (key === 'queryKey') continue;
+        Object.defineProperty(result, key, {
+            enumerable: true,
+            configurable: true,
+            get: () => (query as Record<string, unknown>)[key],
+        });
+    }
+    return result;
 };
 
 export type getUserDataResponse200 = {
-  data: GetUserData200
-  status: 200
-}
+    data: GetUserData200;
+    status: 200;
+};
 
 export type getUserDataResponse401 = {
-  data: GetUserData401
-  status: 401
-}
+    data: GetUserData401;
+    status: 401;
+};
 
 export type getUserDataResponse500 = {
-  data: GetUserData500
-  status: 500
-}
+    data: GetUserData500;
+    status: 500;
+};
 
-export type getUserDataResponseSuccess = (getUserDataResponse200) & {
-  headers: Headers;
+export type getUserDataResponseSuccess = getUserDataResponse200 & {
+    headers: Headers;
 };
 export type getUserDataResponseError = (getUserDataResponse401 | getUserDataResponse500) & {
-  headers: Headers;
+    headers: Headers;
 };
 
-export type getUserDataResponse = (getUserDataResponseSuccess | getUserDataResponseError)
+export type getUserDataResponse = getUserDataResponseSuccess | getUserDataResponseError;
 
 export const getGetUserDataUrl = () => {
-
-
-
-
-  return `/api/me`
-}
+    return `/api/me`;
+};
 
 /**
  * Get the authenticated user data
  */
-export const getUserData = async ( options?: Parameters<typeof customFetch>[1]): Promise<getUserDataResponse> => {
-
-  return customFetch<getUserDataResponse>(getGetUserDataUrl(),
-  {
-    ...options,
-    method: 'GET'
-
-
-  }
-);}
-
-
-
-
+export const getUserData = async (
+    options?: Parameters<typeof customFetch>[1],
+): Promise<getUserDataResponse> => {
+    return customFetch<getUserDataResponse>(getGetUserDataUrl(), {
+        ...options,
+        method: 'GET',
+    });
+};
 
 export const getGetUserDataQueryKey = () => {
-    return [
-    `/api/me`
-    ] as const;
-    }
+    return [`/api/me`] as const;
+};
 
+export const getGetUserDataQueryOptions = <
+    TData = Awaited<ReturnType<typeof getUserData>>,
+    TError = GetUserData401 | GetUserData500,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData>>;
+    request?: SecondParameter<typeof customFetch>;
+}) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
 
-export const getGetUserDataQueryOptions = <TData = Awaited<ReturnType<typeof getUserData>>, TError = GetUserData401 | GetUserData500>( options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
-) => {
+    const queryKey = queryOptions?.queryKey ?? getGetUserDataQueryKey();
 
-const {query: queryOptions, request: requestOptions} = options ?? {};
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserData>>> = ({ signal }) =>
+        getUserData({ signal, ...requestOptions });
 
-  const queryKey =  queryOptions?.queryKey ?? getGetUserDataQueryKey();
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getUserData>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
 
+export type GetUserDataQueryResult = NonNullable<Awaited<ReturnType<typeof getUserData>>>;
+export type GetUserDataQueryError = GetUserData401 | GetUserData500;
 
+export function useGetUserData<
+    TData = Awaited<ReturnType<typeof getUserData>>,
+    TError = GetUserData401 | GetUserData500,
+>(
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData>> &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getUserData>>,
+                    TError,
+                    Awaited<ReturnType<typeof getUserData>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetUserData<
+    TData = Awaited<ReturnType<typeof getUserData>>,
+    TError = GetUserData401 | GetUserData500,
+>(
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData>> &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getUserData>>,
+                    TError,
+                    Awaited<ReturnType<typeof getUserData>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetUserData<
+    TData = Awaited<ReturnType<typeof getUserData>>,
+    TError = GetUserData401 | GetUserData500,
+>(
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getUserData>>> = ({ signal }) => getUserData({ signal, ...requestOptions });
+export function useGetUserData<
+    TData = Awaited<ReturnType<typeof getUserData>>,
+    TError = GetUserData401 | GetUserData500,
+>(
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetUserDataQueryOptions(options);
 
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
 
-
-
-
-   return  { queryKey, queryFn, ...queryOptions} as UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData> & { queryKey: DataTag<QueryKey, TData, TError> }
+    return withQueryKey(query, queryOptions.queryKey);
 }
-
-export type GetUserDataQueryResult = NonNullable<Awaited<ReturnType<typeof getUserData>>>
-export type GetUserDataQueryError = GetUserData401 | GetUserData500
-
-
-export function useGetUserData<TData = Awaited<ReturnType<typeof getUserData>>, TError = GetUserData401 | GetUserData500>(
-  options: { query:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData>> & Pick<
-        DefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getUserData>>,
-          TError,
-          Awaited<ReturnType<typeof getUserData>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserData<TData = Awaited<ReturnType<typeof getUserData>>, TError = GetUserData401 | GetUserData500>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData>> & Pick<
-        UndefinedInitialDataOptions<
-          Awaited<ReturnType<typeof getUserData>>,
-          TError,
-          Awaited<ReturnType<typeof getUserData>>
-        > , 'initialData'
-      >, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-export function useGetUserData<TData = Awaited<ReturnType<typeof getUserData>>, TError = GetUserData401 | GetUserData500>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
-  ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> }
-
-export function useGetUserData<TData = Awaited<ReturnType<typeof getUserData>>, TError = GetUserData401 | GetUserData500>(
-  options?: { query?:Partial<UseQueryOptions<Awaited<ReturnType<typeof getUserData>>, TError, TData>>, request?: SecondParameter<typeof customFetch>}
- , queryClient?: QueryClient
- ):  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-
-  const queryOptions = getGetUserDataQueryOptions(options)
-
-  const query = useQuery(queryOptions, queryClient) as  UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-
-  return withQueryKey(query, queryOptions.queryKey);
-}
-
-
-
-
-
-
