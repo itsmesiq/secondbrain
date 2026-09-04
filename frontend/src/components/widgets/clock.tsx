@@ -13,8 +13,8 @@ interface ClockProps {
 
 export default function Clock({ theme = 'dark', color = 'purple' }: ClockProps) {
     const searchParams = useSearchParams();
-    const urlTheme = getWidgetTheme(searchParams.get('theme'));
-    const urlColor = getWidgetColor(searchParams.get('color'));
+    const urlTheme = searchParams.get('theme');
+    const urlColor = searchParams.get('color');
 
     const resolvedTheme = urlTheme ? getWidgetTheme(urlTheme) : theme;
     const resolvedColor = urlColor ? getWidgetColor(urlColor) : color;

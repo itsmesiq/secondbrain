@@ -24,19 +24,24 @@ export async function embedTokenRoutes(app: FastifyInstance) {
             },
         },
         handler: async request => {
-            const token = generateEmbedToken();
-            const tokenHash = hashEmbedToken(token);
+            try {
+                const token = generateEmbedToken();
+                const tokenHash = hashEmbedToken(token);
 
-            await db.insert(embedToken).values({
-                id: crypto.randomUUID(),
-                tokenHash,
-                userId: request.user!.id,
-                widgetId: request.body.widgetId,
-            });
+                await db.insert(embedToken).values({
+                    id: crypto.randomUUID(),
+                    tokenHash,
+                    userId: request.user!.id,
+                    widgetId: request.body.widgetId,
+                });
 
-            return {
-                token,
-            };
+                return {
+                    token,
+                };
+            } catch (error) {
+                console.error('ERROR GENERATING EMBED TOKEN:', error);
+                throw error;
+            }
         },
     });
 }

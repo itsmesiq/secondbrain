@@ -41,7 +41,7 @@ export default function WidgetConfigModal({
 
             const data = await response.json();
 
-            const url = `${process.env.NEXT_PUBLIC_BASE_URL}/widgets/${widgetId}?theme=${theme}&color=${encodeURIComponent(data.token)}`;
+            const url = `${process.env.NEXT_PUBLIC_BASE_URL}/widgets/${widgetId}?token=${encodeURIComponent(data.token)}&theme=${theme}&color=${encodeURIComponent(color)}`;
 
             setEmbedUrl(url);
 
