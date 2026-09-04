@@ -6,9 +6,11 @@ export default defineConfig({
     secondBrainApi: {
         input: `${process.env.NEXT_PUBLIC_API_URL}/swagger.json`,
         output: {
-            target: './src/lib/api/generated/index.ts',
+            target: './src/lib/api/generated/endpoints',
+            mode: 'tags-split',
+            schemas: './src/lib/api/generated/schemas',
             client: 'react-query',
-            mode: 'split',
+            clean: true,
             override: {
                 mutator: {
                     path: './src/lib/api/fetch.ts',

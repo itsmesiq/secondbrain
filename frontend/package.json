@@ -10,7 +10,8 @@
         "lint:fix": "eslint --fix",
         "format": "prettier --write .",
         "format:check": "prettier --check .",
-        "generate:api": "orval"
+        "generate:api": "orval",
+        "api:watch": "orval --watch"
     },
     "dependencies": {
         "@tanstack/react-query": "^5.102.8",
