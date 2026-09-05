@@ -1,14 +1,14 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 import Clock from '@/components/widgets/clock';
 import { getWidgetTheme } from '@/lib/widgets/config';
 
 import { useWidgetApi } from '../_lib/api';
 
-export default function ClockPage() {
+function ClockContent() {
     const { widgetApi } = useWidgetApi();
     const [authenticated, setAuthenticated] = useState<boolean | null>(null);
 
@@ -37,5 +37,13 @@ export default function ClockPage() {
         >
             <Clock />
         </section>
+    );
+}
+
+export default function ClockPage() {
+    return (
+        <Suspense fallback={null}>
+            <ClockContent />
+        </Suspense>
     );
 }

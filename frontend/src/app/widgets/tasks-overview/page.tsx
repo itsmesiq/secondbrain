@@ -1,14 +1,14 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 
 import TasksOverview from '@/components/widgets/tasksOverview';
 import { getWidgetTheme } from '@/lib/widgets/config';
 
 import { useWidgetApi } from '../_lib/api';
 
-export default function TasksOverviewPage() {
+function TasksOverviewContent() {
     const { widgetApi } = useWidgetApi();
     const [authenticated, setAuthenticated] = useState<boolean | null>(null);
 
@@ -37,5 +37,13 @@ export default function TasksOverviewPage() {
         >
             <TasksOverview />
         </section>
+    );
+}
+
+export default function TasksOverviewPage() {
+    return (
+        <Suspense fallback={null}>
+            <TasksOverviewContent />
+        </Suspense>
     );
 }
