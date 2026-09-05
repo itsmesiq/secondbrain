@@ -5,13 +5,9 @@ import { useEffect, useState } from 'react';
 
 import { BackgroundClock } from '@/components/icons';
 import { getWidgetColor, getWidgetTheme } from '@/lib/widgets/config';
+import type { WidgetProps } from '@/types/widgets.types';
 
-interface ClockProps {
-    theme?: 'light' | 'dark';
-    color?: string;
-}
-
-export default function Clock({ theme = 'dark', color = 'purple' }: ClockProps) {
+export default function Clock({ theme = 'dark', color = 'purple' }: WidgetProps) {
     const searchParams = useSearchParams();
     const urlTheme = searchParams.get('theme');
     const urlColor = searchParams.get('color');

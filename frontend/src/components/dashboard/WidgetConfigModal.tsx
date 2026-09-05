@@ -17,7 +17,7 @@ export default function WidgetConfigModal({
     onClose,
 }: WidgetConfigModalProps) {
     const [theme, setTheme] = useState<'light' | 'dark'>('dark');
-    const [color, setColor] = useState('#ab5aff');
+    const [color, setColor] = useState('purple');
     const [embedUrl, setEmbedUrl] = useState<string | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
@@ -68,7 +68,7 @@ export default function WidgetConfigModal({
                 }
             }}
         >
-            <div className="relative w-full max-w-3xl rounded-4xl bg-surface p-8 shadow-2xl">
+            <div className="relative w-max max-w-[1000px] rounded-4xl bg-surface p-8 shadow-2xl">
                 <button
                     type="button"
                     onClick={onClose}
@@ -84,8 +84,8 @@ export default function WidgetConfigModal({
                     </p>
                 </div>
 
-                <div className="flex justify-between">
-                    <div className="w-[50%] space-y-6">
+                <div className="flex justify-start gap-20">
+                    <div className="w-max space-y-6">
                         <div>
                             <h3 className="mb-3 font-sans text-sm font-semibold">Tema</h3>
                             <div className="flex gap-3">
@@ -109,7 +109,9 @@ export default function WidgetConfigModal({
                         <div>
                             <h3 className="mb-3 font-sans text-sm font-semibold">Cor</h3>
                             <div className="flex items-center gap-4">
-                                <label className="h-8 w-12 cursor-pointer rounded-md bg-[#ab5aff] transition-transform duration-300 hover:scale-110">
+                                <label
+                                    className={`h-8 w-12 cursor-pointer rounded-md bg-[#ab5aff] transition-transform duration-300 hover:scale-110 ${color === 'purple' ? 'outline-1 outline-offset-3 outline-foreground' : ''}`}
+                                >
                                     <input
                                         type="radio"
                                         value={'purple'}
@@ -119,7 +121,9 @@ export default function WidgetConfigModal({
                                     />
                                 </label>
 
-                                <label className="h-8 w-12 cursor-pointer rounded-md bg-[#ff33d3] transition-transform duration-300 hover:scale-110">
+                                <label
+                                    className={`h-8 w-12 cursor-pointer rounded-md bg-[#ff33d3] transition-transform duration-300 hover:scale-110 ${color === 'pink' ? 'outline-1 outline-offset-3 outline-foreground' : ''}`}
+                                >
                                     <input
                                         type="radio"
                                         value={'pink'}
@@ -129,7 +133,9 @@ export default function WidgetConfigModal({
                                     />
                                 </label>
 
-                                <label className="h-8 w-12 cursor-pointer rounded-md bg-[#47ceff] transition-transform duration-300 hover:scale-110">
+                                <label
+                                    className={`h-8 w-12 cursor-pointer rounded-md bg-[#47ceff] transition-transform duration-300 hover:scale-110 ${color === 'blue' ? 'outline-1 outline-offset-3 outline-foreground' : ''}`}
+                                >
                                     <input
                                         type="radio"
                                         value={'blue'}
@@ -139,7 +145,9 @@ export default function WidgetConfigModal({
                                     />
                                 </label>
 
-                                <label className="h-8 w-12 cursor-pointer rounded-md bg-[#c2ff6c] transition-transform duration-300 hover:scale-110">
+                                <label
+                                    className={`h-8 w-12 cursor-pointer rounded-md bg-[#c2ff6c] transition-transform duration-300 hover:scale-110 ${color === 'green' ? 'outline-1 outline-offset-3 outline-foreground' : ''}`}
+                                >
                                     <input
                                         type="radio"
                                         value={'green'}
@@ -149,7 +157,9 @@ export default function WidgetConfigModal({
                                     />
                                 </label>
 
-                                <label className="h-8 w-12 cursor-pointer rounded-md bg-[#ffcb20] transition-transform duration-300 hover:scale-110">
+                                <label
+                                    className={`h-8 w-12 cursor-pointer rounded-md bg-[#ffcb20] transition-transform duration-300 hover:scale-110 ${color === 'yellow' ? 'outline-1 outline-offset-3 outline-foreground' : ''}`}
+                                >
                                     <input
                                         type="radio"
                                         value={'yellow'}
@@ -190,7 +200,7 @@ export default function WidgetConfigModal({
                             </button>
                         </div>
                     </div>
-                    <WidgetPreviewProps theme={theme} color={color} />
+                    <WidgetPreviewProps widgetId={widgetId} theme={theme} color={color} />
                 </div>
             </div>
         </div>
