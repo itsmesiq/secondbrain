@@ -21,6 +21,7 @@ export default function WidgetConfigModal({
     const [embedUrl, setEmbedUrl] = useState<string | null>(null);
     const [isGenerating, setIsGenerating] = useState(false);
     const [isCopied, setIsCopied] = useState(false);
+    const [isFocused, setIsFocused] = useState(false);
 
     const handleCopyEmbed = async () => {
         try {
@@ -48,10 +49,6 @@ export default function WidgetConfigModal({
             await navigator.clipboard.writeText(url);
 
             setIsCopied(true);
-
-            setTimeout(() => {
-                setIsCopied(false);
-            }, 2000);
         } catch (error) {
             console.error('Error generating embed:', error);
         } finally {
@@ -171,12 +168,19 @@ export default function WidgetConfigModal({
                             </div>
                         </div>
 
-                        <div className="border-t border-foreground/10 pt-6">
+                        <div className="max-w-80 border-t border-foreground/10 pt-6">
                             <h3 className="mb-3 font-sans text-sm font-semibold">Embed</h3>
 
                             {embedUrl && (
-                                <div className="mb-3 rounded-xl bg-foreground/5 p-4">
-                                    <p>{embedUrl}</p>
+                                <div
+                                    className={`mb-3 cursor-pointer rounded-xl border bg-foreground/5 p-4 transition-all ${isFocused ? 'border-foreground' : 'border-transparent'}`}
+                                    onClick={() => setIsFocused((prev) => !prev)}
+                                    onBlur={() => setIsFocused(false)}
+                                    tabIndex={0}
+                                >
+                                    <p className={isFocused ? 'wrap-anywhere' : 'truncate'}>
+                                        {embedUrl}
+                                    </p>
                                 </div>
                             )}
 
