@@ -1,12 +1,12 @@
 'use client';
 
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 
 import { authClient } from '../_lib/auth-client';
 import { WidgetAuthContext } from './_lib/context';
 
-export default function WidgetsLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+function WidgetsLayoutContent({ children }: Readonly<{ children: React.ReactNode }>) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -28,4 +28,12 @@ export default function WidgetsLayout({ children }: Readonly<{ children: React.R
     }
 
     return <WidgetAuthContext.Provider value={{ token }}>{children}</WidgetAuthContext.Provider>;
+}
+
+export default function WidgetsLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+    return (
+        <Suspense fallback={null}>
+            <WidgetsLayoutContent>{children}</WidgetsLayoutContent>
+        </Suspense>
+    );
 }
