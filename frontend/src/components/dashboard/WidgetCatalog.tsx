@@ -25,6 +25,7 @@ export default function WidgetCatalog() {
                             alt="Modern Clock widget preview"
                             width={300}
                             height={300}
+                            unoptimized
                         />
                     }
                     onClick={() => {
@@ -40,6 +41,7 @@ export default function WidgetCatalog() {
                             alt="Tasks Overview widget preview"
                             width={273}
                             height={300}
+                            unoptimized
                         />
                     }
                     onClick={() => {
