@@ -1,9 +1,9 @@
-import { app } from './app/app.js';
+import Fastify from 'fastify';
 
-if (!process.env.VERCEL) {
-    await app.listen({
-        port: Number(process.env.PORT) || 3000,
-    });
-}
+const app = Fastify();
+
+app.get('/health', async () => {
+    return { status: 'ok' };
+});
 
 export default app;
