@@ -3,6 +3,7 @@
 import { LoaderCircle } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 
+import { useWidgetAuth } from '@/app/widgets/_lib/context';
 import { StarIcon } from '@/components/icons';
 import { useGetWidgetTasksOverview } from '@/lib/api/generated/endpoints/widgets/widgets';
 import { GetWidgetTasksOverview200 } from '@/lib/api/generated/schemas';
@@ -19,7 +20,21 @@ export default function TasksOverview({ theme = 'dark', color = 'purple' }: Widg
     const resolvedTheme = urlTheme ? getWidgetTheme(urlTheme) : theme;
     const resolvedColor = urlColor ? getWidgetColor(urlColor) : color;
 
-    const { data: tasksOverview, isLoading, isError } = useGetWidgetTasksOverview();
+    const { token } = useWidgetAuth();
+
+    const {
+        data: tasksOverview,
+        isLoading,
+        isError,
+    } = useGetWidgetTasksOverview({
+        request: {
+            headers: token
+                ? {
+                      Authorization: `Bearer ${token}`,
+                  }
+                : undefined,
+        },
+    });
 
     if (isLoading) {
         return (
