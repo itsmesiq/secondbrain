@@ -2,7 +2,7 @@ import { app } from './app/app.js';
 
 try {
     await app.listen({
-        port: 3000,
+        port: Number(process.env.PORT) || 3000,
     });
 } catch (err) {
     app.log.error(err);
