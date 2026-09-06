@@ -6,6 +6,4 @@ app.get('/health', async () => {
     return { status: 'ok' };
 });
 
-await app.listen({
-    port: Number(process.env.PORT) || 3000,
-});
+app.listen({ port: 3000 });
