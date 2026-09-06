@@ -19,7 +19,7 @@
       }
     },
     {
-      "source": "/docs",
+      "source": "/docs(.*)",
       "destination": {
         "type": "service",
         "service": "backend"
