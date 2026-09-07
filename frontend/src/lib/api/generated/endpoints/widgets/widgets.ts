@@ -23,10 +23,15 @@ import type {
     GetWidgetClock200,
     GetWidgetClock401,
     GetWidgetClock500,
+    GetWidgetTasks200,
+    GetWidgetTasks401,
+    GetWidgetTasks404,
+    GetWidgetTasks500,
     GetWidgetTasksOverview200,
     GetWidgetTasksOverview401,
     GetWidgetTasksOverview404,
     GetWidgetTasksOverview500,
+    GetWidgetTasksParams,
 } from '../../schemas';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -340,6 +345,172 @@ export function useGetWidgetTasksOverview<
     queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
     const queryOptions = getGetWidgetTasksOverviewQueryOptions(options);
+
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type getWidgetTasksResponse200 = {
+    data: GetWidgetTasks200;
+    status: 200;
+};
+
+export type getWidgetTasksResponse401 = {
+    data: GetWidgetTasks401;
+    status: 401;
+};
+
+export type getWidgetTasksResponse404 = {
+    data: GetWidgetTasks404;
+    status: 404;
+};
+
+export type getWidgetTasksResponse500 = {
+    data: GetWidgetTasks500;
+    status: 500;
+};
+
+export type getWidgetTasksResponseSuccess = getWidgetTasksResponse200 & {
+    headers: Headers;
+};
+export type getWidgetTasksResponseError = (
+    getWidgetTasksResponse401 | getWidgetTasksResponse404 | getWidgetTasksResponse500
+) & {
+    headers: Headers;
+};
+
+export type getWidgetTasksResponse = getWidgetTasksResponseSuccess | getWidgetTasksResponseError;
+
+export const getGetWidgetTasksUrl = (params: GetWidgetTasksParams) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : String(value));
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0
+        ? `/api/widgets/tasks?${stringifiedParams}`
+        : `/api/widgets/tasks`;
+};
+
+/**
+ * @summary Get tasks for the authenticated user, optionally filtered by project.
+ */
+export const getWidgetTasks = async (
+    params: GetWidgetTasksParams,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<getWidgetTasksResponse> => {
+    return customFetch<getWidgetTasksResponse>(getGetWidgetTasksUrl(params), {
+        ...options,
+        method: 'GET',
+    });
+};
+
+export const getGetWidgetTasksQueryKey = (params?: GetWidgetTasksParams) => {
+    return [`/api/widgets/tasks`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetWidgetTasksQueryOptions = <
+    TData = Awaited<ReturnType<typeof getWidgetTasks>>,
+    TError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500,
+>(
+    params: GetWidgetTasksParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasks>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetWidgetTasksQueryKey(params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWidgetTasks>>> = ({ signal }) =>
+        getWidgetTasks(params, { signal, ...requestOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getWidgetTasks>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetWidgetTasksQueryResult = NonNullable<Awaited<ReturnType<typeof getWidgetTasks>>>;
+export type GetWidgetTasksQueryError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500;
+
+export function useGetWidgetTasks<
+    TData = Awaited<ReturnType<typeof getWidgetTasks>>,
+    TError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500,
+>(
+    params: GetWidgetTasksParams,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasks>>, TError, TData>> &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getWidgetTasks>>,
+                    TError,
+                    Awaited<ReturnType<typeof getWidgetTasks>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetWidgetTasks<
+    TData = Awaited<ReturnType<typeof getWidgetTasks>>,
+    TError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500,
+>(
+    params: GetWidgetTasksParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasks>>, TError, TData>
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getWidgetTasks>>,
+                    TError,
+                    Awaited<ReturnType<typeof getWidgetTasks>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetWidgetTasks<
+    TData = Awaited<ReturnType<typeof getWidgetTasks>>,
+    TError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500,
+>(
+    params: GetWidgetTasksParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasks>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get tasks for the authenticated user, optionally filtered by project.
+ */
+
+export function useGetWidgetTasks<
+    TData = Awaited<ReturnType<typeof getWidgetTasks>>,
+    TError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500,
+>(
+    params: GetWidgetTasksParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasks>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetWidgetTasksQueryOptions(params, options);
 
     const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
         queryKey: DataTag<QueryKey, TData, TError>;
