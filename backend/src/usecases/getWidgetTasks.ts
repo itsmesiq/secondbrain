@@ -61,29 +61,15 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
 
     const dataSourceId = dataSource.id;
 
-    const startDate = new Date(`${date}T00:00:00`);
-    const endDate = new Date(startDate);
-    endDate.setDate(endDate.getDate() + 1);
-
     const tasks = [];
 
     for await (const result of iteratePaginatedAPI(notion.dataSources.query, {
         data_source_id: dataSourceId,
         filter: {
-            and: [
-                {
-                    property: 'Prazo',
-                    date: {
-                        before: endDate.toISOString(),
-                    },
-                },
-                {
-                    property: 'Prazo',
-                    date: {
-                        after: startDate.toISOString(),
-                    },
-                },
-            ],
+            property: 'Prazo',
+            date: {
+                equals: date,
+            },
         },
     })) {
         if (!isFullPage(result)) {
