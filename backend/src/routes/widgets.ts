@@ -2,7 +2,14 @@ import type { FastifyInstance } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 
 import { requireWidgetAuth } from '../plugins/requireWidgetAuth.js';
-import { ErrorSchema, WidgetClockSchema, WidgetTasksOverviewSchema } from '../schemas/index.js';
+import {
+    ErrorSchema,
+    WidgetClockSchema,
+    WidgetTasksOverviewSchema,
+    WidgetTasksQuerySchema,
+    WidgetTasksSchema,
+} from '../schemas/index.js';
+import { getWidgetTasks } from '../usecases/getWidgetTasks.js';
 import { getWidgetTasksOverview } from '../usecases/getWidgetTasksOverview.js';
 
 export async function widgetRoutes(app: FastifyInstance) {
@@ -45,6 +52,31 @@ export async function widgetRoutes(app: FastifyInstance) {
         },
         handler: async request => {
             return getWidgetTasksOverview({ userId: request.user!.id });
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'GET',
+        url: '/api/widgets/tasks',
+        preHandler: requireWidgetAuth('tasks'),
+        schema: {
+            operationId: 'getWidgetTasks',
+            summary: 'Get tasks for the authenticated user, optionally filtered by project.',
+            tags: ['Widgets'],
+            querystring: WidgetTasksQuerySchema,
+            response: {
+                200: WidgetTasksSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return getWidgetTasks({
+                userId: request.user!.id,
+                date: request.query.date,
+                projectId: request.query.projectId,
+            });
         },
     });
 }
