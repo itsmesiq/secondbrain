@@ -102,3 +102,19 @@ export const WidgetTasksQuerySchema = z.object({
 export type WidgetTask = z.infer<typeof WidgetTaskSchema>;
 export type WidgetProject = z.infer<typeof WidgetProjectSchema>;
 export type WidgetTasks = z.infer<typeof WidgetTasksSchema>;
+
+export const CreateWidgetTaskSchema = z.object({
+    title: z.string().min(1),
+    description: z.string().optional(),
+    projectId: z.string().optional(),
+    category: z.string().optional(),
+    dueDate: z.iso.date().optional(),
+    priority: z.string().optional(),
+});
+
+export const CreateWidgetTaskResponseSchema = z.object({
+    id: z.string(),
+    url: z.string(),
+});
+
+export type CreateWidgetTask = z.infer<typeof CreateWidgetTaskSchema>;

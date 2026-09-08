@@ -3,12 +3,15 @@ import { ZodTypeProvider } from 'fastify-type-provider-zod';
 
 import { requireWidgetAuth } from '../plugins/requireWidgetAuth.js';
 import {
+    CreateWidgetTaskResponseSchema,
+    CreateWidgetTaskSchema,
     ErrorSchema,
     WidgetClockSchema,
     WidgetTasksOverviewSchema,
     WidgetTasksQuerySchema,
     WidgetTasksSchema,
 } from '../schemas/index.js';
+import { createWidgetTask } from '../usecases/createWidgetTask.js';
 import { getWidgetTasks } from '../usecases/getWidgetTasks.js';
 import { getWidgetTasksOverview } from '../usecases/getWidgetTasksOverview.js';
 
@@ -76,6 +79,31 @@ export async function widgetRoutes(app: FastifyInstance) {
                 userId: request.user!.id,
                 date: request.query.date,
                 projectId: request.query.projectId,
+            });
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/api/widgets/tasks',
+        preHandler: requireWidgetAuth('tasks'),
+        schema: {
+            operationId: 'createWidgetTask',
+            summary: 'Create a new task for the authenticated user.',
+            tags: ['Widgets'],
+            body: CreateWidgetTaskSchema,
+            response: {
+                201: CreateWidgetTaskResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return createWidgetTask({
+                userId: request.user!.id,
+                ...request.body,
             });
         },
     });
