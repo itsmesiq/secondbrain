@@ -22,15 +22,58 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
 
     const { token } = useWidgetAuth();
 
-    const [selectedDate, setSelectedDate] = useState(new Date());
+    const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
     const [selectedProject, setSelectedProject] = useState<string | undefined>();
-    const today = new Date();
+
+    const getWeekDays = (date: Date) => {
+        const day = new Date(date);
+        const dayOfWeek = day.getDay();
+        const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+        day.setDate(day.getDate() + mondayOffset);
+
+        return Array.from({ length: 7 }, (_, index) => {
+            const weekDay = new Date(day);
+            weekDay.setDate(day.getDate() + index);
+            return weekDay;
+        });
+    };
+
+    const weekDays = getWeekDays(selectedDate);
+
+    const formatWeekDay = (date: Date) => {
+        return new Intl.DateTimeFormat('pt-BR', {
+            weekday: 'short',
+        })
+            .format(date)
+            .replace('.', '')
+            .replace(/^\w/, (letter) => letter.toUpperCase());
+    };
+
+    const formatMonthYear = (date: Date) => {
+        return new Intl.DateTimeFormat('pt-BR', {
+            month: 'long',
+            year: 'numeric',
+        })
+            .format(date)
+            .replace('de', '')
+            .replace(/^\w/, (letter) => letter.toUpperCase());
+    };
 
     const date = selectedDate.toISOString().slice(0, 10);
+
+    const isToday = (date: Date) => {
+        return date.toDateString() === new Date().toDateString();
+    };
+
+    const isSelected = (date: Date) => {
+        return date.toDateString() === selectedDate.toDateString();
+    };
 
     const {
         data: tasksResponse,
         isLoading,
+        isFetching,
         isError,
     } = useGetWidgetTasks(
         {
@@ -38,13 +81,19 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
             projectId: selectedProject,
         },
         {
+            query: {
+                placeholderData: (previousData) => previousData,
+            },
             request: {
                 headers: token ? { Authorization: `Bearer ${token}` } : undefined,
             },
         },
     );
 
-    if (isLoading) {
+    const isInitialLoading = isLoading && !tasksResponse;
+    const isUpdating = isFetching && !!tasksResponse;
+
+    if (isInitialLoading) {
         return (
             <div>
                 <LoaderCircle className="h-5 w-5 animate-spin" aria-label="Loading" />
@@ -73,20 +122,36 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                         <button type="button" className="cursor-pointer">
                             <ChevronLeft className="size-8" />
                         </button>
-                        <span className="font-orbitron tracking-[2.4px]">Setembro 2026</span>
+                        <span className="font-orbitron tracking-[2.4px]">
+                            {formatMonthYear(selectedDate)}
+                        </span>
                         <button type="button" className="cursor-pointer">
                             <ChevronRight className="size-8" />
                         </button>
                     </div>
-                    <ul className="flex items-center justify-between px-2 font-mono text-sm opacity-50">
-                        <li>Seg</li>
-                        <li>Ter</li>
-                        <li>Qua</li>
-                        <li>Qui</li>
-                        <li>Sex</li>
-                        <li>Sáb</li>
-                        <li>Dom</li>
-                    </ul>
+                    <div className="flex items-center justify-between px-2 font-mono text-sm">
+                        {weekDays.map((day) => (
+                            <button
+                                key={day.toISOString()}
+                                type="button"
+                                onClick={() => setSelectedDate(day)}
+                                className="flex cursor-pointer flex-col items-center gap-1"
+                            >
+                                <span className="opacity-50">{formatWeekDay(day)}</span>
+                                <span
+                                    className={`flex h-7 w-7 items-center justify-center rounded-full ${isSelected(day) ? 'bg-widget-accent font-bold text-notion-background' : isToday(day) ? 'bg-widget-accent/15 text-widget-foreground' : 'bg-transparent text-widget-foreground'}`}
+                                >
+                                    {day.getDate()}
+                                </span>
+                            </button>
+                        ))}
+                    </div>
+                    {isUpdating && (
+                        <LoaderCircle
+                            className="h-5 w-5 animate-spin text-widget-accent"
+                            aria-label="Loading"
+                        />
+                    )}
                 </div>
             </div>
             <div className="absolute top-1/2 left-1/2 z-0 -translate-x-1/2 -translate-y-1/2">
