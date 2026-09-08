@@ -186,7 +186,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                                 <a
                                     href={task.url}
                                     target="_blank"
-                                    className="flex w-full cursor-pointer flex-col items-start gap-2 rounded-2xl border border-foreground/20 bg-widget-background/60 p-3"
+                                    className="relative flex w-full cursor-pointer flex-col items-start gap-2 rounded-2xl border border-foreground/20 bg-widget-background/60 p-3 shadow-[0_2px_0_0] shadow-widget-accent"
                                 >
                                     <div className="flex w-full items-start justify-between">
                                         <div className="flex flex-col items-start gap-1 text-foreground">
