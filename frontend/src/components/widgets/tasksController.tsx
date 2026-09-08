@@ -137,8 +137,8 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
             data-color={resolvedColor}
             className="relative flex h-175 w-98 flex-col overflow-hidden rounded-4xl bg-widget-background px-6 py-6 shadow-[0_0_32px_0] shadow-[#0F0E0E]/20"
         >
-            <div className="drop-shadow-[0_2px_8px_rgba(0, 0, 0, 0.25)] relative z-10 h-full w-full overflow-auto rounded-2xl border border-widget-foreground/15 bg-notion-background/20 px-5 py-5 shadow-[inset_0_0_16px_1px] shadow-widget-foreground/15 backdrop-blur-sm">
-                <div className="flex flex-col gap-3">
+            <div className="drop-shadow-[0_2px_8px_rgba(0, 0, 0, 0.25)] relative z-10 flex min-h-0 w-full grow flex-col gap-4 overflow-hidden rounded-2xl border border-widget-foreground/15 bg-notion-background/20 pt-5 shadow-[inset_0_0_16px_1px] shadow-widget-foreground/15 backdrop-blur-sm">
+                <div className="flex flex-col gap-3 px-5">
                     <div className="flex items-center justify-between text-widget-foreground">
                         <button type="button" className="cursor-pointer">
                             <ChevronLeft className="size-8" />
@@ -173,19 +173,19 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                         value={selectedProject}
                         onChange={setSelectedProject}
                     />
-
-                    <div className="flex flex-col items-center gap-2">
-                        {isUpdating ? (
-                            <LoaderCircle
-                                className="h-5 w-5 animate-spin text-widget-accent"
-                                aria-label="Loading"
-                            />
-                        ) : (
-                            tasks.map((task) => (
+                </div>
+                <div className="mb-17 flex max-h-full flex-col items-center gap-2 overflow-auto pb-5">
+                    {isUpdating ? (
+                        <LoaderCircle
+                            className="h-5 w-5 animate-spin text-widget-accent"
+                            aria-label="Loading"
+                        />
+                    ) : (
+                        tasks.map((task) => (
+                            <div key={task.id} className="w-full px-5">
                                 <a
                                     href={task.url}
                                     target="_blank"
-                                    key={task.id}
                                     className="flex w-full cursor-pointer flex-col items-start gap-2 rounded-2xl border border-foreground/20 bg-widget-background/60 p-3"
                                 >
                                     <div className="flex w-full items-start justify-between">
@@ -212,15 +212,17 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                                         </div>
                                     </div>
                                 </a>
-                            ))
-                        )}
-                    </div>
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
-            <button className="sticky bottom-0 left-0 z-20 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-widget-accent py-3 font-sans text-sm font-semibold tracking-[2.4px] transition-transform duration-500 ease-in-out hover:translate-y-0.5 hover:scale-99">
-                <Plus className="size-5 text-widget-foreground" />
-                <span>Adicionar Tarefa</span>
-            </button>
+            <div className="absolute bottom-0 left-0 z-20 mx-6 mb-5 w-[344px] rounded-b-2xl bg-widget-accent/30 px-4 py-3 backdrop-blur-md">
+                <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-widget-background py-3 font-sans text-sm font-semibold tracking-[2.4px] transition-colors duration-500 ease-in-out hover:text-widget-accent">
+                    <Plus className="size-5" />
+                    <span>Adicionar Tarefa</span>
+                </button>
+            </div>
             <div className="absolute top-1/2 left-1/2 z-0 -translate-x-1/2 -translate-y-1/2">
                 <WaveGlowBackground />
             </div>
