@@ -17,6 +17,7 @@ import { GetWidgetTasks200 } from '@/lib/api/generated/schemas';
 import { getWidgetColor, getWidgetTheme } from '@/lib/widgets/config';
 import type { WidgetProps } from '@/types/widgets.types';
 
+import Dropdown from '../ui/Dropdown';
 import WaveGlowBackground from '../ui/WaveGlowBackground';
 
 export default function TasksController({ theme = 'dark', color = 'purple' }: WidgetProps) {
@@ -30,7 +31,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
     const { token } = useWidgetAuth();
 
     const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
-    const [selectedProject, setSelectedProject] = useState<string | undefined>();
+    const [selectedProject, setSelectedProject] = useState<string>('');
 
     const getWeekDays = (date: Date) => {
         const day = new Date(date);
@@ -124,14 +125,19 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
 
     const tasks = tasksResponseResolved?.tasks ?? [];
     const projects = tasksResponseResolved?.projects ?? [];
+    const projectsOption =
+        projects.map((project) => ({
+            id: project.id,
+            name: project.name,
+        })) ?? [];
 
     return (
         <div
             data-theme={resolvedTheme}
             data-color={resolvedColor}
-            className="relative flex h-107.5 w-98 flex-col overflow-hidden rounded-4xl bg-widget-background px-6 py-6 shadow-[0_0_32px_0] shadow-[#0F0E0E]/20"
+            className="relative flex h-175 w-98 flex-col overflow-hidden rounded-4xl bg-widget-background px-6 py-6 shadow-[0_0_32px_0] shadow-[#0F0E0E]/20"
         >
-            <div className="drop-shadow-[0_2px_8px_rgba(0, 0, 0, 0.25)] relative z-10 h-full w-full rounded-2xl border border-widget-foreground/15 bg-notion-background/20 px-3 py-3 shadow-[inset_0_0_16px_1px] shadow-widget-foreground/15 backdrop-blur-sm">
+            <div className="drop-shadow-[0_2px_8px_rgba(0, 0, 0, 0.25)] relative z-10 h-full w-full overflow-auto rounded-2xl border border-widget-foreground/15 bg-notion-background/20 px-5 py-5 shadow-[inset_0_0_16px_1px] shadow-widget-foreground/15 backdrop-blur-sm">
                 <div className="flex flex-col gap-3">
                     <div className="flex items-center justify-between text-widget-foreground">
                         <button type="button" className="cursor-pointer">
@@ -161,6 +167,12 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                             </button>
                         ))}
                     </div>
+
+                    <Dropdown
+                        options={projectsOption}
+                        value={selectedProject}
+                        onChange={setSelectedProject}
+                    />
 
                     <div className="flex flex-col items-center gap-2">
                         {isUpdating ? (
@@ -202,13 +214,13 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                                 </a>
                             ))
                         )}
-                        <button className="flex w-full cursor-pointer items-center justify-center gap-4 rounded-lg bg-widget-accent py-2 transition-transform duration-500 ease-in-out hover:translate-y-0.5 hover:scale-99">
-                            <Plus className="size-5 text-widget-foreground" />
-                            <span>Adicionar Tarefa</span>
-                        </button>
                     </div>
                 </div>
             </div>
+            <button className="sticky bottom-0 left-0 z-20 flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-widget-accent py-3 font-sans text-sm font-semibold tracking-[2.4px] transition-transform duration-500 ease-in-out hover:translate-y-0.5 hover:scale-99">
+                <Plus className="size-5 text-widget-foreground" />
+                <span>Adicionar Tarefa</span>
+            </button>
             <div className="absolute top-1/2 left-1/2 z-0 -translate-x-1/2 -translate-y-1/2">
                 <WaveGlowBackground />
             </div>
