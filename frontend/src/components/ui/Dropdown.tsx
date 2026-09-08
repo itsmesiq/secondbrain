@@ -41,7 +41,11 @@ export default function Dropdown({
                 onClick={() => setIsOpen((prev) => !prev)}
                 className="flex w-full cursor-pointer items-center justify-between rounded-lg border border-foreground/20 bg-widget-background/50 px-4 py-2 font-sans text-sm text-foreground transition-colors duration-300 ease-in hover:bg-background/70"
             >
-                <span>{selectedOption?.name ?? placeholder}</span>
+                <span
+                    className={`${selectedOption?.name ? 'text-foreground' : 'text-foreground/40'}`}
+                >
+                    {selectedOption?.name ?? placeholder}
+                </span>
 
                 <div className="flex items-center gap-2">
                     {selectedOption?.name !== undefined && (
@@ -56,7 +60,7 @@ export default function Dropdown({
                 </div>
             </button>
             {isOpen && (
-                <div>
+                <div className="max-h-[180px] overflow-auto">
                     {options.map((option) => (
                         <button
                             key={option.id}

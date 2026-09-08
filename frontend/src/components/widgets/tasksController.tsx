@@ -1,5 +1,6 @@
 'use client';
 
+import { useQueryClient } from '@tanstack/react-query';
 import {
     ChevronLeft,
     ChevronRight,
@@ -12,7 +13,10 @@ import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
 import { useWidgetAuth } from '@/app/widgets/_lib/context';
-import { useGetWidgetTasks } from '@/lib/api/generated/endpoints/widgets/widgets';
+import {
+    getGetWidgetTasksQueryKey,
+    useGetWidgetTasks,
+} from '@/lib/api/generated/endpoints/widgets/widgets';
 import { GetWidgetTasks200 } from '@/lib/api/generated/schemas';
 import { getWidgetColor, getWidgetTheme } from '@/lib/widgets/config';
 import type { WidgetProps } from '@/types/widgets.types';
@@ -34,6 +38,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
     const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
     const [selectedProject, setSelectedProject] = useState<string>('');
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const queryClient = useQueryClient();
 
     const getWeekDays = (date: Date) => {
         const day = new Date(date);
@@ -132,6 +137,15 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
             id: project.id,
             name: project.name,
         })) ?? [];
+
+    const handleTaskCreated = () => {
+        queryClient.invalidateQueries({
+            queryKey: getGetWidgetTasksQueryKey({
+                date,
+                projectId: selectedProject,
+            }),
+        });
+    };
 
     return (
         <div
@@ -238,6 +252,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                     <CreateTaskModal
                         isOpen={isModalOpen}
                         onClose={() => setIsModalOpen(false)}
+                        onTaskCreated={handleTaskCreated}
                         selectedDate={selectedDate}
                         projects={projectsOption}
                         token={token!}
