@@ -1,6 +1,13 @@
 'use client';
 
-import { ChevronLeft, ChevronRight, LoaderCircle } from 'lucide-react';
+import {
+    ChevronLeft,
+    ChevronRight,
+    Clock,
+    LoaderCircle,
+    Plus,
+    SquareArrowOutUpRight,
+} from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
 import { useState } from 'react';
 
@@ -60,7 +67,15 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
             .replace(/^\w/, (letter) => letter.toUpperCase());
     };
 
-    const date = selectedDate.toISOString().slice(0, 10);
+    const formatDate = (date: Date) => {
+        return [
+            date.getFullYear(),
+            String(date.getMonth() + 1).padStart(2, '0'),
+            String(date.getDate()).padStart(2, '0'),
+        ].join('-');
+    };
+
+    const date = formatDate(selectedDate);
 
     const isToday = (date: Date) => {
         return date.toDateString() === new Date().toDateString();
@@ -146,12 +161,52 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                             </button>
                         ))}
                     </div>
-                    {isUpdating && (
-                        <LoaderCircle
-                            className="h-5 w-5 animate-spin text-widget-accent"
-                            aria-label="Loading"
-                        />
-                    )}
+
+                    <div className="flex flex-col items-center gap-2">
+                        {isUpdating ? (
+                            <LoaderCircle
+                                className="h-5 w-5 animate-spin text-widget-accent"
+                                aria-label="Loading"
+                            />
+                        ) : (
+                            tasks.map((task) => (
+                                <a
+                                    href={task.url}
+                                    target="_blank"
+                                    key={task.id}
+                                    className="flex w-full cursor-pointer flex-col items-start gap-2 rounded-2xl border border-foreground/20 bg-widget-background/60 p-3"
+                                >
+                                    <div className="flex w-full items-start justify-between">
+                                        <div className="flex flex-col items-start gap-1 text-foreground">
+                                            <span className="font-mono text-sm">{task.title}</span>
+                                            {task.description && (
+                                                <p className="font-sans text-xs opacity-60">
+                                                    {task.description}
+                                                </p>
+                                            )}
+                                        </div>
+                                        <SquareArrowOutUpRight className="h-4 w-4" />
+                                    </div>
+                                    <div className="flex w-full items-center justify-between font-sans text-xs text-foreground">
+                                        {task.category && (
+                                            <span className="rounded-full border border-widget-accent bg-widget-accent/15 px-3 py-0.5 text-widget-accent">
+                                                {task.category}
+                                            </span>
+                                        )}
+
+                                        <div className="flex items-center gap-1 text-widget-foreground">
+                                            <Clock className="size-3" />
+                                            <span>{task.dueDate}</span>
+                                        </div>
+                                    </div>
+                                </a>
+                            ))
+                        )}
+                        <button className="flex w-full cursor-pointer items-center justify-center gap-4 rounded-lg bg-widget-accent py-2 transition-transform duration-500 ease-in-out hover:translate-y-0.5 hover:scale-99">
+                            <Plus className="size-5 text-widget-foreground" />
+                            <span>Adicionar Tarefa</span>
+                        </button>
+                    </div>
                 </div>
             </div>
             <div className="absolute top-1/2 left-1/2 z-0 -translate-x-1/2 -translate-y-1/2">
