@@ -6,6 +6,12 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './createWidgetTask201';
+export * from './createWidgetTask400';
+export * from './createWidgetTask401';
+export * from './createWidgetTask404';
+export * from './createWidgetTask500';
+export * from './createWidgetTaskBody';
 export * from './generateEmbedToken200';
 export * from './generateEmbedToken401';
 export * from './generateEmbedToken500';

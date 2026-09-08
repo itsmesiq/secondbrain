@@ -12,4 +12,5 @@ export type GetWidgetTasksParams = {
      */
     date: string;
     projectId?: string;
+    priority?: string;
 };

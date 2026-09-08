@@ -9,17 +9,26 @@ import type {
     DataTag,
     DefinedInitialDataOptions,
     DefinedUseQueryResult,
+    MutationFunction,
     QueryClient,
     QueryFunction,
     QueryKey,
     UndefinedInitialDataOptions,
+    UseMutationOptions,
+    UseMutationResult,
     UseQueryOptions,
     UseQueryResult,
 } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { customFetch } from '../../../fetch';
 import type {
+    CreateWidgetTask201,
+    CreateWidgetTask400,
+    CreateWidgetTask401,
+    CreateWidgetTask404,
+    CreateWidgetTask500,
+    CreateWidgetTaskBody,
     GetWidgetClock200,
     GetWidgetClock401,
     GetWidgetClock500,
@@ -518,3 +527,142 @@ export function useGetWidgetTasks<
 
     return withQueryKey(query, queryOptions.queryKey);
 }
+
+export type createWidgetTaskResponse201 = {
+    data: CreateWidgetTask201;
+    status: 201;
+};
+
+export type createWidgetTaskResponse400 = {
+    data: CreateWidgetTask400;
+    status: 400;
+};
+
+export type createWidgetTaskResponse401 = {
+    data: CreateWidgetTask401;
+    status: 401;
+};
+
+export type createWidgetTaskResponse404 = {
+    data: CreateWidgetTask404;
+    status: 404;
+};
+
+export type createWidgetTaskResponse500 = {
+    data: CreateWidgetTask500;
+    status: 500;
+};
+
+export type createWidgetTaskResponseSuccess = createWidgetTaskResponse201 & {
+    headers: Headers;
+};
+export type createWidgetTaskResponseError = (
+    | createWidgetTaskResponse400
+    | createWidgetTaskResponse401
+    | createWidgetTaskResponse404
+    | createWidgetTaskResponse500
+) & {
+    headers: Headers;
+};
+
+export type createWidgetTaskResponse =
+    createWidgetTaskResponseSuccess | createWidgetTaskResponseError;
+
+export const getCreateWidgetTaskUrl = () => {
+    return `/api/widgets/tasks`;
+};
+
+/**
+ * @summary Create a new task for the authenticated user.
+ */
+export const createWidgetTask = async (
+    createWidgetTaskBody: CreateWidgetTaskBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<createWidgetTaskResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<createWidgetTaskResponse>(getCreateWidgetTaskUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(createWidgetTaskBody),
+    });
+};
+
+export const getCreateWidgetTaskMutationKey = () => ['createWidgetTask'] as const;
+
+export const getCreateWidgetTaskMutationOptions = <
+    TError = CreateWidgetTask400 | CreateWidgetTask401 | CreateWidgetTask404 | CreateWidgetTask500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof createWidgetTask>>,
+        TError,
+        CreateWidgetTaskMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof createWidgetTask>>,
+    TError,
+    CreateWidgetTaskMutationVariables,
+    TContext
+> => {
+    const mutationKey = getCreateWidgetTaskMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof createWidgetTask>>,
+        CreateWidgetTaskMutationVariables
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return createWidgetTask(data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type CreateWidgetTaskMutationResult = NonNullable<
+    Awaited<ReturnType<typeof createWidgetTask>>
+>;
+export type CreateWidgetTaskMutationBody = CreateWidgetTaskBody;
+export type CreateWidgetTaskMutationError =
+    CreateWidgetTask400 | CreateWidgetTask401 | CreateWidgetTask404 | CreateWidgetTask500;
+export type CreateWidgetTaskMutationVariables = { data: CreateWidgetTaskBody };
+
+/**
+ * @summary Create a new task for the authenticated user.
+ */
+export const useCreateWidgetTask = <
+    TError = CreateWidgetTask400 | CreateWidgetTask401 | CreateWidgetTask404 | CreateWidgetTask500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof createWidgetTask>>,
+            TError,
+            CreateWidgetTaskMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof createWidgetTask>>,
+    TError,
+    CreateWidgetTaskMutationVariables,
+    TContext
+> => {
+    return useMutation(getCreateWidgetTaskMutationOptions(options), queryClient);
+};

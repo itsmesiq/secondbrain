@@ -18,5 +18,7 @@ export type GetWidgetTasks200TasksItem = {
     category: string | null;
     project: GetWidgetTasks200TasksItemProject;
     status: string;
+    /** @nullable */
+    priority: string | null;
     url: string;
 };
