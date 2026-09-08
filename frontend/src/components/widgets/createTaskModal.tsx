@@ -56,6 +56,57 @@ export default function CreateTaskModal({
         ].join('-');
     });
 
+    const [displayDate, setDisplayDate] = useState(() => {
+        return [
+            String(selectedDate.getDate()).padStart(2, '0'),
+            String(selectedDate.getMonth() + 1).padStart(2, '0'),
+            selectedDate.getFullYear(),
+        ].join('/');
+    });
+
+    const [dateError, setDateError] = useState('');
+
+    const isValidDate = (day: number, month: number, year: number) => {
+        const date = new Date(year, month - 1, day);
+
+        return (
+            date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day
+        );
+    };
+
+    const handleDateChange = (value: string) => {
+        const numbers = value.replace(/\D/g, '').slice(0, 8);
+        let formatted = numbers;
+
+        if (numbers.length > 2) {
+            formatted = `${numbers.slice(0, 2)}/${numbers.slice(2)}`;
+        }
+
+        if (numbers.length > 4) {
+            formatted = `${numbers.slice(0, 2)}/${numbers.slice(2, 4)}/${numbers.slice(4)}`;
+        }
+
+        setDisplayDate(formatted);
+
+        if (numbers.length !== 8) {
+            setDateError('');
+            return;
+        }
+
+        const day = Number(numbers.slice(0, 2));
+        const month = Number(numbers.slice(2, 4));
+        const year = Number(numbers.slice(4));
+
+        if (!isValidDate(day, month, year)) {
+            setDateError('Digite uma data válida.');
+            return;
+        }
+
+        setDateError('');
+
+        setDueDate(`${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`);
+    };
+
     const [isSubmitting, setIsSubmitting] = useState(false);
     const createTaskMutation = useCreateWidgetTask({
         request: {
@@ -162,11 +213,16 @@ export default function CreateTaskModal({
                             </label>
                             <input
                                 id="task-due-date"
-                                type="date"
-                                value={dueDate}
-                                onChange={(event) => setDueDate(event.target.value)}
+                                type="text"
+                                inputMode="numeric"
+                                value={displayDate}
+                                onChange={(event) => handleDateChange(event.target.value)}
+                                maxLength={10}
                                 className="h-[41.6px] rounded-lg border border-widget-foreground/20 bg-widget-background px-4 py-2 font-sans text-sm transition-colors outline-none placeholder:text-foreground/40 focus:border-widget-accent"
                             />
+                            {dateError && (
+                                <span className="font-sans text-xs text-red-400">{dateError}</span>
+                            )}
                         </div>
                     </div>
                     <button

@@ -19,6 +19,7 @@ import {
 } from '@/lib/api/generated/endpoints/widgets/widgets';
 import { GetWidgetTasks200 } from '@/lib/api/generated/schemas';
 import { getWidgetColor, getWidgetTheme } from '@/lib/widgets/config';
+import { formatDueDate } from '@/lib/widgets/formatDueDate';
 import type { WidgetProps } from '@/types/widgets.types';
 
 import Dropdown from '../ui/Dropdown';
@@ -132,6 +133,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
 
     const tasks = tasksResponseResolved?.tasks ?? [];
     const projects = tasksResponseResolved?.projects ?? [];
+
     const projectsOption =
         projects.map((project) => ({
             id: project.id,
@@ -222,10 +224,12 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                                             </span>
                                         )}
 
-                                        <div className="flex items-center gap-1 text-widget-foreground">
-                                            <Clock className="size-3" />
-                                            <span>{task.dueDate}</span>
-                                        </div>
+                                        {task.dueDate && (
+                                            <div className="flex items-center gap-1 text-widget-foreground">
+                                                <Clock className="size-3" />
+                                                <span>{formatDueDate(task.dueDate)}</span>
+                                            </div>
+                                        )}
                                     </div>
                                 </a>
                             </div>
