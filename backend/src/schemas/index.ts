@@ -81,6 +81,7 @@ export const WidgetTaskSchema = z.object({
         })
         .nullable(),
     status: z.string(),
+    priority: z.string().nullable(),
     url: z.url(),
 });
 
@@ -97,6 +98,7 @@ export const WidgetTasksSchema = z.object({
 export const WidgetTasksQuerySchema = z.object({
     date: z.iso.date(),
     projectId: z.string().optional(),
+    priority: z.string().optional(),
 });
 
 export type WidgetTask = z.infer<typeof WidgetTaskSchema>;

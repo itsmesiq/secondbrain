@@ -100,6 +100,11 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
                 ? (result.properties.Status.status?.name ?? '')
                 : '';
 
+        const priority =
+            result.properties.Prioridade?.type === 'select'
+                ? (result.properties.Prioridade.select?.name ?? null)
+                : null;
+
         const projectRelation = result.properties.Projetos;
 
         const projectIdFromTask = getProjectName(projectRelation);
@@ -136,6 +141,7 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
             category,
             project,
             status,
+            priority,
             url: result.url,
         });
     }
