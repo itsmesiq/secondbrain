@@ -19,6 +19,7 @@ import type { WidgetProps } from '@/types/widgets.types';
 
 import Dropdown from '../ui/Dropdown';
 import WaveGlowBackground from '../ui/WaveGlowBackground';
+import CreateTaskModal from './createTaskModal';
 
 export default function TasksController({ theme = 'dark', color = 'purple' }: WidgetProps) {
     const searchParams = useSearchParams();
@@ -32,6 +33,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
 
     const [selectedDate, setSelectedDate] = useState<Date>(() => new Date());
     const [selectedProject, setSelectedProject] = useState<string>('');
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const getWeekDays = (date: Date) => {
         const day = new Date(date);
@@ -186,7 +188,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                                 <a
                                     href={task.url}
                                     target="_blank"
-                                    className={`relative flex w-full cursor-pointer flex-col items-start gap-2 rounded-2xl border border-foreground/20 bg-widget-background/60 p-3 shadow-[0_3px_0_0] ${task.status === '📥 Inbox' ? 'shadow-status-inbox' : ''} ${task.status === 'A fazer' ? 'shadow-status-todo' : ''} ${task.status === 'Em andamento' ? 'shadow-status-inprogress' : ''} ${task.status === '❌ Cancelado' ? 'shadow-status-cancelled' : ''} ${task.status === 'Concluído' ? 'shadow-status-completed' : ''}`}
+                                    className={`relative flex w-full cursor-pointer flex-col items-start gap-2 rounded-2xl border border-foreground/20 bg-widget-background/60 p-3 shadow-[0_3px_0_0] transition-colors duration-300 hover:bg-widget-background/85 ${task.status === '📥 Inbox' ? 'shadow-status-inbox' : ''} ${task.status === 'A fazer' ? 'shadow-status-todo' : ''} ${task.status === 'Em andamento' ? 'shadow-status-inprogress' : ''} ${task.status === '❌ Cancelado' ? 'shadow-status-cancelled' : ''} ${task.status === 'Concluído' ? 'shadow-status-completed' : ''}`}
                                 >
                                     <div className="flex w-full items-start justify-between">
                                         <div className="flex flex-col items-start gap-1 text-foreground">
@@ -218,7 +220,11 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                 </div>
             </div>
             <div className="absolute bottom-0 left-0 z-20 mx-6 mb-5 w-[344px] rounded-b-2xl bg-widget-accent/30 px-4 py-3 backdrop-blur-md">
-                <button className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-widget-background py-3 font-sans text-sm font-semibold tracking-[2.4px] transition-colors duration-500 ease-in-out hover:text-widget-accent">
+                <button
+                    type="button"
+                    onClick={() => setIsModalOpen((prev) => !prev)}
+                    className="flex w-full cursor-pointer items-center justify-center gap-2 rounded-lg bg-widget-background py-3 font-sans text-sm font-semibold tracking-[2.4px] transition-colors duration-500 ease-in-out hover:text-widget-accent"
+                >
                     <Plus className="size-5" />
                     <span>Adicionar Tarefa</span>
                 </button>
@@ -226,6 +232,18 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
             <div className="absolute top-1/2 left-1/2 z-0 -translate-x-1/2 -translate-y-1/2">
                 <WaveGlowBackground />
             </div>
+
+            {isModalOpen && (
+                <div className="absolute bottom-0 left-0 z-50 h-full w-full shrink">
+                    <CreateTaskModal
+                        isOpen={isModalOpen}
+                        onClose={() => setIsModalOpen(false)}
+                        selectedDate={selectedDate}
+                        projects={projectsOption}
+                        token={token!}
+                    />
+                </div>
+            )}
         </div>
     );
 }
