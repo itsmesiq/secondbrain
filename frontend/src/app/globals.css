@@ -21,6 +21,12 @@
     --accent-blue: #47ceff;
     --accent-green: #c2ff6c;
     --accent-yellow: #ffcb20;
+
+    --status-inbox: #e4e4e4;
+    --status-todo: #b161d6;
+    --status-inprogress: #3779bf;
+    --status-cancelled: #ed6b6d;
+    --status-completed: #31b36a;
 }
 
 /* Widgets Themes */
@@ -70,6 +76,11 @@
     --color-widget-background: var(--widget-background);
     --color-widget-foreground: var(--widget-foreground);
     --color-widget-accent: var(--accent-color);
+    --color-status-inbox: var(--status-inbox);
+    --color-status-todo: var(--status-todo);
+    --color-status-inprogress: var(--status-inprogress);
+    --color-status-cancelled: var(--status-cancelled);
+    --color-status-completed: var(--status-completed);
     --font-orbitron: var(--font-orbitron);
 }
 
