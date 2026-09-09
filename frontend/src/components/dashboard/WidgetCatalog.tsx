@@ -2,9 +2,8 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import ClockDark from '@/assets/images/clock-dark.png';
-import TaskOverviewDark from '@/assets/images/task-overview-dark.png';
 import WidgetCard from '@/components/dashboard/WidgetCard';
+import { ClockDark, TaskOverviewDark, TasksDark } from '@/components/images';
 
 import WidgetConfigModal from './WidgetConfigModal';
 
@@ -47,6 +46,22 @@ export default function WidgetCatalog() {
                     onClick={() => {
                         setSelectedWidget('tasks-overview');
                         setSelectedWidgetName('Tasks Overview');
+                    }}
+                />
+                <WidgetCard
+                    name="Tasks"
+                    preview={
+                        <Image
+                            src={TasksDark}
+                            alt="Tasks widget preview"
+                            width={275}
+                            height={300}
+                            unoptimized
+                        />
+                    }
+                    onClick={() => {
+                        setSelectedWidget('tasks');
+                        setSelectedWidgetName('Tasks');
                     }}
                 />
             </div>

@@ -1,4 +1,5 @@
 import Clock from '../widgets/clock';
+import TasksControllerPreview from '../widgets/tasksControllerPreview';
 import TasksOverviewPreview from '../widgets/tasksOverviewPreview';
 
 interface WidgetPreviewProps {
@@ -13,6 +14,8 @@ export default function WidgetPreviewProps({ widgetId, theme, color }: WidgetPre
             {widgetId === 'clock' && <Clock theme={theme} color={color} />}
 
             {widgetId === 'tasks-overview' && <TasksOverviewPreview theme={theme} color={color} />}
+
+            {widgetId === 'tasks' && <TasksControllerPreview theme={theme} color={color} />}
         </div>
     );
 }
