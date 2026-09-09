@@ -50,7 +50,18 @@ export default function Dropdown({
                 <div className="flex items-center gap-2">
                     {selectedOption?.name !== undefined && (
                         <div
+                            role="button"
+                            tabIndex={0}
+                            aria-label="Clear selection"
                             onClick={handleUnsetOptionClick}
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' || e.key === '') {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    onChange('');
+                                    setIsOpen(false);
+                                }
+                            }}
                             className="flex items-center justify-center"
                         >
                             <X className="size-4" />

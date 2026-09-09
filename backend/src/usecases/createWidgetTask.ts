@@ -46,9 +46,9 @@ export async function createWidgetTask({
         },
     });
 
-    const dataSorce = response.results.find(result => result.object === 'data_source');
+    const dataSource = response.results.find(result => result.object === 'data_source');
 
-    if (!dataSorce) {
+    if (!dataSource) {
         throw new DataSourceNotFoundError('Tarefas');
     }
 
@@ -112,7 +112,7 @@ export async function createWidgetTask({
 
     const page = await notion.pages.create({
         parent: {
-            data_source_id: dataSorce.id,
+            data_source_id: dataSource.id,
         },
         properties,
     });

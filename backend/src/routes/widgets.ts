@@ -100,11 +100,12 @@ export async function widgetRoutes(app: FastifyInstance) {
                 500: ErrorSchema,
             },
         },
-        handler: async request => {
-            return createWidgetTask({
+        handler: async (request, reply) => {
+            const result = await createWidgetTask({
                 userId: request.user!.id,
                 ...request.body,
             });
+            return reply.status(201).send(result);
         },
     });
 }

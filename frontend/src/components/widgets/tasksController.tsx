@@ -72,7 +72,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
             year: 'numeric',
         })
             .format(date)
-            .replace('de', '')
+            .replace(/\sde\s/, ' ')
             .replace(/^\w/, (letter) => letter.toUpperCase());
     };
 
@@ -98,7 +98,6 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
         data: tasksResponse,
         isLoading,
         isFetching,
-        isError,
     } = useGetWidgetTasks(
         {
             date,
@@ -125,11 +124,11 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
         );
     }
 
-    if (isError || !tasksResponse) {
+    if (!tasksResponse || tasksResponse.status !== 200) {
         return <div className="text-xs text-red-400">Error loading tasks</div>;
     }
 
-    const tasksResponseResolved = tasksResponse?.data as GetWidgetTasks200;
+    const tasksResponseResolved = tasksResponse.data as GetWidgetTasks200;
 
     const tasks = tasksResponseResolved?.tasks ?? [];
 
@@ -217,6 +216,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                                 <a
                                     href={task.url}
                                     target="_blank"
+                                    rel="noopener noreferrer"
                                     className={`relative flex w-full cursor-pointer flex-col items-start gap-2 rounded-2xl border border-foreground/20 bg-widget-background/60 p-3 shadow-[0_3px_0_0] transition-colors duration-300 hover:bg-widget-background/85 ${task.status === '📥 Inbox' ? 'shadow-status-inbox' : ''} ${task.status === 'A fazer' ? 'shadow-status-todo' : ''} ${task.status === 'Em andamento' ? 'shadow-status-inprogress' : ''} ${task.status === '❌ Cancelado' ? 'shadow-status-cancelled' : ''} ${task.status === 'Concluído' ? 'shadow-status-completed' : ''}`}
                                 >
                                     <div className="flex w-full items-start justify-between">
@@ -272,7 +272,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                 <WaveGlowBackground />
             </div>
 
-            {isModalOpen && (
+            {isModalOpen && token && (
                 <div className="absolute bottom-0 left-0 z-50 h-full w-full shrink">
                     <CreateTaskModal
                         isOpen={isModalOpen}
@@ -280,7 +280,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                         onTaskCreated={handleTaskCreated}
                         selectedDate={selectedDate}
                         projects={projectsOption}
-                        token={token!}
+                        token={token}
                     />
                 </div>
             )}

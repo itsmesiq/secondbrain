@@ -124,7 +124,7 @@ export default function CreateTaskModal({
         setIsSubmitting(true);
 
         try {
-            await createTaskMutation.mutateAsync({
+            const response = await createTaskMutation.mutateAsync({
                 data: {
                     title: title.trim(),
                     projectId: selectedProject || undefined,
@@ -133,6 +133,10 @@ export default function CreateTaskModal({
                     dueDate: dueDate || undefined,
                 },
             });
+
+            if (response.status !== 201) {
+                return;
+            }
 
             onTaskCreated();
             onClose();
@@ -162,7 +166,7 @@ export default function CreateTaskModal({
                     <div className="flex w-full flex-col gap-4 overflow-auto text-widget-foreground">
                         <div className="flex flex-col gap-2 px-8">
                             <label htmlFor="task-title" className="font-sans text-sm font-medium">
-                                Titulo <span className="text-widget-accent">*</span>
+                                Título <span className="text-widget-accent">*</span>
                             </label>
                             <input
                                 type="text"
@@ -244,10 +248,12 @@ export default function CreateTaskModal({
                     </button>
                 </form>
             </div>
-            <div
+            <button
+                type="button"
+                aria-label="Close modal"
                 className="absolute top-0 z-0 h-full w-full bg-widget-background/50 backdrop-blur-sm"
                 onClick={onClose}
-            ></div>
+            ></button>
         </div>
     );
 }

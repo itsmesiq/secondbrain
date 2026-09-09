@@ -45,6 +45,8 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
 
     const notion = createNotionClient(accessToken);
 
+    const projectsCache = new Map<string, { id: string; name: string } | null>();
+
     const response = await notion.search({
         query: 'Tarefas',
         filter: {
@@ -88,7 +90,7 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
         const dueDate =
             result.properties.Prazo?.type === 'date'
                 ? (result.properties.Prazo.date?.start ?? null)
-                : '';
+                : null;
 
         const category =
             result.properties.Área?.type === 'select'
@@ -116,20 +118,29 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
         let project = null;
 
         if (projectIdFromTask) {
-            const projectPage = await notion.pages.retrieve({ page_id: projectIdFromTask });
+            if (projectsCache.has(projectIdFromTask)) {
+                project = projectsCache.get(projectIdFromTask) ?? null;
+            } else {
+                const projectPage = await notion.pages.retrieve({
+                    page_id: projectIdFromTask,
+                });
 
-            if ('properties' in projectPage) {
-                const titleProperty = Object.values(projectPage.properties).find(
-                    property => property.type === 'title',
-                );
-                if (titleProperty?.type === 'title') {
-                    project = {
-                        id: projectIdFromTask,
-                        name:
-                            titleProperty.title?.map(item => item.plain_text).join('') ||
-                            'Sem nome',
-                    };
+                if ('properties' in projectPage) {
+                    const titleProperty = Object.values(projectPage.properties).find(
+                        property => property.type === 'title',
+                    );
+
+                    if (titleProperty?.type === 'title') {
+                        project = {
+                            id: projectIdFromTask,
+                            name:
+                                titleProperty.title.map(item => item.plain_text).join('') ||
+                                'Sem título',
+                        };
+                    }
                 }
+
+                projectsCache.set(projectIdFromTask, project);
             }
         }
 
