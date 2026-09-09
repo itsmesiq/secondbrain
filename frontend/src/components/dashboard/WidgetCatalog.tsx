@@ -64,6 +64,22 @@ export default function WidgetCatalog() {
                         setSelectedWidgetName('Tasks');
                     }}
                 />
+                <WidgetCard
+                    name="Divider"
+                    preview={
+                        <Image
+                            src={ClockDark}
+                            alt="Widget preview"
+                            width={300}
+                            height={300}
+                            unoptimized
+                        />
+                    }
+                    onClick={() => {
+                        setSelectedWidget('divider');
+                        setSelectedWidgetName('Divider');
+                    }}
+                />
             </div>
 
             {selectedWidget && (
