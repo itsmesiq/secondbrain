@@ -251,9 +251,9 @@ export default function TasksControllerPreview({ theme = 'dark', color = 'purple
             </div>
 
             {isModalOpen && (
-                <div className="absolute bottom-0 left-0 z-50 h-175 w-full shrink">
+                <div className="absolute bottom-0 left-0 z-50 h-full w-full shrink">
                     <div className="relative h-full w-full">
-                        <div className="absolute bottom-0 z-10 flex max-h-[580px] w-full flex-col items-center justify-center gap-6 rounded-t-4xl bg-widget-background py-6">
+                        <div className="absolute bottom-0 z-10 flex max-h-[580px] w-full flex-col items-center justify-center gap-6 overflow-hidden rounded-t-4xl bg-widget-background py-6">
                             <div className="flex w-full items-center justify-between px-8">
                                 <h2 className="font-mono text-lg">Adicionar Tarefa</h2>
                                 <button
@@ -264,8 +264,8 @@ export default function TasksControllerPreview({ theme = 'dark', color = 'purple
                                     <X className="size-6" />
                                 </button>
                             </div>
-                            <form className="w-full">
-                                <div className="flex h-full w-full flex-col gap-4 overflow-auto text-widget-foreground">
+                            <form className="flex min-h-0 w-full flex-1 flex-col">
+                                <div className="flex w-full flex-col gap-4 overflow-auto text-widget-foreground">
                                     <div className="flex flex-col gap-2 px-8">
                                         <label
                                             htmlFor="task-title"

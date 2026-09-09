@@ -162,7 +162,7 @@ export default function CreateTaskModal({
                         <X className="size-6" />
                     </button>
                 </div>
-                <form onSubmit={handleSubmit} className="w-full">
+                <form onSubmit={handleSubmit} className="flex min-h-0 w-full flex-1 flex-col">
                     <div className="flex w-full flex-col gap-4 overflow-auto text-widget-foreground">
                         <div className="flex flex-col gap-2 px-8">
                             <label htmlFor="task-title" className="font-sans text-sm font-medium">
