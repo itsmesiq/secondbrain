@@ -65,24 +65,23 @@ export default function WidgetConfigModal({
                 }
             }}
         >
-            <div className="relative w-max max-w-[1000px] rounded-4xl bg-surface p-8 shadow-2xl">
+            <div className="relative w-max max-w-[1000px] rounded-4xl bg-surface p-12 shadow-2xl">
                 <button
                     type="button"
                     onClick={onClose}
-                    className="absolute top-5 right-5 cursor-pointer rounded-full p-2 transition-colors hover:bg-foreground/5"
+                    className="absolute top-4 right-4 cursor-pointer rounded-full p-2 transition-colors hover:bg-foreground/5"
                 >
                     <X className="h-5 w-5" />
                 </button>
 
-                <div className="mb-8">
-                    <h2 className="font-sans text-3xl font-bold">{widgetName}</h2>
-                    <p className="mt-2 font-sans text-sm text-foreground/60">
-                        Personalize seu widget e gere o código de embed.
-                    </p>
-                </div>
-
                 <div className="flex justify-start gap-20">
                     <div className="w-max space-y-6">
+                        <div className="mb-8">
+                            <h2 className="font-sans text-3xl font-bold">{widgetName}</h2>
+                            <p className="mt-2 font-sans text-sm text-foreground/60">
+                                Personalize seu widget e gere o código de embed.
+                            </p>
+                        </div>
                         <div>
                             <h3 className="mb-3 font-sans text-sm font-semibold">Tema</h3>
                             <div className="flex gap-3">
