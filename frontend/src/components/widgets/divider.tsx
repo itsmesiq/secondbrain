@@ -15,7 +15,7 @@ export default function Divider({ theme = 'dark', color = 'purple' }: WidgetProp
         <div
             data-theme={resolvedTheme}
             data-color={resolvedColor}
-            className="flex h-2 w-full flex-col items-center justify-center bg-widget-accent blur-xs"
+            className="flex h-2 w-full flex-col items-center justify-center bg-widget-accent"
         >
             <div className="h-0.5 w-full bg-widget-foreground mix-blend-plus-lighter blur-xs"></div>
         </div>
