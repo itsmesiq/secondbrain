@@ -6,6 +6,12 @@
  * OpenAPI spec version: 1.0.0
  */
 
+export * from './createWidgetTask201';
+export * from './createWidgetTask400';
+export * from './createWidgetTask401';
+export * from './createWidgetTask404';
+export * from './createWidgetTask500';
+export * from './createWidgetTaskBody';
 export * from './generateEmbedToken200';
 export * from './generateEmbedToken401';
 export * from './generateEmbedToken500';
@@ -24,9 +30,17 @@ export * from './getUserData500';
 export * from './getWidgetClock200';
 export * from './getWidgetClock401';
 export * from './getWidgetClock500';
+export * from './getWidgetTasks200';
+export * from './getWidgetTasks200ProjectsItem';
+export * from './getWidgetTasks200TasksItem';
+export * from './getWidgetTasks200TasksItemProject';
+export * from './getWidgetTasks401';
+export * from './getWidgetTasks404';
+export * from './getWidgetTasks500';
 export * from './getWidgetTasksOverview200';
 export * from './getWidgetTasksOverview401';
 export * from './getWidgetTasksOverview404';
 export * from './getWidgetTasksOverview500';
+export * from './getWidgetTasksParams';
 export * from './healthCheck200';
 export * from './healthCheck200Status';

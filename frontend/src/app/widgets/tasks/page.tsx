@@ -1,12 +1,11 @@
 'use client';
-
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
-import TasksOverview from '@/components/widgets/tasksOverview';
+import TasksController from '@/components/widgets/tasksController';
 import { getWidgetTheme } from '@/lib/widgets/config';
 
-function TasksOverviewContent() {
+function TasksContent() {
     const searchParams = useSearchParams();
     const urlTheme = getWidgetTheme(searchParams.get('theme'));
 
@@ -15,15 +14,15 @@ function TasksOverviewContent() {
             data-theme={urlTheme}
             className="flex h-screen w-full items-center justify-center bg-notion-background"
         >
-            <TasksOverview />
+            <TasksController />
         </section>
     );
 }
 
-export default function TasksOverviewPage() {
+export default function TasksPage() {
     return (
         <Suspense fallback={null}>
-            <TasksOverviewContent />
+            <TasksContent />
         </Suspense>
     );
 }

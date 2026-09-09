@@ -9,24 +9,38 @@ import type {
     DataTag,
     DefinedInitialDataOptions,
     DefinedUseQueryResult,
+    MutationFunction,
     QueryClient,
     QueryFunction,
     QueryKey,
     UndefinedInitialDataOptions,
+    UseMutationOptions,
+    UseMutationResult,
     UseQueryOptions,
     UseQueryResult,
 } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { customFetch } from '../../../fetch';
 import type {
+    CreateWidgetTask201,
+    CreateWidgetTask400,
+    CreateWidgetTask401,
+    CreateWidgetTask404,
+    CreateWidgetTask500,
+    CreateWidgetTaskBody,
     GetWidgetClock200,
     GetWidgetClock401,
     GetWidgetClock500,
+    GetWidgetTasks200,
+    GetWidgetTasks401,
+    GetWidgetTasks404,
+    GetWidgetTasks500,
     GetWidgetTasksOverview200,
     GetWidgetTasksOverview401,
     GetWidgetTasksOverview404,
     GetWidgetTasksOverview500,
+    GetWidgetTasksParams,
 } from '../../schemas';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -347,3 +361,308 @@ export function useGetWidgetTasksOverview<
 
     return withQueryKey(query, queryOptions.queryKey);
 }
+
+export type getWidgetTasksResponse200 = {
+    data: GetWidgetTasks200;
+    status: 200;
+};
+
+export type getWidgetTasksResponse401 = {
+    data: GetWidgetTasks401;
+    status: 401;
+};
+
+export type getWidgetTasksResponse404 = {
+    data: GetWidgetTasks404;
+    status: 404;
+};
+
+export type getWidgetTasksResponse500 = {
+    data: GetWidgetTasks500;
+    status: 500;
+};
+
+export type getWidgetTasksResponseSuccess = getWidgetTasksResponse200 & {
+    headers: Headers;
+};
+export type getWidgetTasksResponseError = (
+    getWidgetTasksResponse401 | getWidgetTasksResponse404 | getWidgetTasksResponse500
+) & {
+    headers: Headers;
+};
+
+export type getWidgetTasksResponse = getWidgetTasksResponseSuccess | getWidgetTasksResponseError;
+
+export const getGetWidgetTasksUrl = (params: GetWidgetTasksParams) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : String(value));
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0
+        ? `/api/widgets/tasks?${stringifiedParams}`
+        : `/api/widgets/tasks`;
+};
+
+/**
+ * @summary Get tasks for the authenticated user, optionally filtered by project.
+ */
+export const getWidgetTasks = async (
+    params: GetWidgetTasksParams,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<getWidgetTasksResponse> => {
+    return customFetch<getWidgetTasksResponse>(getGetWidgetTasksUrl(params), {
+        ...options,
+        method: 'GET',
+    });
+};
+
+export const getGetWidgetTasksQueryKey = (params?: GetWidgetTasksParams) => {
+    return [`/api/widgets/tasks`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetWidgetTasksQueryOptions = <
+    TData = Awaited<ReturnType<typeof getWidgetTasks>>,
+    TError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500,
+>(
+    params: GetWidgetTasksParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasks>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetWidgetTasksQueryKey(params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWidgetTasks>>> = ({ signal }) =>
+        getWidgetTasks(params, { signal, ...requestOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getWidgetTasks>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetWidgetTasksQueryResult = NonNullable<Awaited<ReturnType<typeof getWidgetTasks>>>;
+export type GetWidgetTasksQueryError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500;
+
+export function useGetWidgetTasks<
+    TData = Awaited<ReturnType<typeof getWidgetTasks>>,
+    TError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500,
+>(
+    params: GetWidgetTasksParams,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasks>>, TError, TData>> &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getWidgetTasks>>,
+                    TError,
+                    Awaited<ReturnType<typeof getWidgetTasks>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetWidgetTasks<
+    TData = Awaited<ReturnType<typeof getWidgetTasks>>,
+    TError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500,
+>(
+    params: GetWidgetTasksParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasks>>, TError, TData>
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getWidgetTasks>>,
+                    TError,
+                    Awaited<ReturnType<typeof getWidgetTasks>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetWidgetTasks<
+    TData = Awaited<ReturnType<typeof getWidgetTasks>>,
+    TError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500,
+>(
+    params: GetWidgetTasksParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasks>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get tasks for the authenticated user, optionally filtered by project.
+ */
+
+export function useGetWidgetTasks<
+    TData = Awaited<ReturnType<typeof getWidgetTasks>>,
+    TError = GetWidgetTasks401 | GetWidgetTasks404 | GetWidgetTasks500,
+>(
+    params: GetWidgetTasksParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasks>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetWidgetTasksQueryOptions(params, options);
+
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type createWidgetTaskResponse201 = {
+    data: CreateWidgetTask201;
+    status: 201;
+};
+
+export type createWidgetTaskResponse400 = {
+    data: CreateWidgetTask400;
+    status: 400;
+};
+
+export type createWidgetTaskResponse401 = {
+    data: CreateWidgetTask401;
+    status: 401;
+};
+
+export type createWidgetTaskResponse404 = {
+    data: CreateWidgetTask404;
+    status: 404;
+};
+
+export type createWidgetTaskResponse500 = {
+    data: CreateWidgetTask500;
+    status: 500;
+};
+
+export type createWidgetTaskResponseSuccess = createWidgetTaskResponse201 & {
+    headers: Headers;
+};
+export type createWidgetTaskResponseError = (
+    | createWidgetTaskResponse400
+    | createWidgetTaskResponse401
+    | createWidgetTaskResponse404
+    | createWidgetTaskResponse500
+) & {
+    headers: Headers;
+};
+
+export type createWidgetTaskResponse =
+    createWidgetTaskResponseSuccess | createWidgetTaskResponseError;
+
+export const getCreateWidgetTaskUrl = () => {
+    return `/api/widgets/tasks`;
+};
+
+/**
+ * @summary Create a new task for the authenticated user.
+ */
+export const createWidgetTask = async (
+    createWidgetTaskBody: CreateWidgetTaskBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<createWidgetTaskResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<createWidgetTaskResponse>(getCreateWidgetTaskUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(createWidgetTaskBody),
+    });
+};
+
+export const getCreateWidgetTaskMutationKey = () => ['createWidgetTask'] as const;
+
+export const getCreateWidgetTaskMutationOptions = <
+    TError = CreateWidgetTask400 | CreateWidgetTask401 | CreateWidgetTask404 | CreateWidgetTask500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof createWidgetTask>>,
+        TError,
+        CreateWidgetTaskMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof createWidgetTask>>,
+    TError,
+    CreateWidgetTaskMutationVariables,
+    TContext
+> => {
+    const mutationKey = getCreateWidgetTaskMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof createWidgetTask>>,
+        CreateWidgetTaskMutationVariables
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return createWidgetTask(data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type CreateWidgetTaskMutationResult = NonNullable<
+    Awaited<ReturnType<typeof createWidgetTask>>
+>;
+export type CreateWidgetTaskMutationBody = CreateWidgetTaskBody;
+export type CreateWidgetTaskMutationError =
+    CreateWidgetTask400 | CreateWidgetTask401 | CreateWidgetTask404 | CreateWidgetTask500;
+export type CreateWidgetTaskMutationVariables = { data: CreateWidgetTaskBody };
+
+/**
+ * @summary Create a new task for the authenticated user.
+ */
+export const useCreateWidgetTask = <
+    TError = CreateWidgetTask400 | CreateWidgetTask401 | CreateWidgetTask404 | CreateWidgetTask500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof createWidgetTask>>,
+            TError,
+            CreateWidgetTaskMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof createWidgetTask>>,
+    TError,
+    CreateWidgetTaskMutationVariables,
+    TContext
+> => {
+    return useMutation(getCreateWidgetTaskMutationOptions(options), queryClient);
+};
