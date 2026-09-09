@@ -12,14 +12,14 @@ export default function AuthPage() {
 
     useEffect(() => {
         if (!isPending && session) {
-            router.replace('/');
+            router.replace('/dashboard');
         }
     }, [isPending, session, router]);
 
     const handleGoogleSignIn = async () => {
         await authClient.signIn.social({
             provider: 'google',
-            callbackURL: `${process.env.NEXT_PUBLIC_BASE_URL}/`,
+            callbackURL: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`,
         });
     };
 
