@@ -25,6 +25,7 @@
     --status-inbox: #e4e4e4;
     --status-todo: #b161d6;
     --status-inprogress: #3779bf;
+    --status-paused: #d8c340;
     --status-cancelled: #ed6b6d;
     --status-completed: #31b36a;
 }
@@ -79,6 +80,7 @@
     --color-status-inbox: var(--status-inbox);
     --color-status-todo: var(--status-todo);
     --color-status-inprogress: var(--status-inprogress);
+    --color-status-paused: var(--status-paused);
     --color-status-cancelled: var(--status-cancelled);
     --color-status-completed: var(--status-completed);
     --font-orbitron: var(--font-orbitron);

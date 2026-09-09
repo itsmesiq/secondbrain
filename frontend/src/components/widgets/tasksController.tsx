@@ -132,6 +132,19 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
     const tasksResponseResolved = tasksResponse?.data as GetWidgetTasks200;
 
     const tasks = tasksResponseResolved?.tasks ?? [];
+
+    const priorityOrder: Record<string, number> = {
+        '🔴 Alta': 1,
+        '🟡 Média': 2,
+        '🟢 Baixa': 3,
+    };
+
+    const sortedTasks = [...tasks].sort((a, b) => {
+        const priorityA = priorityOrder[a.priority ?? ''] ?? 4;
+        const priorityB = priorityOrder[b.priority ?? ''] ?? 4;
+        return priorityA - priorityB;
+    });
+
     const projects = tasksResponseResolved?.projects ?? [];
 
     const projectsOption =
@@ -199,7 +212,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                             aria-label="Loading"
                         />
                     ) : (
-                        tasks.map((task) => (
+                        sortedTasks.map((task) => (
                             <div key={task.id} className="w-full px-5">
                                 <a
                                     href={task.url}
@@ -209,6 +222,7 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                                     <div className="flex w-full items-start justify-between">
                                         <div className="flex flex-col items-start gap-1 text-foreground">
                                             <span className="font-mono text-sm">{task.title}</span>
+
                                             {task.description && (
                                                 <p className="font-sans text-xs opacity-60">
                                                     {task.description}
@@ -225,9 +239,16 @@ export default function TasksController({ theme = 'dark', color = 'purple' }: Wi
                                         )}
 
                                         {task.dueDate && (
-                                            <div className="flex items-center gap-1 text-widget-foreground">
-                                                <Clock className="size-3" />
-                                                <span>{formatDueDate(task.dueDate)}</span>
+                                            <div className="ml-auto flex items-center justify-end gap-2">
+                                                <div
+                                                    className={`rounded-full px-2 py-0.5 text-xs ${task.priority === '🔴 Alta' ? 'bg-status-cancelled/50' : task.priority === '🟡 Média' ? 'bg-status-paused/50' : task.priority === '🟢 Baixa' ? 'bg-status-completed/50' : ''}`}
+                                                >
+                                                    <span>{task.priority}</span>
+                                                </div>
+                                                <div className="flex items-center gap-1 text-widget-foreground">
+                                                    <Clock className="size-3" />
+                                                    <span>{formatDueDate(task.dueDate)}</span>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
