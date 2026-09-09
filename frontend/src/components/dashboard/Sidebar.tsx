@@ -20,8 +20,8 @@ export default function Sidebar({
 }: SidebarProps) {
     return (
         <aside className="relative flex h-screen w-[25%] flex-col items-center justify-between gap-8 bg-surface px-8 py-16">
-            <div className="mt-10">
-                <Logo className="h-[180px] w-[187px] animate-bounce 2xl:h-[560px] 2xl:w-[567px]" />
+            <div className="mt-10 flex flex-col items-center">
+                <Logo className="h-[180px] w-[187px] animate-bounce 2xl:h-[307px] 2xl:w-[300px]" />
                 <h2 className="h-28 w-[232px] typed-caret typed-[Bem_vindo_ao_Second_Brain.] text-center font-mono text-2xl text-foreground"></h2>
             </div>
 

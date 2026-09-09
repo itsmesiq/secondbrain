@@ -150,7 +150,7 @@ export default function TasksControllerPreview({ theme = 'dark', color = 'purple
         <div
             data-theme={resolvedTheme}
             data-color={resolvedColor}
-            className="relative flex h-175 w-98 flex-col overflow-hidden rounded-4xl bg-widget-background px-6 py-6 shadow-[0_0_32px_0] shadow-[#0F0E0E]/20"
+            className="relative flex h-145 w-98 flex-col overflow-hidden rounded-4xl bg-widget-background px-6 py-6 shadow-[0_0_32px_0] shadow-[#0F0E0E]/20 2xl:h-175"
         >
             <div className="drop-shadow-[0_2px_8px_rgba(0, 0, 0, 0.25)] relative z-10 flex min-h-0 w-full grow flex-col gap-4 overflow-hidden rounded-2xl border border-widget-foreground/15 bg-notion-background/20 pt-5 shadow-[inset_0_0_16px_1px] shadow-widget-foreground/15 backdrop-blur-sm">
                 <div className="flex flex-col gap-3 px-5">
@@ -258,7 +258,8 @@ export default function TasksControllerPreview({ theme = 'dark', color = 'purple
                                 <h2 className="font-mono text-lg">Adicionar Tarefa</h2>
                                 <button
                                     type="button"
-
+                                    aria-label="Close modal"
+                                    onClick={() => setIsModalOpen(false)}
                                     className="cursor-pointer p-1 text-widget-foreground/60 transition-colors hover:text-widget-foreground"
                                 >
                                     <X className="size-6" />
