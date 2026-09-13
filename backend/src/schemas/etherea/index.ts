@@ -101,3 +101,42 @@ export const TaskSchema = z.object({
 });
 
 export type Task = z.infer<typeof TaskSchema>;
+
+export const HabitSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    frequency: z.string(),
+    specializationIds: z.array(z.string()),
+    objectiveId: z.string().nullable(),
+    active: z.boolean(),
+    currentStreak: z.number(),
+    bestStreak: z.number(),
+    lastCompletedAt: z.string().nullable(),
+    createdAt: z.string(),
+});
+
+export type Habit = z.infer<typeof HabitSchema>;
+
+export const HabitCompletionSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    habitId: z.string(),
+    date: z.string(),
+    completed: z.boolean(),
+    streak: z.number(),
+    xpEarned: z.number(),
+    goldEarned: z.number(),
+    createdAt: z.string(),
+});
+
+export type HabitCompletion = z.infer<typeof HabitCompletionSchema>;
+
+export const ProjectSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    status: z.string(),
+    tasksIds: z.array(z.string()),
+    createdAt: z.string(),
+});
+
+export type Project = z.infer<typeof ProjectSchema>;
