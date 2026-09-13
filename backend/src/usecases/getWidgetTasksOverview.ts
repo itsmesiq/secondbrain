@@ -1,10 +1,10 @@
-import { isFullPage, iteratePaginatedAPI } from '@notionhq/client';
+import { isFullPage } from '@notionhq/client';
 import { and, eq } from 'drizzle-orm';
 
+import { NotionAdapter } from '../adapters/notion/notion.adapter.js';
 import { db } from '../db/index.js';
 import { account } from '../db/schema.js';
 import { DataSourceNotFoundError, NotionNotConnectedError } from '../errors/indes.js';
-import { createNotionClient } from '../lib/notion.js';
 
 interface GetTaskOverview {
     userId: string;
@@ -23,17 +23,11 @@ export async function getWidgetTasksOverview({ userId }: GetTaskOverview) {
         throw new NotionNotConnectedError();
     }
 
-    const notion = createNotionClient(accessToken);
+    const notion = new NotionAdapter(accessToken);
 
-    const response = await notion.search({
-        query: 'Tarefas',
-        filter: {
-            property: 'object',
-            value: 'data_source',
-        },
-    });
+    const dataSources = await notion.searchDataSources('Tarefas');
 
-    const dataSource = response.results.find(result => result.object === 'data_source');
+    const dataSource = dataSources.find(result => result.object === 'data_source');
 
     if (!dataSource) {
         throw new DataSourceNotFoundError('Tarefas');
@@ -46,9 +40,7 @@ export async function getWidgetTasksOverview({ userId }: GetTaskOverview) {
     let pending = 0;
     const completionDates: string[] = [];
 
-    for await (const result of iteratePaginatedAPI(notion.dataSources.query, {
-        data_source_id: dataSourceId,
-    })) {
+    for await (const result of notion.queryDataSource(dataSourceId)) {
         if (!isFullPage(result)) {
             continue;
         }

@@ -1,9 +1,9 @@
 import { and, eq } from 'drizzle-orm';
 
+import { NotionAdapter } from '../adapters/notion/notion.adapter.js';
 import { db } from '../db/index.js';
 import { account } from '../db/schema.js';
 import { DataSourceNotFoundError, NotionNotConnectedError } from '../errors/indes.js';
-import { createNotionClient } from '../lib/notion.js';
 
 interface CreateWidgetTask {
     userId: string;
@@ -36,17 +36,11 @@ export async function createWidgetTask({
         throw new NotionNotConnectedError();
     }
 
-    const notion = createNotionClient(accessToken);
+    const notion = new NotionAdapter(accessToken);
 
-    const response = await notion.search({
-        query: 'Tarefas',
-        filter: {
-            property: 'object',
-            value: 'data_source',
-        },
-    });
+    const response = await notion.searchDataSources('Tarefas');
 
-    const dataSource = response.results.find(result => result.object === 'data_source');
+    const dataSource = response.find(result => result.object === 'data_source');
 
     if (!dataSource) {
         throw new DataSourceNotFoundError('Tarefas');
@@ -110,12 +104,7 @@ export async function createWidgetTask({
         }),
     };
 
-    const page = await notion.pages.create({
-        parent: {
-            data_source_id: dataSource.id,
-        },
-        properties,
-    });
+    const page = await notion.createPage(dataSource.id, properties);
 
     return {
         id: page.id,
