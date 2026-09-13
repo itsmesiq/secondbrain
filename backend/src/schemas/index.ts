@@ -87,6 +87,7 @@ export const CreateTaskSchema = z.object({
     dueDate: z.iso.date().optional(),
     specializationIds: z.array(z.string()).optional(),
     objectiveId: z.string().nullable().optional(),
+    projectId: z.string().nullable().optional(),
 });
 
 export type CreateTask = z.infer<typeof CreateTaskSchema>;
