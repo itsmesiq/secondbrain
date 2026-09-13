@@ -1,5 +1,7 @@
 import { z } from 'zod';
 
+import { TaskSchema } from './etherea/index.js';
+
 export const ErrorSchema = z.object({
     error: z.string(),
     message: z.string(),
@@ -58,64 +60,50 @@ export const WidgetClockSchema = z.object({
 
 export type WidgetClock = z.infer<typeof WidgetClockSchema>;
 
-export const WidgetTasksOverviewSchema = z.object({
-    total: z.number(),
-    completed: z.number(),
-    pending: z.number(),
-    completionRate: z.number(),
-    currentStreak: z.number(),
+export const GetTasksQuerySchema = z.object({
+    date: z.iso.date().optional(),
+    projectId: z.string().optional(),
 });
 
-export type WidgetTasksOverview = z.infer<typeof WidgetTasksOverviewSchema>;
+export type GetTasksQuery = z.infer<typeof GetTasksQuerySchema>;
 
-export const WidgetTaskSchema = z.object({
+export const GetTasksResponseSchema = z.object({
+    overview: z.object({
+        total: z.number(),
+        completed: z.number(),
+        pending: z.number(),
+        completionRate: z.number(),
+        currentStreak: z.number(),
+    }),
+    tasks: z.array(TaskSchema),
+});
+
+export type GetTasksResponse = z.infer<typeof GetTasksResponseSchema>;
+
+export const CreateTaskSchema = z.object({
+    name: z.string().min(1),
+    priority: z.string().optional(),
+    difficulty: z.string().optional(),
+    dueDate: z.iso.date().optional(),
+    specializationIds: z.array(z.string()).optional(),
+    objectiveId: z.string().nullable().optional(),
+});
+
+export type CreateTask = z.infer<typeof CreateTaskSchema>;
+
+export const CreateTaskResponseSchema = z.object({
     id: z.string(),
-    title: z.string(),
-    description: z.string().nullable(),
-    dueDate: z.string().nullable(),
-    category: z.string().nullable(),
-    project: z
-        .object({
-            id: z.string(),
-            name: z.string(),
-        })
-        .nullable(),
-    status: z.string(),
-    priority: z.string().nullable(),
     url: z.url(),
 });
 
-export const WidgetProjectSchema = z.object({
-    id: z.string(),
-    name: z.string(),
+export type CreateTaskResponse = z.infer<typeof CreateTaskResponseSchema>;
+
+export const UpdateTaskSchema = z.object({
+    status: z.string().optional(),
 });
 
-export const WidgetTasksSchema = z.object({
-    tasks: z.array(WidgetTaskSchema),
-    projects: z.array(WidgetProjectSchema),
-});
+export type UpdateTask = z.infer<typeof UpdateTaskSchema>;
 
-export const WidgetTasksQuerySchema = z.object({
-    date: z.iso.date(),
-    projectId: z.string().optional(),
-});
+export const UpdateTaskResponseSchema = TaskSchema;
 
-export type WidgetTask = z.infer<typeof WidgetTaskSchema>;
-export type WidgetProject = z.infer<typeof WidgetProjectSchema>;
-export type WidgetTasks = z.infer<typeof WidgetTasksSchema>;
-
-export const CreateWidgetTaskSchema = z.object({
-    title: z.string().min(1),
-    description: z.string().optional(),
-    projectId: z.string().optional(),
-    category: z.string().optional(),
-    dueDate: z.iso.date().optional(),
-    priority: z.string().optional(),
-});
-
-export const CreateWidgetTaskResponseSchema = z.object({
-    id: z.string(),
-    url: z.string(),
-});
-
-export type CreateWidgetTask = z.infer<typeof CreateWidgetTaskSchema>;
+export type UpdateTaskResponse = z.infer<typeof UpdateTaskResponseSchema>;
