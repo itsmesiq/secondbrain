@@ -1,10 +1,4 @@
-import { Client, PageObjectResponse } from '@notionhq/client';
-
-export function createNotionClient(accessToken: string) {
-    return new Client({
-        auth: accessToken,
-    });
-}
+import { PageObjectResponse } from '@notionhq/client';
 
 export function getNotionPageTitle(page: PageObjectResponse) {
     const titleProperty = Object.values(page.properties).find(

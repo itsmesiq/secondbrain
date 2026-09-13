@@ -1,12 +1,11 @@
-import { isFullPage } from '@notionhq/client';
 import { and, eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 
+import { NotionAdapter } from '../adapters/notion/notion.adapter.js';
 import { db } from '../db/index.js';
 import { account } from '../db/schema.js';
 import { getNotionPageTitle } from '../lib/notion.js';
-import { createNotionClient } from '../lib/notion.js';
 import { requireAuth } from '../plugins/requireAuth.js';
 import { ErrorSchema, NotionPagesSchema, NotionStatusSchema } from '../schemas/index.js';
 
@@ -69,17 +68,12 @@ export async function notionRoutes(app: FastifyInstance) {
                 });
             }
 
-            const notion = createNotionClient(accessToken);
+            const notion = new NotionAdapter(accessToken);
 
-            const response = await notion.search({
-                filter: {
-                    property: 'object',
-                    value: 'page',
-                },
-            });
+            const pages = await notion.searchPages();
 
             return {
-                pages: response.results.filter(isFullPage).map(page => ({
+                pages: pages.map(page => ({
                     id: page.id,
                     title: getNotionPageTitle(page),
                     url: page.url,

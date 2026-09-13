@@ -1,10 +1,9 @@
-import { isFullPage, iteratePaginatedAPI } from '@notionhq/client';
 import { and, eq } from 'drizzle-orm';
 
+import { NotionAdapter } from '../adapters/notion/notion.adapter.js';
 import { db } from '../db/index.js';
 import { account } from '../db/schema.js';
 import { DataSourceNotFoundError, NotionNotConnectedError } from '../errors/indes.js';
-import { createNotionClient } from '../lib/notion.js';
 
 interface GetWidgetTasks {
     userId: string;
@@ -43,19 +42,13 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
         throw new NotionNotConnectedError();
     }
 
-    const notion = createNotionClient(accessToken);
+    const notion = new NotionAdapter(accessToken);
 
     const projectsCache = new Map<string, { id: string; name: string } | null>();
 
-    const response = await notion.search({
-        query: 'Tarefas',
-        filter: {
-            property: 'object',
-            value: 'data_source',
-        },
-    });
+    const dataSources = await notion.searchDataSources('Tarefas');
 
-    const dataSource = response.results.find(result => result.object === 'data_source');
+    const dataSource = dataSources.find(result => result.object === 'data_source');
 
     if (!dataSource) {
         throw new DataSourceNotFoundError('Tarefas');
@@ -65,8 +58,7 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
 
     const tasks = [];
 
-    for await (const result of iteratePaginatedAPI(notion.dataSources.query, {
-        data_source_id: dataSourceId,
+    for await (const result of notion.queryDataSource(dataSourceId, {
         filter: {
             property: 'Prazo',
             date: {
@@ -74,10 +66,6 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
             },
         },
     })) {
-        if (!isFullPage(result)) {
-            continue;
-        }
-
         const parentItem = result.properties['Item principal'];
 
         if (parentItem?.type === 'relation' && parentItem.relation.length > 0) {
@@ -121,9 +109,7 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
             if (projectsCache.has(projectIdFromTask)) {
                 project = projectsCache.get(projectIdFromTask) ?? null;
             } else {
-                const projectPage = await notion.pages.retrieve({
-                    page_id: projectIdFromTask,
-                });
+                const projectPage = await notion.retrievePage(projectIdFromTask);
 
                 if ('properties' in projectPage) {
                     const titleProperty = Object.values(projectPage.properties).find(
