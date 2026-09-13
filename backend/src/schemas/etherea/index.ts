@@ -82,3 +82,22 @@ export const RewardSchema = z.object({
 });
 
 export type Reward = z.infer<typeof RewardSchema>;
+
+export const TaskSchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    status: z.string(),
+    priority: z.string(),
+    difficulty: z.string(),
+    dueDate: z.string().nullable(),
+    completedAt: z.string().nullable(),
+    specializationIds: z.array(z.string()),
+    objectiveId: z.string().nullable(),
+    projectId: z.string().nullable(),
+    xpEarned: z.number(),
+    goldEarned: z.number(),
+    rewardProcessed: z.boolean(),
+    createdAt: z.string(),
+});
+
+export type Task = z.infer<typeof TaskSchema>;
