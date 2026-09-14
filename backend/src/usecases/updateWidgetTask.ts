@@ -22,9 +22,26 @@ export async function updateWidgetTask({ userId, taskId, status }: UpdateWidgetT
     }
 
     if (status === 'Concluído') {
-        await processTaskReward({
+        const reward = await processTaskReward({
             userId,
             taskId,
+        });
+
+        await notion.updatePage(taskId, {
+            'Completed At': {
+                date: {
+                    start: new Date().toISOString(),
+                },
+            },
+            'XP Earned': {
+                number: reward.xp,
+            },
+            'Gold Earned': {
+                number: reward.gold,
+            },
+            'Reward Processed': {
+                checkbox: true,
+            },
         });
     }
 
