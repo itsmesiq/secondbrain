@@ -42,7 +42,7 @@ export async function widgetRoutes(app: FastifyInstance) {
         preHandler: requireWidgetAuth('tasks'),
         schema: {
             operationId: 'getWidgetTasks',
-            summary: 'Get tasks for the authenticated user, optionally filtered by project.',
+            summary: 'Get tasks for the authenticated user',
             tags: ['Widgets'],
             querystring: GetTasksQuerySchema,
             response: {
