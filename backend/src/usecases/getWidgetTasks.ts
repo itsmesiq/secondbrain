@@ -1,9 +1,15 @@
-import { and, eq } from 'drizzle-orm';
-
-import { NotionAdapter } from '../adapters/notion/notion.adapter.js';
-import { db } from '../db/index.js';
-import { account } from '../db/schema.js';
-import { DataSourceNotFoundError, NotionNotConnectedError } from '../errors/indes.js';
+import { DataSourceNotFoundError } from '../errors/index.js';
+import {
+    getCheckbox,
+    getDate,
+    getNotionAdapter,
+    getNumber,
+    getRelationId,
+    getRelationIds,
+    getSelect,
+    getStatus,
+    getTitle,
+} from '../lib/notion.js';
 
 interface GetWidgetTasks {
     userId: string;
@@ -11,148 +17,105 @@ interface GetWidgetTasks {
     projectId?: string;
 }
 
-function getPropertyText(property: any): string | null {
-    if (property?.type !== 'rich_text' && property?.type !== 'title') {
-        return null;
-    }
-
-    const items = property.type === 'title' ? property.title : property.rich_text;
-
-    return items?.map((item: any) => item.plain_text).join('') || null;
+function mapTask(result: any) {
+    return {
+        id: result.id,
+        name: getTitle(result.properties.Nome),
+        status: getStatus(result.properties.Status),
+        priority: getSelect(result.properties.Priority),
+        difficulty: getSelect(result.properties.Difficulty),
+        dueDate: getDate(result.properties['Due Date']),
+        completedAt: getDate(result.properties['Completed At']),
+        specializationIds: getRelationIds(result.properties.Specializations),
+        objectiveId: getRelationId(result.properties.Objective),
+        projectId: getRelationId(result.properties.Project),
+        xpEarned: getNumber(result.properties['XP Earned']),
+        goldEarned: getNumber(result.properties['Gold Earned']),
+        rewardProcessed: getCheckbox(result.properties['Reward Processed']),
+        createdAt: result.properties['Created At']?.created_time ?? result.created_time,
+    };
 }
 
-function getProjectName(property: any): string | null {
-    if (property?.type !== 'relation' || property.relation.length === 0) {
-        return null;
-    }
+function calculateOverview(tasks: ReturnType<typeof mapTask>[]) {
+    const total = tasks.length;
 
-    return property.relation[0].id;
-}
+    const completed = tasks.filter(task => task.status === 'Concluído').length;
 
-export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks) {
-    const notionAccount = await db
-        .select({ accessToken: account.accessToken })
-        .from(account)
-        .where(and(eq(account.userId, userId), eq(account.providerId, 'notion')))
-        .limit(1);
+    const pending = tasks.filter(task => task.status !== 'Concluído').length;
 
-    const accessToken = notionAccount[0]?.accessToken;
+    const completionRate = total > 0 ? Math.round((completed / total) * 100) : 0;
 
-    if (!accessToken) {
-        throw new NotionNotConnectedError();
-    }
+    const completionDates = new Set(
+        tasks.filter(task => task.completedAt).map(task => task.completedAt!.slice(0, 10)),
+    );
 
-    const notion = new NotionAdapter(accessToken);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-    const projectsCache = new Map<string, { id: string; name: string } | null>();
+    const todayKey = today.toISOString().slice(0, 10);
 
-    const dataSources = await notion.searchDataSources('Tarefas');
+    const yesterday = new Date(today);
+    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
 
-    const dataSource = dataSources.find(result => result.object === 'data_source');
+    const yesterdayKey = yesterday.toISOString().slice(0, 10);
 
-    if (!dataSource) {
-        throw new DataSourceNotFoundError('Tarefas');
-    }
+    let streak = 0;
 
-    const dataSourceId = dataSource.id;
+    const streakStart = completionDates.has(todayKey)
+        ? today
+        : completionDates.has(yesterdayKey)
+          ? yesterday
+          : null;
 
-    const tasks = [];
+    if (streakStart) {
+        const currentDate = new Date(streakStart);
 
-    for await (const result of notion.queryDataSource(dataSourceId, {
-        filter: {
-            property: 'Prazo',
-            date: {
-                equals: date,
-            },
-        },
-    })) {
-        const parentItem = result.properties['Item principal'];
-
-        if (parentItem?.type === 'relation' && parentItem.relation.length > 0) {
-            continue;
-        }
-
-        const title = getPropertyText(result.properties.Nome) ?? 'Sem título';
-        const description = getPropertyText(result.properties.Descrição);
-
-        const dueDate =
-            result.properties.Prazo?.type === 'date'
-                ? (result.properties.Prazo.date?.start ?? null)
-                : null;
-
-        const category =
-            result.properties.Área?.type === 'select'
-                ? (result.properties.Área.select?.name ?? null)
-                : null;
-
-        const status =
-            result.properties.Status?.type === 'status'
-                ? (result.properties.Status.status?.name ?? '')
-                : '';
-
-        const priority =
-            result.properties.Prioridade?.type === 'select'
-                ? (result.properties.Prioridade.select?.name ?? null)
-                : null;
-
-        const projectRelation = result.properties.Projetos;
-
-        const projectIdFromTask = getProjectName(projectRelation);
-
-        if (projectId && projectIdFromTask !== projectId) {
-            continue;
-        }
-
-        let project = null;
-
-        if (projectIdFromTask) {
-            if (projectsCache.has(projectIdFromTask)) {
-                project = projectsCache.get(projectIdFromTask) ?? null;
-            } else {
-                const projectPage = await notion.retrievePage(projectIdFromTask);
-
-                if ('properties' in projectPage) {
-                    const titleProperty = Object.values(projectPage.properties).find(
-                        property => property.type === 'title',
-                    );
-
-                    if (titleProperty?.type === 'title') {
-                        project = {
-                            id: projectIdFromTask,
-                            name:
-                                titleProperty.title.map(item => item.plain_text).join('') ||
-                                'Sem título',
-                        };
-                    }
-                }
-
-                projectsCache.set(projectIdFromTask, project);
-            }
-        }
-
-        tasks.push({
-            id: result.id,
-            title,
-            description,
-            dueDate,
-            category,
-            project,
-            status,
-            priority,
-            url: result.url,
-        });
-    }
-
-    const projectsMap = new Map<string, { id: string; name: string }>();
-
-    for (const task of tasks) {
-        if (task.project) {
-            projectsMap.set(task.project.id, task.project);
+        while (completionDates.has(currentDate.toISOString().slice(0, 10))) {
+            streak++;
+            currentDate.setUTCDate(currentDate.getUTCDate() - 1);
         }
     }
 
     return {
+        total,
+        completed,
+        pending,
+        completionRate,
+        currentStreak: streak,
+    };
+}
+
+export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks) {
+    const notion = await getNotionAdapter(userId);
+
+    const dataSources = await notion.searchDataSources('Tasks');
+
+    const dataSource = dataSources.find(result => result.object === 'data_source');
+
+    if (!dataSource) {
+        throw new DataSourceNotFoundError('Tasks');
+    }
+
+    const allTasks = [];
+
+    for await (const result of notion.queryDataSource(dataSource.id)) {
+        allTasks.push(mapTask(result));
+    }
+
+    const tasks = allTasks.filter(task => {
+        if (date && task.dueDate?.slice(0, 10) !== date) {
+            return false;
+        }
+
+        if (projectId && task.projectId !== projectId) {
+            return false;
+        }
+
+        return true;
+    });
+
+    return {
+        overview: calculateOverview(tasks),
         tasks,
-        projects: Array.from(projectsMap.values()),
     };
 }
