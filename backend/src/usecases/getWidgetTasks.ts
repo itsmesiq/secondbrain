@@ -10,11 +10,14 @@ import {
     getStatus,
     getTitle,
 } from '../lib/notion.js';
+import { createSpecializationAreaMap } from '../services/etherea/specializations.service.js';
 
 interface GetWidgetTasks {
     userId: string;
-    date: string;
+    status: 'active' | 'completed';
+    date?: string;
     projectId?: string;
+    areaId?: string;
 }
 
 function mapTask(result: any) {
@@ -85,24 +88,60 @@ function calculateOverview(tasks: ReturnType<typeof mapTask>[]) {
     };
 }
 
-export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks) {
+export async function getWidgetTasks({ userId, status, date, projectId, areaId }: GetWidgetTasks) {
     const notion = await getNotionAdapter(userId);
 
-    const dataSources = await notion.searchDataSources('Tasks');
+    const tasksDataSources = await notion.searchDataSources('Tasks');
 
-    const dataSource = dataSources.find(result => result.object === 'data_source');
+    const taskDataSource = tasksDataSources.find(result => result.object === 'data_source');
 
-    if (!dataSource) {
+    if (!taskDataSource) {
         throw new DataSourceNotFoundError('Tasks');
     }
 
     const allTasks = [];
 
-    for await (const result of notion.queryDataSource(dataSource.id)) {
+    for await (const result of notion.queryDataSource(taskDataSource.id)) {
         allTasks.push(mapTask(result));
     }
 
+    const specializationDataSources = await notion.searchDataSources('Specializations');
+
+    const specializationDataSource = specializationDataSources.find(
+        result => result.object === 'data_source',
+    );
+
+    if (!specializationDataSource) {
+        throw new DataSourceNotFoundError('Specializations');
+    }
+
+    const specializations = [];
+
+    for await (const result of notion.queryDataSource(specializationDataSource.id)) {
+        specializations.push({
+            id: result.id,
+            name: getTitle(result.properties.Nome),
+            areaId: getRelationId(result.properties.Area)!,
+        });
+    }
+
+    const specializationAreaMap = createSpecializationAreaMap(specializations);
+
+    const overviewTasks = allTasks.filter(task => task.status !== 'Cancelada');
+
     const tasks = allTasks.filter(task => {
+        if (task.status === 'Cancelada') {
+            return false;
+        }
+
+        if (status === 'active' && task.status === 'Concluído') {
+            return false;
+        }
+
+        if (status === 'completed' && task.status !== 'Concluído') {
+            return false;
+        }
+
         if (date && task.dueDate?.slice(0, 10) !== date) {
             return false;
         }
@@ -111,11 +150,21 @@ export async function getWidgetTasks({ userId, date, projectId }: GetWidgetTasks
             return false;
         }
 
+        if (areaId) {
+            const belongsToArea = task.specializationIds.some(
+                specializationId => specializationAreaMap.get(specializationId) === areaId,
+            );
+
+            if (!belongsToArea) {
+                return false;
+            }
+        }
+
         return true;
     });
 
     return {
-        overview: calculateOverview(tasks),
+        overview: calculateOverview(overviewTasks),
         tasks,
     };
 }

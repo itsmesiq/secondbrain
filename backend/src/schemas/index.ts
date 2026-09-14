@@ -61,8 +61,10 @@ export const WidgetClockSchema = z.object({
 export type WidgetClock = z.infer<typeof WidgetClockSchema>;
 
 export const GetTasksQuerySchema = z.object({
+    status: z.enum(['active', 'completed']),
     date: z.iso.date().optional(),
     projectId: z.string().optional(),
+    areaId: z.string().optional(),
 });
 
 export type GetTasksQuery = z.infer<typeof GetTasksQuerySchema>;
