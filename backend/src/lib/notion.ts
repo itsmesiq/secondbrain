@@ -77,6 +77,14 @@ export function getCheckbox(property: any): boolean {
     return property.checkbox;
 }
 
+export function getCreatedTime(property: any): string {
+    if (property?.type !== 'created_time') {
+        return '';
+    }
+
+    return property.created_time;
+}
+
 export async function getNotionAdapter(userId: string) {
     const notionAccount = await db
         .select({ accessToken: account.accessToken })
