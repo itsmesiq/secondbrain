@@ -29,7 +29,7 @@ export async function createWidgetTask({
     const dataSource = dataSources.find(result => result.object === 'data_source');
 
     if (!dataSource) {
-        throw new DataSourceNotFoundError('Tarefas');
+        throw new DataSourceNotFoundError('Tasks');
     }
 
     const properties = {
