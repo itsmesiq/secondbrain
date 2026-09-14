@@ -53,7 +53,7 @@ export const XPRuleSchema = z.object({
     difficulty: z.string().nullable(),
     baseXP: z.number(),
     difficultyBonus: z.number(),
-    objectivePriority: z.number(),
+    objectivePriority: z.string().nullable(),
     objectiveBonus: z.number(),
     streakMultiplier: z.number(),
     streakMilestone: z.number(),
