@@ -2,12 +2,12 @@ import type { XPRule } from '../../schemas/etherea/index.js';
 
 interface CalculateTaskReward {
     rules: XPRule[];
-    difficulty: string;
-    objectivePriority: string;
+    difficulty?: string;
+    objectivePriority?: string;
 }
 
 export function calculateTaskReward({ rules, difficulty, objectivePriority }: CalculateTaskReward) {
-    const taskRules = rules.filter(rule => rule.activityType === 'task');
+    const taskRules = rules.filter(rule => rule.activityType === 'Task');
 
     if (taskRules.length === 0) {
         throw new Error('No Task XP rules were found');
