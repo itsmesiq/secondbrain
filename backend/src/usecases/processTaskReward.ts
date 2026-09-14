@@ -1,5 +1,7 @@
-import { getNotionAdapter, getRelationId, getSelect } from '../lib/notion.js';
+import { getNotionAdapter, getRelationId, getSelect, getTitle } from '../lib/notion.js';
 import { calculateTaskReward } from '../services/etherea/rewards.service.js';
+import { createProgressHistory } from './createProgressHistory.js';
+import { getProgressHistory } from './getProgressHistory.js';
 import { getXPRules } from './getXPRules.js';
 
 interface ProcessTaskReward {
@@ -31,9 +33,31 @@ export async function processTaskReward({ userId, taskId }: ProcessTaskReward) {
 
     const rules = await getXPRules(userId);
 
-    return calculateTaskReward({
+    const reward = calculateTaskReward({
         rules,
         difficulty: difficulty || undefined,
         objectivePriority: objectivePriority || undefined,
     });
+
+    const history = await getProgressHistory(userId);
+    const existingReward = history.find(item => item.taskId === taskId);
+
+    if (existingReward) {
+        return {
+            xp: existingReward.xp,
+            gold: existingReward.gold,
+        };
+    }
+
+    const taskName = getTitle(task.properties.Nome);
+
+    await createProgressHistory({
+        userId,
+        name: taskName,
+        taskId,
+        xp: reward.xp,
+        gold: reward.gold,
+    });
+
+    return reward;
 }
