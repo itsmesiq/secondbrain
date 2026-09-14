@@ -146,3 +146,14 @@ export const ProjectSchema = z.object({
 });
 
 export type Project = z.infer<typeof ProjectSchema>;
+
+export const ProgressHistorySchema = z.object({
+    id: z.string(),
+    name: z.string(),
+    taskId: z.string(),
+    xp: z.number(),
+    gold: z.number(),
+    createdAt: z.string(),
+});
+
+export type ProgressHistory = z.infer<typeof ProgressHistorySchema>;
