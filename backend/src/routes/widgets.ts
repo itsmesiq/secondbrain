@@ -8,10 +8,14 @@ import {
     ErrorSchema,
     GetTasksQuerySchema,
     GetTasksResponseSchema,
+    UpdateTaskParamsSchema,
+    UpdateTaskResponseSchema,
+    UpdateTaskSchema,
     WidgetClockSchema,
 } from '../schemas/index.js';
 import { createWidgetTask } from '../usecases/createWidgetTask.js';
 import { getWidgetTasks } from '../usecases/getWidgetTasks.js';
+import { updateWidgetTask } from '../usecases/updateWidgetTask.js';
 
 export async function widgetRoutes(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().route({
@@ -83,6 +87,35 @@ export async function widgetRoutes(app: FastifyInstance) {
                 ...request.body,
             });
             return reply.status(201).send(result);
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'PATCH',
+        url: '/api/widgets/tasks/:id',
+        preHandler: requireWidgetAuth('tasks'),
+        schema: {
+            operationId: 'updateWidgetTask',
+            summary: 'Update a task for the authenticated user.',
+            tags: ['Widgets'],
+            params: UpdateTaskParamsSchema,
+            body: UpdateTaskSchema,
+            response: {
+                200: UpdateTaskResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            const task = await updateWidgetTask({
+                userId: request.user!.id,
+                taskId: request.params.id,
+                ...request.body,
+            });
+
+            return task;
         },
     });
 }
