@@ -110,3 +110,9 @@ export type UpdateTask = z.infer<typeof UpdateTaskSchema>;
 export const UpdateTaskResponseSchema = TaskSchema;
 
 export type UpdateTaskResponse = z.infer<typeof UpdateTaskResponseSchema>;
+
+export const UpdateTaskParamsSchema = z.object({
+    id: z.string(),
+});
+
+export type UpdateTaskParams = z.infer<typeof UpdateTaskParamsSchema>;

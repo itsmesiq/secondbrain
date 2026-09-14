@@ -1,4 +1,5 @@
-import { getNotionAdapter } from '../lib/notion.js';
+import { getNotionAdapter, getStatus } from '../lib/notion.js';
+import { getWidgetTasks } from './getWidgetTasks.js';
 import { processTaskReward } from './processTaskReward.js';
 
 interface UpdateWidgetTask {
@@ -27,5 +28,24 @@ export async function updateWidgetTask({ userId, taskId, status }: UpdateWidgetT
         });
     }
 
-    return notion.retrievePage(taskId);
+    const updatedPage = await notion.retrievePage(taskId);
+
+    if (!('properties' in updatedPage)) {
+        throw new Error('Task not found');
+    }
+
+    const updatedStatus = getStatus(updatedPage.properties.Status);
+
+    const result = await getWidgetTasks({
+        userId,
+        status: updatedStatus === 'Concluído' ? 'completed' : 'active',
+    });
+
+    const task = result.tasks.find(task => task.id === taskId);
+
+    if (!task) {
+        throw new Error('Task not found');
+    }
+
+    return task;
 }
