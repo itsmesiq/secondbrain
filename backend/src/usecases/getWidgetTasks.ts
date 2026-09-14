@@ -127,41 +127,61 @@ export async function getWidgetTasks({ userId, status, date, projectId, areaId }
 
     const specializationAreaMap = createSpecializationAreaMap(specializations);
 
+    const specializationMap = new Map(
+        specializations.map(specialization => [
+            specialization.id,
+            {
+                id: specialization.id,
+                name: specialization.name,
+            },
+        ]),
+    );
+
     const overviewTasks = allTasks.filter(task => task.status !== 'Cancelada');
 
-    const tasks = allTasks.filter(task => {
-        if (task.status === 'Cancelada') {
-            return false;
-        }
-
-        if (status === 'active' && task.status === 'Concluído') {
-            return false;
-        }
-
-        if (status === 'completed' && task.status !== 'Concluído') {
-            return false;
-        }
-
-        if (date && task.dueDate?.slice(0, 10) !== date) {
-            return false;
-        }
-
-        if (projectId && task.projectId !== projectId) {
-            return false;
-        }
-
-        if (areaId) {
-            const belongsToArea = task.specializationIds.some(
-                specializationId => specializationAreaMap.get(specializationId) === areaId,
-            );
-
-            if (!belongsToArea) {
+    const tasks = allTasks
+        .filter(task => {
+            if (task.status === 'Cancelada') {
                 return false;
             }
-        }
 
-        return true;
-    });
+            if (status === 'active' && task.status === 'Concluído') {
+                return false;
+            }
+
+            if (status === 'completed' && task.status !== 'Concluído') {
+                return false;
+            }
+
+            if (date && task.dueDate?.slice(0, 10) !== date) {
+                return false;
+            }
+
+            if (projectId && task.projectId !== projectId) {
+                return false;
+            }
+
+            if (areaId) {
+                const belongsToArea = task.specializationIds.some(
+                    specializationId => specializationAreaMap.get(specializationId) === areaId,
+                );
+
+                if (!belongsToArea) {
+                    return false;
+                }
+            }
+
+            return true;
+        })
+        .map(task => ({
+            ...task,
+            specializations: task.specializationIds
+                .map(id => specializationMap.get(id))
+                .filter(
+                    (specialization): specialization is { id: string; name: string } =>
+                        specialization !== undefined,
+                ),
+        }));
 
     return {
         overview: calculateOverview(overviewTasks),

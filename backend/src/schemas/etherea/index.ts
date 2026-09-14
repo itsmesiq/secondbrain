@@ -92,6 +92,12 @@ export const TaskSchema = z.object({
     dueDate: z.string().nullable(),
     completedAt: z.string().nullable(),
     specializationIds: z.array(z.string()),
+    specializations: z.array(
+        z.object({
+            id: z.string(),
+            name: z.string(),
+        }),
+    ),
     objectiveId: z.string().nullable(),
     projectId: z.string().nullable(),
     xpEarned: z.number(),
