@@ -4,7 +4,7 @@ import { and, eq } from 'drizzle-orm';
 import { NotionAdapter } from '../adapters/notion/notion.adapter.js';
 import { db } from '../db/index.js';
 import { account } from '../db/schema.js';
-import { DataSourceNotFoundError, NotionNotConnectedError } from '../errors/indes.js';
+import { DataSourceNotFoundError, NotionNotConnectedError } from '../errors/index.js';
 
 interface GetTaskOverview {
     userId: string;

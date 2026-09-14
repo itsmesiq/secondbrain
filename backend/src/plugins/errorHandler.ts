@@ -5,7 +5,7 @@ import {
     DatabaseNotFoundError,
     DataSourceNotFoundError,
     NotionNotConnectedError,
-} from '../errors/indes.js';
+} from '../errors/index.js';
 
 export function registerErrorHandler(app: FastifyInstance) {
     app.setErrorHandler((error: FastifyError, request, reply) => {
