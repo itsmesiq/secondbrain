@@ -1,46 +1,32 @@
-import { and, eq } from 'drizzle-orm';
-
-import { NotionAdapter } from '../adapters/notion/notion.adapter.js';
-import { db } from '../db/index.js';
-import { account } from '../db/schema.js';
-import { DataSourceNotFoundError, NotionNotConnectedError } from '../errors/index.js';
+import { DataSourceNotFoundError } from '../errors/index.js';
+import { getNotionAdapter } from '../lib/notion.js';
 
 interface CreateWidgetTask {
     userId: string;
-    title: string;
-    description?: string;
-    projectId?: string;
-    category?: string;
-    dueDate?: string;
+    name: string;
     priority?: string;
+    difficulty?: string;
+    dueDate?: string;
+    specializationIds?: string[];
+    objectiveId?: string | null;
+    projectId?: string | null;
 }
 
 export async function createWidgetTask({
     userId,
-    title,
-    description,
-    projectId,
-    category,
-    dueDate,
+    name,
     priority,
+    difficulty,
+    dueDate,
+    specializationIds,
+    objectiveId,
+    projectId,
 }: CreateWidgetTask) {
-    const notionAccount = await db
-        .select({ accessToken: account.accessToken })
-        .from(account)
-        .where(and(eq(account.userId, userId), eq(account.providerId, 'notion')))
-        .limit(1);
+    const notion = await getNotionAdapter(userId);
 
-    const accessToken = notionAccount[0]?.accessToken;
+    const dataSources = await notion.searchDataSources('Tasks');
 
-    if (!accessToken) {
-        throw new NotionNotConnectedError();
-    }
-
-    const notion = new NotionAdapter(accessToken);
-
-    const response = await notion.searchDataSources('Tarefas');
-
-    const dataSource = response.find(result => result.object === 'data_source');
+    const dataSource = dataSources.find(result => result.object === 'data_source');
 
     if (!dataSource) {
         throw new DataSourceNotFoundError('Tarefas');
@@ -51,50 +37,55 @@ export async function createWidgetTask({
             title: [
                 {
                     text: {
-                        content: title,
+                        content: name,
                     },
                 },
             ],
         },
         Status: {
             status: {
-                name: '📥 Inbox',
+                name: 'Não iniciada',
             },
         },
-        ...(description && {
-            Descrição: {
-                rich_text: [
-                    {
-                        text: {
-                            content: description,
-                        },
-                    },
-                ],
-            },
-        }),
-        ...(category && {
-            Área: {
-                select: {
-                    name: category,
-                },
-            },
-        }),
-        ...(dueDate && {
-            Prazo: {
-                date: {
-                    start: dueDate,
-                },
-            },
-        }),
         ...(priority && {
-            Prioridade: {
+            Priority: {
                 select: {
                     name: priority,
                 },
             },
         }),
+        ...(difficulty && {
+            Difficulty: {
+                select: {
+                    name: difficulty,
+                },
+            },
+        }),
+        ...(dueDate && {
+            'Due Date': {
+                date: {
+                    start: dueDate,
+                },
+            },
+        }),
+        ...(specializationIds?.length && {
+            Specializations: {
+                relation: specializationIds.map(id => ({
+                    id,
+                })),
+            },
+        }),
+        ...(objectiveId && {
+            Objective: {
+                relation: [
+                    {
+                        id: objectiveId,
+                    },
+                ],
+            },
+        }),
         ...(projectId && {
-            Projetos: {
+            Project: {
                 relation: [
                     {
                         id: projectId,
