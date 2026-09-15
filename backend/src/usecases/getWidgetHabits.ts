@@ -22,12 +22,12 @@ function mapHabit(result: any): Habit {
         id: result.id,
         name: getTitle(result.properties.Nome),
         frequency: getSelect(result.properties.Frequency),
-        specializationIds: getRelationIds(result.properties.Specializations),
+        specializationIds: getRelationIds(result.properties.Specialization),
         objectiveId: getRelationId(result.properties.Objective),
         active: getCheckbox(result.properties.Active),
         currentStreak: getNumber(result.properties['Current Streak']),
         bestStreak: getNumber(result.properties['Best Streak']),
-        lastCompletedAt: getDate(result.properties['Last Completed At']),
+        lastCompletedAt: getDate(result.properties['Last Completed']),
         createdAt: getCreatedTime(result),
     };
 }
