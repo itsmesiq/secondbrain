@@ -62,6 +62,7 @@ export async function widgetRoutes(app: FastifyInstance) {
             response: {
                 200: GetProfileResponseSchema,
                 401: ErrorSchema,
+                404: ErrorSchema,
                 500: ErrorSchema,
             },
         },
