@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { TaskSchema } from './etherea/index.js';
+import { HabitSchema, TaskSchema } from './etherea/index.js';
 
 export const ErrorSchema = z.object({
     error: z.string(),
@@ -116,3 +116,15 @@ export const UpdateTaskParamsSchema = z.object({
 });
 
 export type UpdateTaskParams = z.infer<typeof UpdateTaskParamsSchema>;
+
+export const GetHabitsQuerySchema = z.object({
+    active: z.coerce.boolean().optional(),
+});
+
+export type GetHabitsQuery = z.infer<typeof GetHabitsQuerySchema>;
+
+export const GetHabitsResponseSchema = z.object({
+    habits: z.array(HabitSchema),
+});
+
+export type GetHabitsResponse = z.infer<typeof GetHabitsResponseSchema>;
