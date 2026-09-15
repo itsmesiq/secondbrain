@@ -143,7 +143,7 @@ export default function TasksControllerPreview({ theme = 'dark', color = 'purple
         },
     ];
 
-    const [selectedArea, setSelectedArea] = useState('');
+    const [selectedStats, setSelectedStats] = useState('');
     const [priority, setPriority] = useState('');
 
     return (
@@ -298,8 +298,8 @@ export default function TasksControllerPreview({ theme = 'dark', color = 'purple
                                         <span className="font-sans text-sm font-medium">Área</span>
                                         <Dropdown
                                             options={areaOptions}
-                                            value={selectedArea}
-                                            onChange={setSelectedArea}
+                                            value={selectedStats}
+                                            onChange={setSelectedStats}
                                             placeholder="Selecione uma área"
                                         />
                                     </div>

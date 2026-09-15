@@ -46,7 +46,7 @@ export default function CreateTaskModal({
 
     const [title, setTitle] = useState('');
     const [selectedProject, setSelectedProject] = useState('');
-    const [selectedArea, setSelectedArea] = useState('');
+    const [selectedStats, setSelectedStats] = useState('');
     const [priority, setPriority] = useState('');
     const [dueDate, setDueDate] = useState(() => {
         return [
@@ -128,7 +128,7 @@ export default function CreateTaskModal({
                 data: {
                     title: title.trim(),
                     projectId: selectedProject || undefined,
-                    category: selectedArea || undefined,
+                    category: selectedStats || undefined,
                     priority: priority || undefined,
                     dueDate: dueDate || undefined,
                 },
@@ -192,8 +192,8 @@ export default function CreateTaskModal({
                             <span className="font-sans text-sm font-medium">Área</span>
                             <Dropdown
                                 options={areaOptions}
-                                value={selectedArea}
-                                onChange={setSelectedArea}
+                                value={selectedStats}
+                                onChange={setSelectedStats}
                                 placeholder="Selecione uma área"
                             />
                         </div>
