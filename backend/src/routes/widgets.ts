@@ -5,6 +5,8 @@ import { requireWidgetAuth } from '../plugins/requireWidgetAuth.js';
 import {
     CreateHabitCompletionParamsSchema,
     CreateHabitCompletionResponseSchema,
+    CreateHabitResponseSchema,
+    CreateHabitSchema,
     CreateTaskResponseSchema,
     CreateTaskSchema,
     ErrorSchema,
@@ -18,6 +20,7 @@ import {
     WidgetClockSchema,
 } from '../schemas/index.js';
 import { createHabitCompletion } from '../usecases/createHabitCompletion.js';
+import { createWidgetHabit } from '../usecases/createWidgetHabit.js';
 import { createWidgetTask } from '../usecases/createWidgetTask.js';
 import { getWidgetHabits } from '../usecases/getWidgetHabits.js';
 import { getWidgetTasks } from '../usecases/getWidgetTasks.js';
@@ -174,6 +177,33 @@ export async function widgetRoutes(app: FastifyInstance) {
                 habitId: request.params.id,
             });
             return reply.status(201).send(completion);
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/api/widgets/habits',
+        preHandler: requireWidgetAuth('habits'),
+        schema: {
+            operationId: 'createWidgetHabit',
+            summary: 'Create a new habit for the authenticated user.',
+            tags: ['Widgets'],
+            body: CreateHabitSchema,
+            response: {
+                201: CreateHabitResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async (request, reply) => {
+            const result = await createWidgetHabit({
+                userId: request.user!.id,
+                ...request.body,
+            });
+
+            return reply.status(201).send(result);
         },
     });
 }
