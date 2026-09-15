@@ -1,4 +1,4 @@
-import { DataSourceNotFoundError, ProfileNotFoundError } from '../errors/index.js';
+import { DataSourceNotFoundError, ProfileAlreadyExistsError } from '../errors/index.js';
 import {
     getCreatedTime,
     getFileUrl,
@@ -13,10 +13,11 @@ import type { Profile } from '../schemas/etherea/index.js';
 import { calculateLevel } from '../services/etherea/level.service.js';
 import { getLevels } from './getLevels.js';
 
-interface UpdateProfileProgress {
+interface CreateWidgetProfile {
     userId: string;
-    xp: number;
-    gold: number;
+    name: string;
+    avatar: string;
+    mysticOrder: string;
 }
 
 function mapProfile(result: any): Profile {
@@ -34,12 +35,14 @@ function mapProfile(result: any): Profile {
     };
 }
 
-export async function updateProfileProgress({
+export async function createWidgetProfile({
     userId,
-    xp,
-    gold,
-}: UpdateProfileProgress): Promise<Profile> {
+    name,
+    avatar,
+    mysticOrder,
+}: CreateWidgetProfile): Promise<Profile> {
     const notion = await getNotionAdapter(userId);
+
     const dataSources = await notion.searchDataSources('Profile');
     const dataSource = dataSources.find(
         result =>
@@ -52,69 +55,69 @@ export async function updateProfileProgress({
         throw new DataSourceNotFoundError('Profile');
     }
 
-    let profilePage;
+    const profileIterator = notion.queryDataSource(dataSource.id);
+    const firstProfile = await profileIterator.next();
 
-    for await (const result of notion.queryDataSource(dataSource.id)) {
-        profilePage = result;
-        break;
+    if (!firstProfile.done) {
+        throw new ProfileAlreadyExistsError();
     }
-
-    if (!profilePage) {
-        throw new ProfileNotFoundError();
-    }
-
-    const currentXP = getNumber(profilePage.properties.XP);
-    const currentGold = getNumber(profilePage.properties.Gold);
-    const previousLevel = getNumber(profilePage.properties.Level);
-
-    const totalXP = currentXP + xp;
 
     const levels = await getLevels(userId);
-    const currentLevel = calculateLevel(levels, totalXP);
+    const initialLevel = calculateLevel(levels, 0);
 
-    const reachedLevels = levels.filter(
-        level => level.level > previousLevel && level.level <= currentLevel.level,
-    );
-
-    const milestoneGold = reachedLevels
-        .filter(level => level.milestone)
-        .reduce((total, level) => total + level.reward, 0);
-
-    const totalGold = currentGold + gold + milestoneGold;
-
-    await notion.updatePage(profilePage.id, {
-        XP: {
-            number: totalXP,
+    const properties = {
+        Nome: {
+            title: [
+                {
+                    text: {
+                        content: name,
+                    },
+                },
+            ],
         },
-        Gold: {
-            number: totalGold,
+        Avatar: {
+            files: [
+                {
+                    type: 'external' as const,
+                    name: 'Avatar',
+                    external: {
+                        url: avatar,
+                    },
+                },
+            ],
+        },
+        'Mystic Order': {
+            select: {
+                name: mysticOrder,
+            },
         },
         Level: {
-            number: currentLevel.level,
+            number: initialLevel.level,
+        },
+        XP: {
+            number: 0,
+        },
+        Gold: {
+            number: 0,
         },
         Title: {
             rich_text: [
                 {
                     text: {
-                        content: currentLevel.name,
+                        content: initialLevel.name,
                     },
                 },
             ],
         },
+    };
+
+    const page = await notion.createPage(dataSource.id, properties);
+
+    await notion.updatePage(initialLevel.id, {
+        Active: {
+            checkbox: true,
+        },
     });
 
-    for (const level of reachedLevels) {
-        await notion.updatePage(level.id, {
-            Active: {
-                checkbox: true,
-            },
-        });
-    }
-
-    return {
-        ...mapProfile(profilePage),
-        xp: totalXP,
-        gold: totalGold,
-        level: currentLevel.level,
-    };
+    return mapProfile(page);
 }
