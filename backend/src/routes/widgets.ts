@@ -15,6 +15,7 @@ import {
     GetHabitsQuerySchema,
     GetHabitsResponseSchema,
     GetProfileResponseSchema,
+    GetStatsResponseSchema,
     GetTasksQuerySchema,
     GetTasksResponseSchema,
     UpdateTaskParamsSchema,
@@ -28,6 +29,7 @@ import { createWidgetProfile } from '../usecases/createWidgetProfile.js';
 import { createWidgetTask } from '../usecases/createWidgetTask.js';
 import { getWidgetHabits } from '../usecases/getWidgetHabits.js';
 import { getWidgetProfile } from '../usecases/getWidgetProfile.js';
+import { getWidgetStats } from '../usecases/getWidgetStats.js';
 import { getWidgetTasks } from '../usecases/getWidgetTasks.js';
 import { updateWidgetTask } from '../usecases/updateWidgetTask.js';
 
@@ -99,6 +101,26 @@ export async function widgetRoutes(app: FastifyInstance) {
             });
 
             return reply.status(201).send(profile);
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'GET',
+        url: '/api/widgets/stats',
+        preHandler: requireWidgetAuth('stats'),
+        schema: {
+            operationId: 'getWidgetStats',
+            summary: 'Get the stats widget data for the authenticated user.',
+            tags: ['Widgets'],
+            response: {
+                200: GetStatsResponseSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return getWidgetStats(request.user!.id);
         },
     });
 

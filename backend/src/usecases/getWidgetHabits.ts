@@ -22,7 +22,7 @@ function mapHabit(result: any): Habit {
         id: result.id,
         name: getTitle(result.properties.Nome),
         frequency: getSelect(result.properties.Frequency),
-        specializationIds: getRelationIds(result.properties.Specialization),
+        specializationIds: getRelationIds(result.properties.Specializations),
         objectiveId: getRelationId(result.properties.Objective),
         active: getCheckbox(result.properties.Active),
         currentStreak: getNumber(result.properties['Current Streak']),
