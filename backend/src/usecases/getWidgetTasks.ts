@@ -17,7 +17,7 @@ interface GetWidgetTasks {
     status: 'active' | 'completed';
     date?: string;
     projectId?: string;
-    areaId?: string;
+    statsId?: string;
 }
 
 function mapTask(result: any) {
@@ -90,7 +90,7 @@ function calculateOverview(tasks: ReturnType<typeof mapTask>[]) {
     };
 }
 
-export async function getWidgetTasks({ userId, status, date, projectId, areaId }: GetWidgetTasks) {
+export async function getWidgetTasks({ userId, status, date, projectId, statsId }: GetWidgetTasks) {
     const notion = await getNotionAdapter(userId);
 
     const tasksDataSources = await notion.searchDataSources('Tasks');
@@ -123,7 +123,7 @@ export async function getWidgetTasks({ userId, status, date, projectId, areaId }
         specializations.push({
             id: result.id,
             name: getTitle(result.properties.Nome),
-            areaId: getRelationId(result.properties.Area)!,
+            statsId: getRelationId(result.properties.Area)!,
         });
     }
 
@@ -163,9 +163,9 @@ export async function getWidgetTasks({ userId, status, date, projectId, areaId }
                 return false;
             }
 
-            if (areaId) {
+            if (statsId) {
                 const belongsToArea = task.specializationIds.some(
-                    specializationId => specializationAreaMap.get(specializationId) === areaId,
+                    specializationId => specializationAreaMap.get(specializationId) === statsId,
                 );
 
                 if (!belongsToArea) {
