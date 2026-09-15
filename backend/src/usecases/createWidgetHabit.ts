@@ -4,14 +4,14 @@ import { getNotionAdapter } from '../lib/notion.js';
 interface CreateWidgetHabit {
     userId: string;
     name: string;
-    specializatonIds?: string[];
+    specializationIds?: string[];
     objectiveId?: string | null;
 }
 
 export async function createWidgetHabit({
     userId,
     name,
-    specializatonIds,
+    specializationIds,
     objectiveId,
 }: CreateWidgetHabit) {
     const notion = await getNotionAdapter(userId);
@@ -47,9 +47,9 @@ export async function createWidgetHabit({
         'Best Streak': {
             number: 0,
         },
-        ...(specializatonIds?.length && {
+        ...(specializationIds?.length && {
             Specializations: {
-                relation: specializatonIds.map(id => ({ id })),
+                relation: specializationIds.map(id => ({ id })),
             },
         }),
         ...(objectiveId && {

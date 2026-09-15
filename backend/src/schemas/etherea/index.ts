@@ -20,7 +20,7 @@ export const StatsSchema = z.object({
     name: z.string(),
     description: z.string(),
     icon: z.string(),
-    order: z.number(),
+    index: z.number(),
 });
 
 export type Stats = z.infer<typeof StatsSchema>;
