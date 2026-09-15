@@ -3,6 +3,7 @@ import { calculateTaskReward } from '../services/etherea/rewards.service.js';
 import { createProgressHistory } from './createProgressHistory.js';
 import { getProgressHistory } from './getProgressHistory.js';
 import { getXPRules } from './getXPRules.js';
+import { updateProfileProgress } from './updateProfileProgress.js';
 
 interface ProcessTaskReward {
     userId: string;
@@ -55,6 +56,12 @@ export async function processTaskReward({ userId, taskId }: ProcessTaskReward) {
         userId,
         name: taskName,
         taskId,
+        xp: reward.xp,
+        gold: reward.gold,
+    });
+
+    await updateProfileProgress({
+        userId,
         xp: reward.xp,
         gold: reward.gold,
     });

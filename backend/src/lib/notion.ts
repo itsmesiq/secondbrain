@@ -100,3 +100,37 @@ export async function getNotionAdapter(userId: string) {
 
     return new NotionAdapter(accessToken);
 }
+
+export function getFileUrl(property: any): string {
+    if (property?.type !== 'files') {
+        return '';
+    }
+
+    const file = property.files[0];
+
+    if (!file) {
+        return '';
+    }
+
+    if (file.type === 'external') {
+        return file.external?.url ?? '';
+    }
+
+    return file.file?.url ?? '';
+}
+
+export function getLastEditedTime(property: any): string {
+    if (property?.type !== 'last_edited_time') {
+        return '';
+    }
+
+    return property.last_edited_time;
+}
+
+export function getRichText(property: any): string {
+    if (property?.type !== 'rich_text') {
+        return '';
+    }
+
+    return property.rich_text.map((item: any) => item.plain_text).join('');
+}

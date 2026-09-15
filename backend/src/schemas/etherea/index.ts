@@ -64,6 +64,7 @@ export type XPRule = z.infer<typeof XPRuleSchema>;
 
 export const LevelSchema = z.object({
     id: z.string(),
+    name: z.string(),
     level: z.number(),
     requiredXP: z.number(),
     milestone: z.boolean(),
