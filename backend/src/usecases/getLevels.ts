@@ -1,5 +1,5 @@
 import { DataSourceNotFoundError } from '../errors/index.js';
-import { getCheckbox, getNotionAdapter, getNumber, getRichText, getTitle } from '../lib/notion.js';
+import { getCheckbox, getNotionAdapter, getNumber, getTitle } from '../lib/notion.js';
 import type { Level } from '../schemas/etherea/index.js';
 
 export async function getLevels(userId: string): Promise<Level[]> {
@@ -26,7 +26,7 @@ export async function getLevels(userId: string): Promise<Level[]> {
             level: getNumber(result.properties.Level),
             requiredXP: getNumber(result.properties['Required XP']),
             milestone: getCheckbox(result.properties.Milestone),
-            reward: getRichText(result.properties.Reward),
+            reward: getNumber(result.properties.Reward),
             active: getCheckbox(result.properties.Active),
         });
     }

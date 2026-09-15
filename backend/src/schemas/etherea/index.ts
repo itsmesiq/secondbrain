@@ -68,7 +68,7 @@ export const LevelSchema = z.object({
     level: z.number(),
     requiredXP: z.number(),
     milestone: z.boolean(),
-    reward: z.string(),
+    reward: z.number(),
     active: z.boolean(),
 });
 
