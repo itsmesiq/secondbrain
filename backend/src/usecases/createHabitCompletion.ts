@@ -41,7 +41,10 @@ export async function createHabitCompletion({
     const completionDataSources = await notion.searchDataSources('Habit Completions');
 
     const completionDataSource = completionDataSources.find(
-        result => result.object === 'data_source',
+        result =>
+            result.object === 'data_source' &&
+            'title' in result &&
+            result.title?.some(item => item.plain_text === 'Habit Completions'),
     );
 
     if (!completionDataSource) {
@@ -55,7 +58,7 @@ export async function createHabitCompletion({
     }> = [];
 
     for await (const result of notion.queryDataSource(completionDataSource.id)) {
-        if (getRelationId(result.properties.Habit) === habitId) {
+        if (getRelationId(result.properties.Habit) !== habitId) {
             continue;
         }
 
