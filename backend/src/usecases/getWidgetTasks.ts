@@ -52,22 +52,24 @@ function calculateOverview(tasks: ReturnType<typeof mapTask>[]) {
         tasks.filter(task => task.completedAt).map(task => task.completedAt!.slice(0, 10)),
     );
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    const todayKey = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Sao_Paulo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).format(new Date());
 
-    const todayKey = today.toISOString().slice(0, 10);
+    const todayDate = new Date(`${todayKey}T00:00:00Z`);
+    todayDate.setUTCDate(todayDate.getUTCDate() - 1);
 
-    const yesterday = new Date(today);
-    yesterday.setUTCDate(yesterday.getUTCDate() - 1);
-
-    const yesterdayKey = yesterday.toISOString().slice(0, 10);
+    const yesterdayKey = todayDate.toISOString().slice(0, 10);
 
     let streak = 0;
 
     const streakStart = completionDates.has(todayKey)
-        ? today
+        ? todayKey
         : completionDates.has(yesterdayKey)
-          ? yesterday
+          ? yesterdayKey
           : null;
 
     if (streakStart) {
