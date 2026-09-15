@@ -138,3 +138,18 @@ export type CreateHabitCompletionParams = z.infer<typeof CreateHabitCompletionPa
 export const CreateHabitCompletionResponseSchema = HabitCompletionSchema;
 
 export type CreateHabitCompletionResponse = z.infer<typeof CreateHabitCompletionResponseSchema>;
+
+export const CreateHabitSchema = z.object({
+    name: z.string().min(1),
+    specializationIds: z.array(z.string()).optional(),
+    objectiveId: z.string().nullable().optional(),
+});
+
+export type CreateHabit = z.infer<typeof CreateHabitSchema>;
+
+export const CreateHabitResponseSchema = z.object({
+    id: z.string(),
+    url: z.url(),
+});
+
+export type CreateHabitResponse = z.infer<typeof CreateHabitResponseSchema>;
