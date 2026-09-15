@@ -66,6 +66,22 @@ export const NotionSearchResponseSchema = z.object({
 
 export type NotionSearchResponse = z.infer<typeof NotionSearchResponseSchema>;
 
+export const NotionPageResponseSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    url: z.url(),
+    archived: z.boolean(),
+    properties: z.record(z.string(), z.unknown()),
+});
+
+export type NotionPageResponse = z.infer<typeof NotionPageResponseSchema>;
+
+export const ReadNotionPageParamsSchema = z.object({
+    id: z.string(),
+});
+
+export type ReadNotionPageParams = z.infer<typeof ReadNotionPageParamsSchema>;
+
 export const EmbedTokenSchema = z.object({
     token: z.string(),
 });

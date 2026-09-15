@@ -9,11 +9,14 @@ import { getNotionPageTitle } from '../lib/notion.js';
 import { requireAuth } from '../plugins/requireAuth.js';
 import {
     ErrorSchema,
+    NotionPageResponseSchema,
     NotionPagesSchema,
     NotionSearchQuerySchema,
     NotionSearchResponseSchema,
     NotionStatusSchema,
+    ReadNotionPageParamsSchema,
 } from '../schemas/index.js';
+import { readNotionPage } from '../usecases/readNotionPage.js';
 import { searchNotion } from '../usecases/searchNotion.js';
 
 export async function notionRoutes(app: FastifyInstance) {
@@ -108,6 +111,29 @@ export async function notionRoutes(app: FastifyInstance) {
             return searchNotion({
                 userId: request.user!.id,
                 query: request.query.query,
+            });
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'GET',
+        url: '/api/notion/pages/:id',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'getNotionPage',
+            tags: ['Notion'],
+            summary: 'Read a Notion page and its properties',
+            params: ReadNotionPageParamsSchema,
+            response: {
+                200: NotionPageResponseSchema,
+                401: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return readNotionPage({
+                userId: request.user!.id,
+                pageId: request.params.id,
             });
         },
     });
