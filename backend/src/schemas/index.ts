@@ -129,11 +129,11 @@ export const GetHabitsResponseSchema = z.object({
 
 export type GetHabitsResponse = z.infer<typeof GetHabitsResponseSchema>;
 
-export const CreateHabitCompletionSchema = z.object({
+export const CreateHabitCompletionParamsSchema = z.object({
     id: z.string(),
 });
 
-export type CreateHabitCompletion = z.infer<typeof CreateHabitCompletionSchema>;
+export type CreateHabitCompletionParams = z.infer<typeof CreateHabitCompletionParamsSchema>;
 
 export const CreateHabitCompletionResponseSchema = HabitCompletionSchema;
 
