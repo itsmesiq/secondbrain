@@ -12,6 +12,7 @@ import {
 import type { HabitCompletion } from '../schemas/etherea/index.js';
 import { calculateHabitReward, calculateHabitStreak } from '../services/etherea/habits.service.js';
 import { getXPRules } from './getXPRules.js';
+import { updateProfileProgress } from './updateProfileProgress.js';
 
 interface CreateHabitCompletion {
     userId: string;
@@ -172,6 +173,12 @@ export async function createHabitCompletion({
                 start: today,
             },
         },
+    });
+
+    await updateProfileProgress({
+        userId,
+        xp: reward.xp,
+        gold: reward.gold,
     });
 
     return {

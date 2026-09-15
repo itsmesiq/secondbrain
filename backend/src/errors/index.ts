@@ -18,3 +18,10 @@ export class DataSourceNotFoundError extends Error {
         this.name = 'DataSourceNotFoundError';
     }
 }
+
+export class ProfileNotFoundError extends Error {
+    constructor() {
+        super('Profile was not found in the connected Notion workspace.');
+        this.name = 'ProfileNotFoundError';
+    }
+}

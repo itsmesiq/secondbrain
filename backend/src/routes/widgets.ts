@@ -12,6 +12,7 @@ import {
     ErrorSchema,
     GetHabitsQuerySchema,
     GetHabitsResponseSchema,
+    GetProfileResponseSchema,
     GetTasksQuerySchema,
     GetTasksResponseSchema,
     UpdateTaskParamsSchema,
@@ -23,6 +24,7 @@ import { createHabitCompletion } from '../usecases/createHabitCompletion.js';
 import { createWidgetHabit } from '../usecases/createWidgetHabit.js';
 import { createWidgetTask } from '../usecases/createWidgetTask.js';
 import { getWidgetHabits } from '../usecases/getWidgetHabits.js';
+import { getWidgetProfile } from '../usecases/getWidgetProfile.js';
 import { getWidgetTasks } from '../usecases/getWidgetTasks.js';
 import { updateWidgetTask } from '../usecases/updateWidgetTask.js';
 
@@ -46,6 +48,25 @@ export async function widgetRoutes(app: FastifyInstance) {
                 message: 'Clock widget athenticated',
                 userId: request.user!.id,
             };
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'GET',
+        url: '/api/widgets/profile',
+        preHandler: requireWidgetAuth('profile'),
+        schema: {
+            operationId: 'getWidgetProfile',
+            summary: 'Get the profile widget data for the authenticated user.',
+            tags: ['Widgets'],
+            response: {
+                200: GetProfileResponseSchema,
+                401: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return getWidgetProfile(request.user!.id);
         },
     });
 
