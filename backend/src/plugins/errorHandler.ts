@@ -5,6 +5,7 @@ import {
     DatabaseNotFoundError,
     DataSourceNotFoundError,
     NotionNotConnectedError,
+    ProfileNotFoundError,
 } from '../errors/index.js';
 
 export function registerErrorHandler(app: FastifyInstance) {
@@ -38,6 +39,14 @@ export function registerErrorHandler(app: FastifyInstance) {
                 error: 'Data source not found',
                 message: error.message,
                 code: 'DATA_SOURCE_NOT_FOUND',
+            });
+        }
+
+        if (error instanceof ProfileNotFoundError) {
+            return reply.status(404).send({
+                error: 'Profile not found',
+                message: error.message,
+                code: 'PROFILE_NOT_FOUND',
             });
         }
     });
