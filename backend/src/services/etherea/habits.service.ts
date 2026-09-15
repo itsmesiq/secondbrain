@@ -66,9 +66,7 @@ export function calculateHabitReward({ rules, objectivePriority, streak }: Calcu
         throw new Error('No Habit XP rules were found');
     }
 
-    const baseRule = habitRules.find(
-        rule => rule.streakMilestone === 0 && rule.objectivePriority === null,
-    );
+    const baseRule = habitRules.find(rule => rule.streakMilestone === 0);
 
     if (!baseRule) {
         throw new Error('No base Habit XP rule was found');
@@ -80,6 +78,8 @@ export function calculateHabitReward({ rules, objectivePriority, streak }: Calcu
           )
         : undefined;
 
+    const objectiveBonus = objectiveRule?.objectiveBonus ?? 0;
+
     const streakRule = habitRules
         .filter(rule => rule.streakMilestone > 0)
         .sort((a, b) => b.streakMilestone - a.streakMilestone)
@@ -88,10 +88,11 @@ export function calculateHabitReward({ rules, objectivePriority, streak }: Calcu
     const multiplier = streakRule?.streakMultiplier || 1;
     const streakGold = streakRule?.goldAmount || 0;
 
-    const baseXP = baseRule.baseXP + (objectiveRule?.objectiveBonus ?? 0);
+    const baseXP = baseRule.baseXP;
+    const baseGold = baseRule.goldAmount;
 
     return {
-        xp: Math.round(baseXP * multiplier),
-        gold: baseRule.goldAmount + streakGold,
+        xp: Math.round((baseXP + objectiveBonus) * multiplier),
+        gold: baseGold + streakGold,
     };
 }
