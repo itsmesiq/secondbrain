@@ -15,21 +15,20 @@ export const ProfileSchema = z.object({
 
 export type Profile = z.infer<typeof ProfileSchema>;
 
-export const AreaSchema = z.object({
+export const StatsSchema = z.object({
     id: z.string(),
     name: z.string(),
     description: z.string(),
     icon: z.string(),
     order: z.number(),
-    active: z.boolean(),
 });
 
-export type Area = z.infer<typeof AreaSchema>;
+export type Stats = z.infer<typeof StatsSchema>;
 
 export const SpecializationSchema = z.object({
     id: z.string(),
     name: z.string(),
-    areaId: z.string(),
+    statsId: z.string(),
     createdAt: z.string(),
 });
 
@@ -38,7 +37,7 @@ export type Specialization = z.infer<typeof SpecializationSchema>;
 export const ObjectiveSchema = z.object({
     id: z.string(),
     name: z.string(),
-    areaId: z.string(),
+    statsId: z.string(),
     priority: z.string(),
     active: z.boolean(),
     createdAt: z.string(),
