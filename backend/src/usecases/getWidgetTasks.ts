@@ -10,7 +10,7 @@ import {
     getStatus,
     getTitle,
 } from '../lib/notion.js';
-import { createSpecializationAreaMap } from '../services/etherea/specializations.service.js';
+import { createSpecializationStatsMap } from '../services/etherea/specializations.service.js';
 
 interface GetWidgetTasks {
     userId: string;
@@ -123,11 +123,11 @@ export async function getWidgetTasks({ userId, status, date, projectId, statsId 
         specializations.push({
             id: result.id,
             name: getTitle(result.properties.Nome),
-            statsId: getRelationId(result.properties.Area)!,
+            statsId: getRelationId(result.properties.Stats)!,
         });
     }
 
-    const specializationAreaMap = createSpecializationAreaMap(specializations);
+    const specializationStatsMap = createSpecializationStatsMap(specializations);
 
     const specializationMap = new Map(
         specializations.map(specialization => [
@@ -164,11 +164,11 @@ export async function getWidgetTasks({ userId, status, date, projectId, statsId 
             }
 
             if (statsId) {
-                const belongsToArea = task.specializationIds.some(
-                    specializationId => specializationAreaMap.get(specializationId) === statsId,
+                const belongsToStats = task.specializationIds.some(
+                    specializationId => specializationStatsMap.get(specializationId) === statsId,
                 );
 
-                if (!belongsToArea) {
+                if (!belongsToStats) {
                     return false;
                 }
             }

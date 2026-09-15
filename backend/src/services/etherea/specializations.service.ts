@@ -1,4 +1,4 @@
-export function createSpecializationAreaMap(
+export function createSpecializationStatsMap(
     specializations: Array<{ id: string; statsId: string }>,
 ) {
     return new Map(

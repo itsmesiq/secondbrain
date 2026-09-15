@@ -1,6 +1,12 @@
 import { z } from 'zod';
 
-import { HabitCompletionSchema, HabitSchema, ProfileSchema, TaskSchema } from './etherea/index.js';
+import {
+    HabitCompletionSchema,
+    HabitSchema,
+    ProfileSchema,
+    StatsSchema,
+    TaskSchema,
+} from './etherea/index.js';
 
 export const ErrorSchema = z.object({
     error: z.string(),
@@ -169,3 +175,13 @@ export type CreateProfile = z.infer<typeof CreateProfileSchema>;
 export const CreateProfileResponseSchema = ProfileSchema;
 
 export type CreateProfileResponse = z.infer<typeof CreateProfileResponseSchema>;
+
+export const GetStatsResponseSchema = z.object({
+    stats: z.array(
+        StatsSchema.extend({
+            score: z.number(),
+        }),
+    ),
+});
+
+export type GetStatsResponse = z.infer<typeof GetStatsResponseSchema>;
