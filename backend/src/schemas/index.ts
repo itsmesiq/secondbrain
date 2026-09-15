@@ -47,6 +47,25 @@ export const NotionPagesSchema = z.object({
 export type NotionPage = z.infer<typeof NotionPageSchema>;
 export type NotionPages = z.infer<typeof NotionPagesSchema>;
 
+export const NotionSearchQuerySchema = z.object({
+    query: z.string().optional(),
+});
+
+export type NotionSearchQuery = z.infer<typeof NotionSearchQuerySchema>;
+
+export const NotionSearchResultSchema = z.object({
+    id: z.string(),
+    type: z.enum(['page', 'data_source']),
+    title: z.string(),
+    url: z.url().optional(),
+});
+
+export const NotionSearchResponseSchema = z.object({
+    results: z.array(NotionSearchResultSchema),
+});
+
+export type NotionSearchResponse = z.infer<typeof NotionSearchResponseSchema>;
+
 export const EmbedTokenSchema = z.object({
     token: z.string(),
 });

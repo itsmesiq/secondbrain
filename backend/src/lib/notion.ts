@@ -18,6 +18,13 @@ export function getNotionPageTitle(page: PageObjectResponse) {
     return titleProperty.title[0]?.plain_text || 'Untitled';
 }
 
+export function getNotionDataSourceTitle(dataSource: any): string {
+    if (!Array.isArray(dataSource.title)) {
+        return 'Sem título';
+    }
+    return dataSource.title.map((item: any) => item.plain_text).join('') || 'Sem título';
+}
+
 export function getTitle(property: any): string {
     if (property?.type !== 'title') {
         return 'Sem título';

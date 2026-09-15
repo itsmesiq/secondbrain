@@ -7,7 +7,14 @@ import { db } from '../db/index.js';
 import { account } from '../db/schema.js';
 import { getNotionPageTitle } from '../lib/notion.js';
 import { requireAuth } from '../plugins/requireAuth.js';
-import { ErrorSchema, NotionPagesSchema, NotionStatusSchema } from '../schemas/index.js';
+import {
+    ErrorSchema,
+    NotionPagesSchema,
+    NotionSearchQuerySchema,
+    NotionSearchResponseSchema,
+    NotionStatusSchema,
+} from '../schemas/index.js';
+import { searchNotion } from '../usecases/searchNotion.js';
 
 export async function notionRoutes(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().route({
@@ -79,6 +86,29 @@ export async function notionRoutes(app: FastifyInstance) {
                     url: page.url,
                 })),
             };
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'GET',
+        url: '/api/notion/search',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'searchNotion',
+            tags: ['Notion'],
+            summary: 'Search Notion pages and data sources for the authenticated user',
+            querystring: NotionSearchQuerySchema,
+            response: {
+                200: NotionSearchResponseSchema,
+                401: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return searchNotion({
+                userId: request.user!.id,
+                query: request.query.query,
+            });
         },
     });
 }
