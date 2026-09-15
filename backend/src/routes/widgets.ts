@@ -6,6 +6,8 @@ import {
     CreateTaskResponseSchema,
     CreateTaskSchema,
     ErrorSchema,
+    GetHabitsQuerySchema,
+    GetHabitsResponseSchema,
     GetTasksQuerySchema,
     GetTasksResponseSchema,
     UpdateTaskParamsSchema,
@@ -14,6 +16,7 @@ import {
     WidgetClockSchema,
 } from '../schemas/index.js';
 import { createWidgetTask } from '../usecases/createWidgetTask.js';
+import { getWidgetHabits } from '../usecases/getWidgetHabits.js';
 import { getWidgetTasks } from '../usecases/getWidgetTasks.js';
 import { updateWidgetTask } from '../usecases/updateWidgetTask.js';
 
@@ -116,6 +119,32 @@ export async function widgetRoutes(app: FastifyInstance) {
             });
 
             return task;
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'GET',
+        url: '/api/widgets/habits',
+        preHandler: requireWidgetAuth('habits'),
+        schema: {
+            operationId: 'getWidgetHabits',
+            summary: 'Get habits for the authenticated user',
+            tags: ['Widgets'],
+            querystring: GetHabitsQuerySchema,
+            response: {
+                200: GetHabitsResponseSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return {
+                habits: await getWidgetHabits({
+                    userId: request.user!.id,
+                    ...request.query,
+                }),
+            };
         },
     });
 }
