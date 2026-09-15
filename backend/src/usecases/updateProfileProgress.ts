@@ -65,12 +65,22 @@ export async function updateProfileProgress({
 
     const currentXP = getNumber(profilePage.properties.XP);
     const currentGold = getNumber(profilePage.properties.Gold);
+    const previousLevel = getNumber(profilePage.properties.Level);
 
     const totalXP = currentXP + xp;
-    const totalGold = currentGold + gold;
 
     const levels = await getLevels(userId);
     const currentLevel = calculateLevel(levels, totalXP);
+
+    const reachedLevels = levels.filter(
+        level => level.level > previousLevel && level.level <= currentLevel.level,
+    );
+
+    const milestoneGold = reachedLevels
+        .filter(level => level.milestone)
+        .reduce((total, level) => total + level.reward, 0);
+
+    const totalGold = currentGold + gold + milestoneGold;
 
     await notion.updatePage(profilePage.id, {
         XP: {
@@ -83,6 +93,14 @@ export async function updateProfileProgress({
             number: currentLevel.level,
         },
     });
+
+    for (const level of reachedLevels) {
+        await notion.updatePage(level.id, {
+            Active: {
+                checkbox: true,
+            },
+        });
+    }
 
     return {
         ...mapProfile(profilePage),
