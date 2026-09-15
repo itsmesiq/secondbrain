@@ -36,7 +36,12 @@ export async function createHabitCompletion({
         throw new Error('Habit is inactive and cannot be completed');
     }
 
-    const today = new Date().toISOString().slice(0, 10);
+    const today = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Sao_Paulo',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+    }).format(new Date());
 
     const completionDataSources = await notion.searchDataSources('Habit Completions');
 
