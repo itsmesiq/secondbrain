@@ -5,6 +5,7 @@ import {
     DatabaseNotFoundError,
     DataSourceNotFoundError,
     NotionNotConnectedError,
+    ProfileAlreadyExistsError,
     ProfileNotFoundError,
 } from '../errors/index.js';
 
@@ -47,6 +48,14 @@ export function registerErrorHandler(app: FastifyInstance) {
                 error: 'Profile not found',
                 message: error.message,
                 code: 'PROFILE_NOT_FOUND',
+            });
+        }
+
+        if (error instanceof ProfileAlreadyExistsError) {
+            return reply.status(409).send({
+                error: 'Profile already exists',
+                message: error.message,
+                code: 'PROFILE_ALREADY_EXISTS',
             });
         }
     });

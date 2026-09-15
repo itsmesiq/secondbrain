@@ -157,3 +157,15 @@ export type CreateHabitResponse = z.infer<typeof CreateHabitResponseSchema>;
 export const GetProfileResponseSchema = ProfileSchema;
 
 export type GetProfileResponse = z.infer<typeof GetProfileResponseSchema>;
+
+export const CreateProfileSchema = z.object({
+    name: z.string().min(1),
+    avatar: z.url(),
+    mysticOrder: z.string().min(1),
+});
+
+export type CreateProfile = z.infer<typeof CreateProfileSchema>;
+
+export const CreateProfileResponseSchema = ProfileSchema;
+
+export type CreateProfileResponse = z.infer<typeof CreateProfileResponseSchema>;

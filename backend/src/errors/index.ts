@@ -25,3 +25,10 @@ export class ProfileNotFoundError extends Error {
         this.name = 'ProfileNotFoundError';
     }
 }
+
+export class ProfileAlreadyExistsError extends Error {
+    constructor() {
+        super('A profile already exists in the connected Notion workspace.');
+        this.name = 'ProfileAlreadyExistsError';
+    }
+}

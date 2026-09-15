@@ -7,6 +7,8 @@ import {
     CreateHabitCompletionResponseSchema,
     CreateHabitResponseSchema,
     CreateHabitSchema,
+    CreateProfileResponseSchema,
+    CreateProfileSchema,
     CreateTaskResponseSchema,
     CreateTaskSchema,
     ErrorSchema,
@@ -22,6 +24,7 @@ import {
 } from '../schemas/index.js';
 import { createHabitCompletion } from '../usecases/createHabitCompletion.js';
 import { createWidgetHabit } from '../usecases/createWidgetHabit.js';
+import { createWidgetProfile } from '../usecases/createWidgetProfile.js';
 import { createWidgetTask } from '../usecases/createWidgetTask.js';
 import { getWidgetHabits } from '../usecases/getWidgetHabits.js';
 import { getWidgetProfile } from '../usecases/getWidgetProfile.js';
@@ -68,6 +71,34 @@ export async function widgetRoutes(app: FastifyInstance) {
         },
         handler: async request => {
             return getWidgetProfile(request.user!.id);
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/api/widgets/profile',
+        preHandler: requireWidgetAuth('profile'),
+        schema: {
+            operationId: 'createWidgetProfile',
+            summary: 'Create a new profile for the authenticated user.',
+            tags: ['Widgets'],
+            body: CreateProfileSchema,
+            response: {
+                201: CreateProfileResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                409: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async (request, reply) => {
+            const profile = await createWidgetProfile({
+                userId: request.user!.id,
+                ...request.body,
+            });
+
+            return reply.status(201).send(profile);
         },
     });
 
