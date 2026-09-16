@@ -15,7 +15,7 @@ export async function updateNotionPage({ userId, pageId, properties, inTrash }: 
         ...(inTrash !== undefined && { in_trash: inTrash }),
     };
 
-    const page = await notion.updatePage(pageId, data as Parameters<typeof notion.updatePage>['1']);
+    const page = await notion.updatePage(pageId, data);
 
     return {
         id: page.id,

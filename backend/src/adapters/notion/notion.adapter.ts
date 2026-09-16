@@ -1,4 +1,4 @@
-import type { CreatePageParameters } from '@notionhq/client';
+import type { CreatePageParameters, UpdatePageParameters } from '@notionhq/client';
 import { Client, isFullPage, iteratePaginatedAPI } from '@notionhq/client';
 
 export class NotionAdapter {
@@ -124,14 +124,11 @@ export class NotionAdapter {
         });
     }
 
-    async updatePage(
-        pageId: string,
-        data: Omit<Parameters<typeof this.client.pages.update>[0], 'page_id'>,
-    ) {
+    async updatePage(pageId: string, data: Record<string, unknown>) {
         return this.client.pages.update({
             page_id: pageId,
             ...data,
-        });
+        } as UpdatePageParameters);
     }
 
     async updateDataSource(
