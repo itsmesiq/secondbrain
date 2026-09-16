@@ -222,6 +222,7 @@ export async function notionRoutes(app: FastifyInstance) {
                 userId: request.user!.id,
                 dateSourceId: request.params.id,
                 properties: request.body.properties,
+                children: request.body.children,
             });
 
             return reply.status(201).send(page);
@@ -250,6 +251,7 @@ export async function notionRoutes(app: FastifyInstance) {
                 userId: request.user!.id,
                 parentPageId: request.params.id,
                 properties: request.body.properties,
+                children: request.body.children,
             });
 
             return reply.status(201).send(page);

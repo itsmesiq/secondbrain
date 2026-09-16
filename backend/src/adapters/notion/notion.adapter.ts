@@ -76,21 +76,31 @@ export class NotionAdapter {
         });
     }
 
-    async createPage(dataSourceId: string, properties: CreatePageParameters['properties']) {
+    async createPage(
+        dataSourceId: string,
+        properties: CreatePageParameters['properties'],
+        children?: CreatePageParameters['children'],
+    ) {
         return this.client.pages.create({
             parent: {
                 data_source_id: dataSourceId,
             },
             properties,
+            ...(children && { children }),
         });
     }
 
-    async createChildPage(parentPageId: string, properties: CreatePageParameters['properties']) {
+    async createChildPage(
+        parentPageId: string,
+        properties: CreatePageParameters['properties'],
+        children?: CreatePageParameters['children'],
+    ) {
         return this.client.pages.create({
             parent: {
                 page_id: parentPageId,
             },
             properties,
+            ...(children && { children }),
         });
     }
 
