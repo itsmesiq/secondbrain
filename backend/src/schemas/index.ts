@@ -171,6 +171,20 @@ export const AppendNotionPageContentSchema = z.object({
 
 export type AppendNotionPageContent = z.infer<typeof AppendNotionPageContentSchema>;
 
+export const UpdateNotionBlockParamsSchema = z.object({
+    id: z.string(),
+});
+
+export type UpdateNotionBlockParams = z.infer<typeof UpdateNotionBlockParamsSchema>;
+
+export const UpdateNotionBlockSchema = z.record(z.string(), z.unknown());
+
+export type UpdateNotionBlock = z.infer<typeof UpdateNotionBlockSchema>;
+
+export const UpdateNotionBlockResponseSchema = z.record(z.string(), z.unknown());
+
+export type UpdateNotionBlockResponse = z.infer<typeof UpdateNotionBlockResponseSchema>;
+
 export const EmbedTokenSchema = z.object({
     token: z.string(),
 });
