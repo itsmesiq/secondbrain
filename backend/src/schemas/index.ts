@@ -150,10 +150,30 @@ export const UpdateNotionPageParamsSchema = z.object({
 export type UpdateNotionPageParams = z.infer<typeof UpdateNotionPageParamsSchema>;
 
 export const UpdateNotionPageSchema = z.object({
-    properties: z.record(z.string(), z.unknown()),
+    properties: z.record(z.string(), z.unknown()).optional(),
+    in_trash: z.boolean().optional(),
 });
 
 export type UpdateNotionPage = z.infer<typeof UpdateNotionPageSchema>;
+
+export const UpdateNotionDataSourceParamsSchema = z.object({
+    id: z.string(),
+});
+
+export type UpdateNotionDataSourceParams = z.infer<typeof UpdateNotionDataSourceParamsSchema>;
+
+export const UpdateNotionDataSourceSchema = z.object({
+    in_trash: z.boolean(),
+});
+
+export type UpdateNotionDataSource = z.infer<typeof UpdateNotionDataSourceSchema>;
+
+export const UpdateNotionDataSourceResponseSchema = z.object({
+    id: z.string(),
+    url: z.url().optional(),
+});
+
+export type UpdateNotionDataSourceResponse = z.infer<typeof UpdateNotionDataSourceResponseSchema>;
 
 export const UpdateNotionPageResponseSchema = CreateNotionPageResponseSchema;
 
