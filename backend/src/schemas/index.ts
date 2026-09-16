@@ -185,6 +185,16 @@ export const UpdateNotionBlockResponseSchema = z.record(z.string(), z.unknown())
 
 export type UpdateNotionBlockResponse = z.infer<typeof UpdateNotionBlockResponseSchema>;
 
+export const ArchiveNotionBlockParamsSchema = z.object({
+    id: z.string(),
+});
+
+export type ArchiveNotionBlockParams = z.infer<typeof ArchiveNotionBlockParamsSchema>;
+
+export const ArchiveNotionBlockResponseSchema = z.record(z.string(), z.unknown());
+
+export type ArchiveNotionBlockResponse = z.infer<typeof ArchiveNotionBlockResponseSchema>;
+
 export const EmbedTokenSchema = z.object({
     token: z.string(),
 });

@@ -10,6 +10,8 @@ import { requireAuth } from '../plugins/requireAuth.js';
 import {
     AppendNotionPageContentParamsSchema,
     AppendNotionPageContentSchema,
+    ArchiveNotionBlockParamsSchema,
+    ArchiveNotionBlockResponseSchema,
     CreateNotionChildPageParamsSchema,
     CreateNotionChildPageSchema,
     CreateNotionPageParamsSchema,
@@ -33,6 +35,7 @@ import {
     UpdateNotionPageSchema,
 } from '../schemas/index.js';
 import { appendNotionPageContent } from '../usecases/appendNotionPageContent.js';
+import { archiveNotionBlock } from '../usecases/archiveNotionBlock.js';
 import { createNotionChildPage } from '../usecases/createNotionChildPage.js';
 import { createNotionPage } from '../usecases/createNotionPage.js';
 import { queryNotionDataSource } from '../usecases/queryNotionDataSource.js';
@@ -346,6 +349,31 @@ export async function notionRoutes(app: FastifyInstance) {
                 userId: request.user!.id,
                 blockId: request.params.id,
                 data: request.body,
+            });
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'DELETE',
+        url: '/api/notion/blocks/:id',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'archiveNotionBlock',
+            tags: ['Notion'],
+            summary: 'Archive a Notion block',
+            params: ArchiveNotionBlockParamsSchema,
+            response: {
+                200: ArchiveNotionBlockResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return archiveNotionBlock({
+                userId: request.user!.id,
+                blockId: request.params.id,
             });
         },
     });
