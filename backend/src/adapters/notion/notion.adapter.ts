@@ -36,6 +36,18 @@ export class NotionAdapter {
         return response.results;
     }
 
+    async *searchDataSourcesPaginated(query?: string) {
+        for await (const result of iteratePaginatedAPI(this.client.search, {
+            ...(query && { query }),
+            filter: {
+                property: 'object',
+                value: 'data_source',
+            },
+        })) {
+            yield result;
+        }
+    }
+
     async *queryDataSource(
         dataSourceId: string,
         options?: Omit<Parameters<typeof this.client.dataSources.query>[0], 'data_source_id'>,

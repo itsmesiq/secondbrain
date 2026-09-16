@@ -14,7 +14,11 @@ export async function searchNotion({ userId, query }: SearchNotion) {
         pages.push(page);
     }
 
-    const dataSources = await notion.searchDataSources(query);
+    const dataSources = [];
+
+    for await (const dataSource of notion.searchDataSourcesPaginated(query)) {
+        dataSources.push(dataSource);
+    }
 
     return {
         results: [
