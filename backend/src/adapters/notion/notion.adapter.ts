@@ -70,6 +70,16 @@ export class NotionAdapter {
         }
     }
 
+    async appendBlockChildren(
+        blockId: string,
+        children: Parameters<typeof this.client.blocks.children.append>['0']['children'],
+    ) {
+        return this.client.blocks.children.append({
+            block_id: blockId,
+            children,
+        });
+    }
+
     async retrievePage(pageId: string) {
         return this.client.pages.retrieve({
             page_id: pageId,

@@ -8,6 +8,8 @@ import { account } from '../db/schema.js';
 import { getNotionPageTitle } from '../lib/notion.js';
 import { requireAuth } from '../plugins/requireAuth.js';
 import {
+    AppendNotionPageContentParamsSchema,
+    AppendNotionPageContentSchema,
     CreateNotionChildPageParamsSchema,
     CreateNotionChildPageSchema,
     CreateNotionPageParamsSchema,
@@ -27,6 +29,7 @@ import {
     UpdateNotionPageResponseSchema,
     UpdateNotionPageSchema,
 } from '../schemas/index.js';
+import { appendNotionPageContent } from '../usecases/appendNotionPageContent.js';
 import { createNotionChildPage } from '../usecases/createNotionChildPage.js';
 import { createNotionPage } from '../usecases/createNotionPage.js';
 import { queryNotionDataSource } from '../usecases/queryNotionDataSource.js';
@@ -285,6 +288,33 @@ export async function notionRoutes(app: FastifyInstance) {
                 userId: request.user!.id,
                 pageId: request.params.id,
                 properties: request.body.properties,
+            });
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/api/notion/pages/:id/content',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'appendNotionPageContent',
+            tags: ['Notion'],
+            summary: 'Append content blocks to a Notion page',
+            params: AppendNotionPageContentParamsSchema,
+            body: AppendNotionPageContentSchema,
+            response: {
+                200: NotionPageContentResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return appendNotionPageContent({
+                userId: request.user!.id,
+                pageId: request.params.id,
+                children: request.body.children,
             });
         },
     });
