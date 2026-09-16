@@ -30,6 +30,9 @@ import {
     UpdateNotionBlockParamsSchema,
     UpdateNotionBlockResponseSchema,
     UpdateNotionBlockSchema,
+    UpdateNotionDataSourceParamsSchema,
+    UpdateNotionDataSourceResponseSchema,
+    UpdateNotionDataSourceSchema,
     UpdateNotionPageParamsSchema,
     UpdateNotionPageResponseSchema,
     UpdateNotionPageSchema,
@@ -43,6 +46,7 @@ import { readNotionPage } from '../usecases/readNotionPage.js';
 import { readNotionPageContent } from '../usecases/readNotionPageContent.js';
 import { searchNotion } from '../usecases/searchNotion.js';
 import { updateNotionBlock } from '../usecases/updateNotionBlock.js';
+import { updateNotionDataSource } from '../usecases/updateNotionDataSource.js';
 import { updateNotionPage } from '../usecases/updateNotionPage.js';
 
 export async function notionRoutes(app: FastifyInstance) {
@@ -279,7 +283,7 @@ export async function notionRoutes(app: FastifyInstance) {
         schema: {
             operationId: 'updateNotionPage',
             tags: ['Notion'],
-            summary: 'Update a Notion page properties',
+            summary: 'Update a Notion Page',
             params: UpdateNotionPageParamsSchema,
             body: UpdateNotionPageSchema,
             response: {
@@ -295,6 +299,34 @@ export async function notionRoutes(app: FastifyInstance) {
                 userId: request.user!.id,
                 pageId: request.params.id,
                 properties: request.body.properties,
+                inTrash: request.body.in_trash,
+            });
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'PATCH',
+        url: '/api/notion/data-sources/:id',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'updateNotionDataSource',
+            tags: ['Notion'],
+            summary: 'Update a Notion data source',
+            params: UpdateNotionDataSourceParamsSchema,
+            body: UpdateNotionDataSourceSchema,
+            response: {
+                200: UpdateNotionDataSourceResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return updateNotionDataSource({
+                userId: request.user!.id,
+                dataSourceId: request.params.id,
+                inTrash: request.body.in_trash,
             });
         },
     });
