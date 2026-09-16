@@ -110,6 +110,25 @@ export const NotionDataSourcePagesResponseSchema = z.object({
 
 export type NotionDataSourcePagesResponse = z.infer<typeof NotionDataSourcePagesResponseSchema>;
 
+export const CreateNotionPageParamsSchema = z.object({
+    id: z.string(),
+});
+
+export type CreateNotionPageParams = z.infer<typeof CreateNotionPageParamsSchema>;
+
+export const CreateNotionPageSchema = z.object({
+    properties: z.record(z.string(), z.unknown()),
+});
+
+export type CreateNotionPage = z.infer<typeof CreateNotionPageSchema>;
+
+export const CreateNotionPageResponseSchema = z.object({
+    id: z.string(),
+    url: z.url().optional(),
+});
+
+export type CreateNotionPageResponse = z.infer<typeof CreateNotionPageResponseSchema>;
+
 export const EmbedTokenSchema = z.object({
     token: z.string(),
 });

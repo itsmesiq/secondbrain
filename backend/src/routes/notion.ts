@@ -8,6 +8,9 @@ import { account } from '../db/schema.js';
 import { getNotionPageTitle } from '../lib/notion.js';
 import { requireAuth } from '../plugins/requireAuth.js';
 import {
+    CreateNotionPageParamsSchema,
+    CreateNotionPageResponseSchema,
+    CreateNotionPageSchema,
     ErrorSchema,
     NotionDataSourcePagesResponseSchema,
     NotionPageContentResponseSchema,
@@ -19,6 +22,7 @@ import {
     QueryNotionDataSourceParamsSchema,
     ReadNotionPageParamsSchema,
 } from '../schemas/index.js';
+import { createNotionPage } from '../usecases/createNotionPage.js';
 import { queryNotionDataSource } from '../usecases/queryNotionDataSource.js';
 import { readNotionPage } from '../usecases/readNotionPage.js';
 import { readNotionPageContent } from '../usecases/readNotionPageContent.js';
@@ -190,6 +194,34 @@ export async function notionRoutes(app: FastifyInstance) {
                 userId: request.user!.id,
                 dataSourceId: request.params.id,
             });
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/api/notion/data-sources/:id/pages',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'createNotionPage',
+            tags: ['Notion'],
+            summary: 'Create a new page in a Notion data source',
+            params: CreateNotionPageParamsSchema,
+            body: CreateNotionPageSchema,
+            response: {
+                201: CreateNotionPageResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async (request, reply) => {
+            const page = await createNotionPage({
+                userId: request.user!.id,
+                dateSourceId: request.params.id,
+                properties: request.body.properties,
+            });
+
+            return reply.status(201).send(page);
         },
     });
 }
