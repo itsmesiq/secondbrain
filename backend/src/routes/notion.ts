@@ -23,6 +23,9 @@ import {
     NotionStatusSchema,
     QueryNotionDataSourceParamsSchema,
     ReadNotionPageParamsSchema,
+    UpdateNotionPageParamsSchema,
+    UpdateNotionPageResponseSchema,
+    UpdateNotionPageSchema,
 } from '../schemas/index.js';
 import { createNotionChildPage } from '../usecases/createNotionChildPage.js';
 import { createNotionPage } from '../usecases/createNotionPage.js';
@@ -30,6 +33,7 @@ import { queryNotionDataSource } from '../usecases/queryNotionDataSource.js';
 import { readNotionPage } from '../usecases/readNotionPage.js';
 import { readNotionPageContent } from '../usecases/readNotionPageContent.js';
 import { searchNotion } from '../usecases/searchNotion.js';
+import { updateNotionPage } from '../usecases/updateNotionPage.js';
 
 export async function notionRoutes(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().route({
@@ -255,6 +259,33 @@ export async function notionRoutes(app: FastifyInstance) {
             });
 
             return reply.status(201).send(page);
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'PATCH',
+        url: '/api/notion/pages/:id',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'updateNotionPage',
+            tags: ['Notion'],
+            summary: 'Update a Notion page properties',
+            params: UpdateNotionPageParamsSchema,
+            body: UpdateNotionPageSchema,
+            response: {
+                200: UpdateNotionPageResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return updateNotionPage({
+                userId: request.user!.id,
+                pageId: request.params.id,
+                properties: request.body.properties,
+            });
         },
     });
 }

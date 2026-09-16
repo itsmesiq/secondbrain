@@ -143,6 +143,22 @@ export const CreateNotionChildPageSchema = z.object({
 
 export type CreateNotionChildPage = z.infer<typeof CreateNotionChildPageSchema>;
 
+export const UpdateNotionPageParamsSchema = z.object({
+    id: z.string(),
+});
+
+export type UpdateNotionPageParams = z.infer<typeof UpdateNotionPageParamsSchema>;
+
+export const UpdateNotionPageSchema = z.object({
+    properties: z.record(z.string(), z.unknown()),
+});
+
+export type UpdateNotionPage = z.infer<typeof UpdateNotionPageSchema>;
+
+export const UpdateNotionPageResponseSchema = CreateNotionPageResponseSchema;
+
+export type UpdateNotionPageResponse = z.infer<typeof UpdateNotionPageResponseSchema>;
+
 export const EmbedTokenSchema = z.object({
     token: z.string(),
 });
