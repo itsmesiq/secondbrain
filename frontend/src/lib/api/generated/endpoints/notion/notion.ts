@@ -9,17 +9,47 @@ import type {
     DataTag,
     DefinedInitialDataOptions,
     DefinedUseQueryResult,
+    MutationFunction,
     QueryClient,
     QueryFunction,
     QueryKey,
     UndefinedInitialDataOptions,
+    UseMutationOptions,
+    UseMutationResult,
     UseQueryOptions,
     UseQueryResult,
 } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { customFetch } from '../../../fetch';
 import type {
+    AppendNotionPageContent200,
+    AppendNotionPageContent400,
+    AppendNotionPageContent401,
+    AppendNotionPageContent404,
+    AppendNotionPageContent500,
+    AppendNotionPageContentBody,
+    ArchiveNotionBlock200,
+    ArchiveNotionBlock400,
+    ArchiveNotionBlock401,
+    ArchiveNotionBlock404,
+    ArchiveNotionBlock500,
+    CreateNotionChildPage201,
+    CreateNotionChildPage400,
+    CreateNotionChildPage401,
+    CreateNotionChildPage500,
+    CreateNotionChildPageBody,
+    CreateNotionPage201,
+    CreateNotionPage400,
+    CreateNotionPage401,
+    CreateNotionPage500,
+    CreateNotionPageBody,
+    GetNotionPage200,
+    GetNotionPage401,
+    GetNotionPage500,
+    GetNotionPageContent200,
+    GetNotionPageContent401,
+    GetNotionPageContent500,
     GetNotionPages200,
     GetNotionPages401,
     GetNotionPages404,
@@ -27,6 +57,31 @@ import type {
     GetNotionStatus200,
     GetNotionStatus401,
     GetNotionStatus500,
+    QueryNotionDataSource200,
+    QueryNotionDataSource401,
+    QueryNotionDataSource500,
+    SearchNotion200,
+    SearchNotion401,
+    SearchNotion500,
+    SearchNotionParams,
+    UpdateNotionBlock200,
+    UpdateNotionBlock400,
+    UpdateNotionBlock401,
+    UpdateNotionBlock404,
+    UpdateNotionBlock500,
+    UpdateNotionBlockBody,
+    UpdateNotionDataSource200,
+    UpdateNotionDataSource400,
+    UpdateNotionDataSource401,
+    UpdateNotionDataSource404,
+    UpdateNotionDataSource500,
+    UpdateNotionDataSourceBody,
+    UpdateNotionPage200,
+    UpdateNotionPage400,
+    UpdateNotionPage401,
+    UpdateNotionPage404,
+    UpdateNotionPage500,
+    UpdateNotionPageBody,
 } from '../../schemas';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -338,3 +393,1625 @@ export function useGetNotionPages<
 
     return withQueryKey(query, queryOptions.queryKey);
 }
+
+export type searchNotionResponse200 = {
+    data: SearchNotion200;
+    status: 200;
+};
+
+export type searchNotionResponse401 = {
+    data: SearchNotion401;
+    status: 401;
+};
+
+export type searchNotionResponse500 = {
+    data: SearchNotion500;
+    status: 500;
+};
+
+export type searchNotionResponseSuccess = searchNotionResponse200 & {
+    headers: Headers;
+};
+export type searchNotionResponseError = (searchNotionResponse401 | searchNotionResponse500) & {
+    headers: Headers;
+};
+
+export type searchNotionResponse = searchNotionResponseSuccess | searchNotionResponseError;
+
+export const getSearchNotionUrl = (params?: SearchNotionParams) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : String(value));
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0
+        ? `/api/notion/search?${stringifiedParams}`
+        : `/api/notion/search`;
+};
+
+/**
+ * @summary Search Notion pages and data sources for the authenticated user
+ */
+export const searchNotion = async (
+    params?: SearchNotionParams,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<searchNotionResponse> => {
+    return customFetch<searchNotionResponse>(getSearchNotionUrl(params), {
+        ...options,
+        method: 'GET',
+    });
+};
+
+export const getSearchNotionQueryKey = (params?: SearchNotionParams) => {
+    return [`/api/notion/search`, ...(params ? [params] : [])] as const;
+};
+
+export const getSearchNotionQueryOptions = <
+    TData = Awaited<ReturnType<typeof searchNotion>>,
+    TError = SearchNotion401 | SearchNotion500,
+>(
+    params?: SearchNotionParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof searchNotion>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getSearchNotionQueryKey(params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof searchNotion>>> = ({ signal }) =>
+        searchNotion(params, { signal, ...requestOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof searchNotion>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type SearchNotionQueryResult = NonNullable<Awaited<ReturnType<typeof searchNotion>>>;
+export type SearchNotionQueryError = SearchNotion401 | SearchNotion500;
+
+export function useSearchNotion<
+    TData = Awaited<ReturnType<typeof searchNotion>>,
+    TError = SearchNotion401 | SearchNotion500,
+>(
+    params: undefined | SearchNotionParams,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof searchNotion>>, TError, TData>> &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof searchNotion>>,
+                    TError,
+                    Awaited<ReturnType<typeof searchNotion>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useSearchNotion<
+    TData = Awaited<ReturnType<typeof searchNotion>>,
+    TError = SearchNotion401 | SearchNotion500,
+>(
+    params?: SearchNotionParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof searchNotion>>, TError, TData>> &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof searchNotion>>,
+                    TError,
+                    Awaited<ReturnType<typeof searchNotion>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useSearchNotion<
+    TData = Awaited<ReturnType<typeof searchNotion>>,
+    TError = SearchNotion401 | SearchNotion500,
+>(
+    params?: SearchNotionParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof searchNotion>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Search Notion pages and data sources for the authenticated user
+ */
+
+export function useSearchNotion<
+    TData = Awaited<ReturnType<typeof searchNotion>>,
+    TError = SearchNotion401 | SearchNotion500,
+>(
+    params?: SearchNotionParams,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof searchNotion>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getSearchNotionQueryOptions(params, options);
+
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type getNotionPageResponse200 = {
+    data: GetNotionPage200;
+    status: 200;
+};
+
+export type getNotionPageResponse401 = {
+    data: GetNotionPage401;
+    status: 401;
+};
+
+export type getNotionPageResponse500 = {
+    data: GetNotionPage500;
+    status: 500;
+};
+
+export type getNotionPageResponseSuccess = getNotionPageResponse200 & {
+    headers: Headers;
+};
+export type getNotionPageResponseError = (getNotionPageResponse401 | getNotionPageResponse500) & {
+    headers: Headers;
+};
+
+export type getNotionPageResponse = getNotionPageResponseSuccess | getNotionPageResponseError;
+
+export const getGetNotionPageUrl = (id: string) => {
+    return `/api/notion/pages/${id}`;
+};
+
+/**
+ * @summary Read a Notion page and its properties
+ */
+export const getNotionPage = async (
+    id: string,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<getNotionPageResponse> => {
+    return customFetch<getNotionPageResponse>(getGetNotionPageUrl(id), {
+        ...options,
+        method: 'GET',
+    });
+};
+
+export const getGetNotionPageQueryKey = (id: string) => {
+    return [`/api/notion/pages/${id}`] as const;
+};
+
+export const getGetNotionPageQueryOptions = <
+    TData = Awaited<ReturnType<typeof getNotionPage>>,
+    TError = GetNotionPage401 | GetNotionPage500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotionPage>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetNotionPageQueryKey(id);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getNotionPage>>> = ({ signal }) =>
+        getNotionPage(id, { signal, ...requestOptions });
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: id !== null && id !== undefined,
+        ...queryOptions,
+    } as UseQueryOptions<Awaited<ReturnType<typeof getNotionPage>>, TError, TData> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+};
+
+export type GetNotionPageQueryResult = NonNullable<Awaited<ReturnType<typeof getNotionPage>>>;
+export type GetNotionPageQueryError = GetNotionPage401 | GetNotionPage500;
+
+export function useGetNotionPage<
+    TData = Awaited<ReturnType<typeof getNotionPage>>,
+    TError = GetNotionPage401 | GetNotionPage500,
+>(
+    id: string,
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotionPage>>, TError, TData>> &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getNotionPage>>,
+                    TError,
+                    Awaited<ReturnType<typeof getNotionPage>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNotionPage<
+    TData = Awaited<ReturnType<typeof getNotionPage>>,
+    TError = GetNotionPage401 | GetNotionPage500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotionPage>>, TError, TData>> &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getNotionPage>>,
+                    TError,
+                    Awaited<ReturnType<typeof getNotionPage>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNotionPage<
+    TData = Awaited<ReturnType<typeof getNotionPage>>,
+    TError = GetNotionPage401 | GetNotionPage500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotionPage>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Read a Notion page and its properties
+ */
+
+export function useGetNotionPage<
+    TData = Awaited<ReturnType<typeof getNotionPage>>,
+    TError = GetNotionPage401 | GetNotionPage500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getNotionPage>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetNotionPageQueryOptions(id, options);
+
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type updateNotionPageResponse200 = {
+    data: UpdateNotionPage200;
+    status: 200;
+};
+
+export type updateNotionPageResponse400 = {
+    data: UpdateNotionPage400;
+    status: 400;
+};
+
+export type updateNotionPageResponse401 = {
+    data: UpdateNotionPage401;
+    status: 401;
+};
+
+export type updateNotionPageResponse404 = {
+    data: UpdateNotionPage404;
+    status: 404;
+};
+
+export type updateNotionPageResponse500 = {
+    data: UpdateNotionPage500;
+    status: 500;
+};
+
+export type updateNotionPageResponseSuccess = updateNotionPageResponse200 & {
+    headers: Headers;
+};
+export type updateNotionPageResponseError = (
+    | updateNotionPageResponse400
+    | updateNotionPageResponse401
+    | updateNotionPageResponse404
+    | updateNotionPageResponse500
+) & {
+    headers: Headers;
+};
+
+export type updateNotionPageResponse =
+    updateNotionPageResponseSuccess | updateNotionPageResponseError;
+
+export const getUpdateNotionPageUrl = (id: string) => {
+    return `/api/notion/pages/${id}`;
+};
+
+/**
+ * @summary Update a Notion Page
+ */
+export const updateNotionPage = async (
+    id: string,
+    updateNotionPageBody: UpdateNotionPageBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<updateNotionPageResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<updateNotionPageResponse>(getUpdateNotionPageUrl(id), {
+        ...options,
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(updateNotionPageBody),
+    });
+};
+
+export const getUpdateNotionPageMutationKey = () => ['updateNotionPage'] as const;
+
+export const getUpdateNotionPageMutationOptions = <
+    TError = UpdateNotionPage400 | UpdateNotionPage401 | UpdateNotionPage404 | UpdateNotionPage500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof updateNotionPage>>,
+        TError,
+        UpdateNotionPageMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof updateNotionPage>>,
+    TError,
+    UpdateNotionPageMutationVariables,
+    TContext
+> => {
+    const mutationKey = getUpdateNotionPageMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof updateNotionPage>>,
+        UpdateNotionPageMutationVariables
+    > = (props) => {
+        const { id, data } = props ?? {};
+
+        return updateNotionPage(id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateNotionPageMutationResult = NonNullable<
+    Awaited<ReturnType<typeof updateNotionPage>>
+>;
+export type UpdateNotionPageMutationBody = UpdateNotionPageBody;
+export type UpdateNotionPageMutationError =
+    UpdateNotionPage400 | UpdateNotionPage401 | UpdateNotionPage404 | UpdateNotionPage500;
+export type UpdateNotionPageMutationVariables = { id: string; data: UpdateNotionPageBody };
+
+/**
+ * @summary Update a Notion Page
+ */
+export const useUpdateNotionPage = <
+    TError = UpdateNotionPage400 | UpdateNotionPage401 | UpdateNotionPage404 | UpdateNotionPage500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof updateNotionPage>>,
+            TError,
+            UpdateNotionPageMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof updateNotionPage>>,
+    TError,
+    UpdateNotionPageMutationVariables,
+    TContext
+> => {
+    return useMutation(getUpdateNotionPageMutationOptions(options), queryClient);
+};
+export type getNotionPageContentResponse200 = {
+    data: GetNotionPageContent200;
+    status: 200;
+};
+
+export type getNotionPageContentResponse401 = {
+    data: GetNotionPageContent401;
+    status: 401;
+};
+
+export type getNotionPageContentResponse500 = {
+    data: GetNotionPageContent500;
+    status: 500;
+};
+
+export type getNotionPageContentResponseSuccess = getNotionPageContentResponse200 & {
+    headers: Headers;
+};
+export type getNotionPageContentResponseError = (
+    getNotionPageContentResponse401 | getNotionPageContentResponse500
+) & {
+    headers: Headers;
+};
+
+export type getNotionPageContentResponse =
+    getNotionPageContentResponseSuccess | getNotionPageContentResponseError;
+
+export const getGetNotionPageContentUrl = (id: string) => {
+    return `/api/notion/pages/${id}/content`;
+};
+
+/**
+ * @summary Read the recursive content blocks of a Notion page
+ */
+export const getNotionPageContent = async (
+    id: string,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<getNotionPageContentResponse> => {
+    return customFetch<getNotionPageContentResponse>(getGetNotionPageContentUrl(id), {
+        ...options,
+        method: 'GET',
+    });
+};
+
+export const getGetNotionPageContentQueryKey = (id: string) => {
+    return [`/api/notion/pages/${id}/content`] as const;
+};
+
+export const getGetNotionPageContentQueryOptions = <
+    TData = Awaited<ReturnType<typeof getNotionPageContent>>,
+    TError = GetNotionPageContent401 | GetNotionPageContent500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getNotionPageContent>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetNotionPageContentQueryKey(id);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getNotionPageContent>>> = ({ signal }) =>
+        getNotionPageContent(id, { signal, ...requestOptions });
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: id !== null && id !== undefined,
+        ...queryOptions,
+    } as UseQueryOptions<Awaited<ReturnType<typeof getNotionPageContent>>, TError, TData> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+};
+
+export type GetNotionPageContentQueryResult = NonNullable<
+    Awaited<ReturnType<typeof getNotionPageContent>>
+>;
+export type GetNotionPageContentQueryError = GetNotionPageContent401 | GetNotionPageContent500;
+
+export function useGetNotionPageContent<
+    TData = Awaited<ReturnType<typeof getNotionPageContent>>,
+    TError = GetNotionPageContent401 | GetNotionPageContent500,
+>(
+    id: string,
+    options: {
+        query: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getNotionPageContent>>, TError, TData>
+        > &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getNotionPageContent>>,
+                    TError,
+                    Awaited<ReturnType<typeof getNotionPageContent>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNotionPageContent<
+    TData = Awaited<ReturnType<typeof getNotionPageContent>>,
+    TError = GetNotionPageContent401 | GetNotionPageContent500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getNotionPageContent>>, TError, TData>
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getNotionPageContent>>,
+                    TError,
+                    Awaited<ReturnType<typeof getNotionPageContent>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetNotionPageContent<
+    TData = Awaited<ReturnType<typeof getNotionPageContent>>,
+    TError = GetNotionPageContent401 | GetNotionPageContent500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getNotionPageContent>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Read the recursive content blocks of a Notion page
+ */
+
+export function useGetNotionPageContent<
+    TData = Awaited<ReturnType<typeof getNotionPageContent>>,
+    TError = GetNotionPageContent401 | GetNotionPageContent500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getNotionPageContent>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetNotionPageContentQueryOptions(id, options);
+
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type appendNotionPageContentResponse200 = {
+    data: AppendNotionPageContent200;
+    status: 200;
+};
+
+export type appendNotionPageContentResponse400 = {
+    data: AppendNotionPageContent400;
+    status: 400;
+};
+
+export type appendNotionPageContentResponse401 = {
+    data: AppendNotionPageContent401;
+    status: 401;
+};
+
+export type appendNotionPageContentResponse404 = {
+    data: AppendNotionPageContent404;
+    status: 404;
+};
+
+export type appendNotionPageContentResponse500 = {
+    data: AppendNotionPageContent500;
+    status: 500;
+};
+
+export type appendNotionPageContentResponseSuccess = appendNotionPageContentResponse200 & {
+    headers: Headers;
+};
+export type appendNotionPageContentResponseError = (
+    | appendNotionPageContentResponse400
+    | appendNotionPageContentResponse401
+    | appendNotionPageContentResponse404
+    | appendNotionPageContentResponse500
+) & {
+    headers: Headers;
+};
+
+export type appendNotionPageContentResponse =
+    appendNotionPageContentResponseSuccess | appendNotionPageContentResponseError;
+
+export const getAppendNotionPageContentUrl = (id: string) => {
+    return `/api/notion/pages/${id}/content`;
+};
+
+/**
+ * @summary Append content blocks to a Notion page
+ */
+export const appendNotionPageContent = async (
+    id: string,
+    appendNotionPageContentBody: AppendNotionPageContentBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<appendNotionPageContentResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<appendNotionPageContentResponse>(getAppendNotionPageContentUrl(id), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(appendNotionPageContentBody),
+    });
+};
+
+export const getAppendNotionPageContentMutationKey = () => ['appendNotionPageContent'] as const;
+
+export const getAppendNotionPageContentMutationOptions = <
+    TError =
+        | AppendNotionPageContent400
+        | AppendNotionPageContent401
+        | AppendNotionPageContent404
+        | AppendNotionPageContent500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof appendNotionPageContent>>,
+        TError,
+        AppendNotionPageContentMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof appendNotionPageContent>>,
+    TError,
+    AppendNotionPageContentMutationVariables,
+    TContext
+> => {
+    const mutationKey = getAppendNotionPageContentMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof appendNotionPageContent>>,
+        AppendNotionPageContentMutationVariables
+    > = (props) => {
+        const { id, data } = props ?? {};
+
+        return appendNotionPageContent(id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type AppendNotionPageContentMutationResult = NonNullable<
+    Awaited<ReturnType<typeof appendNotionPageContent>>
+>;
+export type AppendNotionPageContentMutationBody = AppendNotionPageContentBody;
+export type AppendNotionPageContentMutationError =
+    | AppendNotionPageContent400
+    | AppendNotionPageContent401
+    | AppendNotionPageContent404
+    | AppendNotionPageContent500;
+export type AppendNotionPageContentMutationVariables = {
+    id: string;
+    data: AppendNotionPageContentBody;
+};
+
+/**
+ * @summary Append content blocks to a Notion page
+ */
+export const useAppendNotionPageContent = <
+    TError =
+        | AppendNotionPageContent400
+        | AppendNotionPageContent401
+        | AppendNotionPageContent404
+        | AppendNotionPageContent500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof appendNotionPageContent>>,
+            TError,
+            AppendNotionPageContentMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof appendNotionPageContent>>,
+    TError,
+    AppendNotionPageContentMutationVariables,
+    TContext
+> => {
+    return useMutation(getAppendNotionPageContentMutationOptions(options), queryClient);
+};
+export type queryNotionDataSourceResponse200 = {
+    data: QueryNotionDataSource200;
+    status: 200;
+};
+
+export type queryNotionDataSourceResponse401 = {
+    data: QueryNotionDataSource401;
+    status: 401;
+};
+
+export type queryNotionDataSourceResponse500 = {
+    data: QueryNotionDataSource500;
+    status: 500;
+};
+
+export type queryNotionDataSourceResponseSuccess = queryNotionDataSourceResponse200 & {
+    headers: Headers;
+};
+export type queryNotionDataSourceResponseError = (
+    queryNotionDataSourceResponse401 | queryNotionDataSourceResponse500
+) & {
+    headers: Headers;
+};
+
+export type queryNotionDataSourceResponse =
+    queryNotionDataSourceResponseSuccess | queryNotionDataSourceResponseError;
+
+export const getQueryNotionDataSourceUrl = (id: string) => {
+    return `/api/notion/data-sources/${id}/pages`;
+};
+
+/**
+ * @summary Query a Notion data source for its pages
+ */
+export const queryNotionDataSource = async (
+    id: string,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<queryNotionDataSourceResponse> => {
+    return customFetch<queryNotionDataSourceResponse>(getQueryNotionDataSourceUrl(id), {
+        ...options,
+        method: 'GET',
+    });
+};
+
+export const getQueryNotionDataSourceQueryKey = (id: string) => {
+    return [`/api/notion/data-sources/${id}/pages`] as const;
+};
+
+export const getQueryNotionDataSourceQueryOptions = <
+    TData = Awaited<ReturnType<typeof queryNotionDataSource>>,
+    TError = QueryNotionDataSource401 | QueryNotionDataSource500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof queryNotionDataSource>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getQueryNotionDataSourceQueryKey(id);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof queryNotionDataSource>>> = ({
+        signal,
+    }) => queryNotionDataSource(id, { signal, ...requestOptions });
+
+    return {
+        queryKey,
+        queryFn,
+        enabled: id !== null && id !== undefined,
+        ...queryOptions,
+    } as UseQueryOptions<Awaited<ReturnType<typeof queryNotionDataSource>>, TError, TData> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+};
+
+export type QueryNotionDataSourceQueryResult = NonNullable<
+    Awaited<ReturnType<typeof queryNotionDataSource>>
+>;
+export type QueryNotionDataSourceQueryError = QueryNotionDataSource401 | QueryNotionDataSource500;
+
+export function useQueryNotionDataSource<
+    TData = Awaited<ReturnType<typeof queryNotionDataSource>>,
+    TError = QueryNotionDataSource401 | QueryNotionDataSource500,
+>(
+    id: string,
+    options: {
+        query: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof queryNotionDataSource>>, TError, TData>
+        > &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof queryNotionDataSource>>,
+                    TError,
+                    Awaited<ReturnType<typeof queryNotionDataSource>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useQueryNotionDataSource<
+    TData = Awaited<ReturnType<typeof queryNotionDataSource>>,
+    TError = QueryNotionDataSource401 | QueryNotionDataSource500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof queryNotionDataSource>>, TError, TData>
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof queryNotionDataSource>>,
+                    TError,
+                    Awaited<ReturnType<typeof queryNotionDataSource>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useQueryNotionDataSource<
+    TData = Awaited<ReturnType<typeof queryNotionDataSource>>,
+    TError = QueryNotionDataSource401 | QueryNotionDataSource500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof queryNotionDataSource>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Query a Notion data source for its pages
+ */
+
+export function useQueryNotionDataSource<
+    TData = Awaited<ReturnType<typeof queryNotionDataSource>>,
+    TError = QueryNotionDataSource401 | QueryNotionDataSource500,
+>(
+    id: string,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof queryNotionDataSource>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getQueryNotionDataSourceQueryOptions(id, options);
+
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type createNotionPageResponse201 = {
+    data: CreateNotionPage201;
+    status: 201;
+};
+
+export type createNotionPageResponse400 = {
+    data: CreateNotionPage400;
+    status: 400;
+};
+
+export type createNotionPageResponse401 = {
+    data: CreateNotionPage401;
+    status: 401;
+};
+
+export type createNotionPageResponse500 = {
+    data: CreateNotionPage500;
+    status: 500;
+};
+
+export type createNotionPageResponseSuccess = createNotionPageResponse201 & {
+    headers: Headers;
+};
+export type createNotionPageResponseError = (
+    createNotionPageResponse400 | createNotionPageResponse401 | createNotionPageResponse500
+) & {
+    headers: Headers;
+};
+
+export type createNotionPageResponse =
+    createNotionPageResponseSuccess | createNotionPageResponseError;
+
+export const getCreateNotionPageUrl = (id: string) => {
+    return `/api/notion/data-sources/${id}/pages`;
+};
+
+/**
+ * @summary Create a new page in a Notion data source
+ */
+export const createNotionPage = async (
+    id: string,
+    createNotionPageBody: CreateNotionPageBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<createNotionPageResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<createNotionPageResponse>(getCreateNotionPageUrl(id), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(createNotionPageBody),
+    });
+};
+
+export const getCreateNotionPageMutationKey = () => ['createNotionPage'] as const;
+
+export const getCreateNotionPageMutationOptions = <
+    TError = CreateNotionPage400 | CreateNotionPage401 | CreateNotionPage500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof createNotionPage>>,
+        TError,
+        CreateNotionPageMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof createNotionPage>>,
+    TError,
+    CreateNotionPageMutationVariables,
+    TContext
+> => {
+    const mutationKey = getCreateNotionPageMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof createNotionPage>>,
+        CreateNotionPageMutationVariables
+    > = (props) => {
+        const { id, data } = props ?? {};
+
+        return createNotionPage(id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type CreateNotionPageMutationResult = NonNullable<
+    Awaited<ReturnType<typeof createNotionPage>>
+>;
+export type CreateNotionPageMutationBody = CreateNotionPageBody;
+export type CreateNotionPageMutationError =
+    CreateNotionPage400 | CreateNotionPage401 | CreateNotionPage500;
+export type CreateNotionPageMutationVariables = { id: string; data: CreateNotionPageBody };
+
+/**
+ * @summary Create a new page in a Notion data source
+ */
+export const useCreateNotionPage = <
+    TError = CreateNotionPage400 | CreateNotionPage401 | CreateNotionPage500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof createNotionPage>>,
+            TError,
+            CreateNotionPageMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof createNotionPage>>,
+    TError,
+    CreateNotionPageMutationVariables,
+    TContext
+> => {
+    return useMutation(getCreateNotionPageMutationOptions(options), queryClient);
+};
+export type createNotionChildPageResponse201 = {
+    data: CreateNotionChildPage201;
+    status: 201;
+};
+
+export type createNotionChildPageResponse400 = {
+    data: CreateNotionChildPage400;
+    status: 400;
+};
+
+export type createNotionChildPageResponse401 = {
+    data: CreateNotionChildPage401;
+    status: 401;
+};
+
+export type createNotionChildPageResponse500 = {
+    data: CreateNotionChildPage500;
+    status: 500;
+};
+
+export type createNotionChildPageResponseSuccess = createNotionChildPageResponse201 & {
+    headers: Headers;
+};
+export type createNotionChildPageResponseError = (
+    | createNotionChildPageResponse400
+    | createNotionChildPageResponse401
+    | createNotionChildPageResponse500
+) & {
+    headers: Headers;
+};
+
+export type createNotionChildPageResponse =
+    createNotionChildPageResponseSuccess | createNotionChildPageResponseError;
+
+export const getCreateNotionChildPageUrl = (id: string) => {
+    return `/api/notion/pages/${id}/children`;
+};
+
+/**
+ * @summary Create a new child page under a Notion page
+ */
+export const createNotionChildPage = async (
+    id: string,
+    createNotionChildPageBody: CreateNotionChildPageBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<createNotionChildPageResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<createNotionChildPageResponse>(getCreateNotionChildPageUrl(id), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(createNotionChildPageBody),
+    });
+};
+
+export const getCreateNotionChildPageMutationKey = () => ['createNotionChildPage'] as const;
+
+export const getCreateNotionChildPageMutationOptions = <
+    TError = CreateNotionChildPage400 | CreateNotionChildPage401 | CreateNotionChildPage500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof createNotionChildPage>>,
+        TError,
+        CreateNotionChildPageMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof createNotionChildPage>>,
+    TError,
+    CreateNotionChildPageMutationVariables,
+    TContext
+> => {
+    const mutationKey = getCreateNotionChildPageMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof createNotionChildPage>>,
+        CreateNotionChildPageMutationVariables
+    > = (props) => {
+        const { id, data } = props ?? {};
+
+        return createNotionChildPage(id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type CreateNotionChildPageMutationResult = NonNullable<
+    Awaited<ReturnType<typeof createNotionChildPage>>
+>;
+export type CreateNotionChildPageMutationBody = CreateNotionChildPageBody;
+export type CreateNotionChildPageMutationError =
+    CreateNotionChildPage400 | CreateNotionChildPage401 | CreateNotionChildPage500;
+export type CreateNotionChildPageMutationVariables = {
+    id: string;
+    data: CreateNotionChildPageBody;
+};
+
+/**
+ * @summary Create a new child page under a Notion page
+ */
+export const useCreateNotionChildPage = <
+    TError = CreateNotionChildPage400 | CreateNotionChildPage401 | CreateNotionChildPage500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof createNotionChildPage>>,
+            TError,
+            CreateNotionChildPageMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof createNotionChildPage>>,
+    TError,
+    CreateNotionChildPageMutationVariables,
+    TContext
+> => {
+    return useMutation(getCreateNotionChildPageMutationOptions(options), queryClient);
+};
+export type updateNotionDataSourceResponse200 = {
+    data: UpdateNotionDataSource200;
+    status: 200;
+};
+
+export type updateNotionDataSourceResponse400 = {
+    data: UpdateNotionDataSource400;
+    status: 400;
+};
+
+export type updateNotionDataSourceResponse401 = {
+    data: UpdateNotionDataSource401;
+    status: 401;
+};
+
+export type updateNotionDataSourceResponse404 = {
+    data: UpdateNotionDataSource404;
+    status: 404;
+};
+
+export type updateNotionDataSourceResponse500 = {
+    data: UpdateNotionDataSource500;
+    status: 500;
+};
+
+export type updateNotionDataSourceResponseSuccess = updateNotionDataSourceResponse200 & {
+    headers: Headers;
+};
+export type updateNotionDataSourceResponseError = (
+    | updateNotionDataSourceResponse400
+    | updateNotionDataSourceResponse401
+    | updateNotionDataSourceResponse404
+    | updateNotionDataSourceResponse500
+) & {
+    headers: Headers;
+};
+
+export type updateNotionDataSourceResponse =
+    updateNotionDataSourceResponseSuccess | updateNotionDataSourceResponseError;
+
+export const getUpdateNotionDataSourceUrl = (id: string) => {
+    return `/api/notion/data-sources/${id}`;
+};
+
+/**
+ * @summary Update a Notion data source
+ */
+export const updateNotionDataSource = async (
+    id: string,
+    updateNotionDataSourceBody: UpdateNotionDataSourceBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<updateNotionDataSourceResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<updateNotionDataSourceResponse>(getUpdateNotionDataSourceUrl(id), {
+        ...options,
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(updateNotionDataSourceBody),
+    });
+};
+
+export const getUpdateNotionDataSourceMutationKey = () => ['updateNotionDataSource'] as const;
+
+export const getUpdateNotionDataSourceMutationOptions = <
+    TError =
+        | UpdateNotionDataSource400
+        | UpdateNotionDataSource401
+        | UpdateNotionDataSource404
+        | UpdateNotionDataSource500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof updateNotionDataSource>>,
+        TError,
+        UpdateNotionDataSourceMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof updateNotionDataSource>>,
+    TError,
+    UpdateNotionDataSourceMutationVariables,
+    TContext
+> => {
+    const mutationKey = getUpdateNotionDataSourceMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof updateNotionDataSource>>,
+        UpdateNotionDataSourceMutationVariables
+    > = (props) => {
+        const { id, data } = props ?? {};
+
+        return updateNotionDataSource(id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateNotionDataSourceMutationResult = NonNullable<
+    Awaited<ReturnType<typeof updateNotionDataSource>>
+>;
+export type UpdateNotionDataSourceMutationBody = UpdateNotionDataSourceBody;
+export type UpdateNotionDataSourceMutationError =
+    | UpdateNotionDataSource400
+    | UpdateNotionDataSource401
+    | UpdateNotionDataSource404
+    | UpdateNotionDataSource500;
+export type UpdateNotionDataSourceMutationVariables = {
+    id: string;
+    data: UpdateNotionDataSourceBody;
+};
+
+/**
+ * @summary Update a Notion data source
+ */
+export const useUpdateNotionDataSource = <
+    TError =
+        | UpdateNotionDataSource400
+        | UpdateNotionDataSource401
+        | UpdateNotionDataSource404
+        | UpdateNotionDataSource500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof updateNotionDataSource>>,
+            TError,
+            UpdateNotionDataSourceMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof updateNotionDataSource>>,
+    TError,
+    UpdateNotionDataSourceMutationVariables,
+    TContext
+> => {
+    return useMutation(getUpdateNotionDataSourceMutationOptions(options), queryClient);
+};
+export type updateNotionBlockResponse200 = {
+    data: UpdateNotionBlock200;
+    status: 200;
+};
+
+export type updateNotionBlockResponse400 = {
+    data: UpdateNotionBlock400;
+    status: 400;
+};
+
+export type updateNotionBlockResponse401 = {
+    data: UpdateNotionBlock401;
+    status: 401;
+};
+
+export type updateNotionBlockResponse404 = {
+    data: UpdateNotionBlock404;
+    status: 404;
+};
+
+export type updateNotionBlockResponse500 = {
+    data: UpdateNotionBlock500;
+    status: 500;
+};
+
+export type updateNotionBlockResponseSuccess = updateNotionBlockResponse200 & {
+    headers: Headers;
+};
+export type updateNotionBlockResponseError = (
+    | updateNotionBlockResponse400
+    | updateNotionBlockResponse401
+    | updateNotionBlockResponse404
+    | updateNotionBlockResponse500
+) & {
+    headers: Headers;
+};
+
+export type updateNotionBlockResponse =
+    updateNotionBlockResponseSuccess | updateNotionBlockResponseError;
+
+export const getUpdateNotionBlockUrl = (id: string) => {
+    return `/api/notion/blocks/${id}`;
+};
+
+/**
+ * @summary Update a Notion block
+ */
+export const updateNotionBlock = async (
+    id: string,
+    updateNotionBlockBody: UpdateNotionBlockBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<updateNotionBlockResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<updateNotionBlockResponse>(getUpdateNotionBlockUrl(id), {
+        ...options,
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(updateNotionBlockBody),
+    });
+};
+
+export const getUpdateNotionBlockMutationKey = () => ['updateNotionBlock'] as const;
+
+export const getUpdateNotionBlockMutationOptions = <
+    TError =
+        UpdateNotionBlock400 | UpdateNotionBlock401 | UpdateNotionBlock404 | UpdateNotionBlock500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof updateNotionBlock>>,
+        TError,
+        UpdateNotionBlockMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof updateNotionBlock>>,
+    TError,
+    UpdateNotionBlockMutationVariables,
+    TContext
+> => {
+    const mutationKey = getUpdateNotionBlockMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof updateNotionBlock>>,
+        UpdateNotionBlockMutationVariables
+    > = (props) => {
+        const { id, data } = props ?? {};
+
+        return updateNotionBlock(id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateNotionBlockMutationResult = NonNullable<
+    Awaited<ReturnType<typeof updateNotionBlock>>
+>;
+export type UpdateNotionBlockMutationBody = UpdateNotionBlockBody;
+export type UpdateNotionBlockMutationError =
+    UpdateNotionBlock400 | UpdateNotionBlock401 | UpdateNotionBlock404 | UpdateNotionBlock500;
+export type UpdateNotionBlockMutationVariables = { id: string; data: UpdateNotionBlockBody };
+
+/**
+ * @summary Update a Notion block
+ */
+export const useUpdateNotionBlock = <
+    TError =
+        UpdateNotionBlock400 | UpdateNotionBlock401 | UpdateNotionBlock404 | UpdateNotionBlock500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof updateNotionBlock>>,
+            TError,
+            UpdateNotionBlockMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof updateNotionBlock>>,
+    TError,
+    UpdateNotionBlockMutationVariables,
+    TContext
+> => {
+    return useMutation(getUpdateNotionBlockMutationOptions(options), queryClient);
+};
+export type archiveNotionBlockResponse200 = {
+    data: ArchiveNotionBlock200;
+    status: 200;
+};
+
+export type archiveNotionBlockResponse400 = {
+    data: ArchiveNotionBlock400;
+    status: 400;
+};
+
+export type archiveNotionBlockResponse401 = {
+    data: ArchiveNotionBlock401;
+    status: 401;
+};
+
+export type archiveNotionBlockResponse404 = {
+    data: ArchiveNotionBlock404;
+    status: 404;
+};
+
+export type archiveNotionBlockResponse500 = {
+    data: ArchiveNotionBlock500;
+    status: 500;
+};
+
+export type archiveNotionBlockResponseSuccess = archiveNotionBlockResponse200 & {
+    headers: Headers;
+};
+export type archiveNotionBlockResponseError = (
+    | archiveNotionBlockResponse400
+    | archiveNotionBlockResponse401
+    | archiveNotionBlockResponse404
+    | archiveNotionBlockResponse500
+) & {
+    headers: Headers;
+};
+
+export type archiveNotionBlockResponse =
+    archiveNotionBlockResponseSuccess | archiveNotionBlockResponseError;
+
+export const getArchiveNotionBlockUrl = (id: string) => {
+    return `/api/notion/blocks/${id}`;
+};
+
+/**
+ * @summary Archive a Notion block
+ */
+export const archiveNotionBlock = async (
+    id: string,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<archiveNotionBlockResponse> => {
+    return customFetch<archiveNotionBlockResponse>(getArchiveNotionBlockUrl(id), {
+        ...options,
+        method: 'DELETE',
+    });
+};
+
+export const getArchiveNotionBlockMutationKey = () => ['archiveNotionBlock'] as const;
+
+export const getArchiveNotionBlockMutationOptions = <
+    TError =
+        | ArchiveNotionBlock400
+        | ArchiveNotionBlock401
+        | ArchiveNotionBlock404
+        | ArchiveNotionBlock500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof archiveNotionBlock>>,
+        TError,
+        ArchiveNotionBlockMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof archiveNotionBlock>>,
+    TError,
+    ArchiveNotionBlockMutationVariables,
+    TContext
+> => {
+    const mutationKey = getArchiveNotionBlockMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof archiveNotionBlock>>,
+        ArchiveNotionBlockMutationVariables
+    > = (props) => {
+        const { id } = props ?? {};
+
+        return archiveNotionBlock(id, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type ArchiveNotionBlockMutationResult = NonNullable<
+    Awaited<ReturnType<typeof archiveNotionBlock>>
+>;
+
+export type ArchiveNotionBlockMutationError =
+    ArchiveNotionBlock400 | ArchiveNotionBlock401 | ArchiveNotionBlock404 | ArchiveNotionBlock500;
+export type ArchiveNotionBlockMutationVariables = { id: string };
+
+/**
+ * @summary Archive a Notion block
+ */
+export const useArchiveNotionBlock = <
+    TError =
+        | ArchiveNotionBlock400
+        | ArchiveNotionBlock401
+        | ArchiveNotionBlock404
+        | ArchiveNotionBlock500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof archiveNotionBlock>>,
+            TError,
+            ArchiveNotionBlockMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof archiveNotionBlock>>,
+    TError,
+    ArchiveNotionBlockMutationVariables,
+    TContext
+> => {
+    return useMutation(getArchiveNotionBlockMutationOptions(options), queryClient);
+};

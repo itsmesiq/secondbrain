@@ -6,8 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetWidgetTasksOverview500 = {
-    error: string;
-    message: string;
-    code: string;
+export type UpdateNotionDataSource200 = {
+    id: string;
+    url?: string;
 };

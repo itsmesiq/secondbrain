@@ -88,14 +88,14 @@ export default function WidgetConfigModal({
                                 <button
                                     type="button"
                                     onClick={() => setTheme('light')}
-                                    className={`cursor-pointer rounded-full border px-5 py-2 font-sans text-sm transition-colors ${theme === 'light' ? 'border-primary/30 bg-primary/10' : 'border-foreground/10 hover:border-primary/20'}`}
+                                    className={`cursor-pointer rounded-full border px-5 py-2 font-sans text-sm transition-colors ${theme === 'light' ? 'border-primary/30 bg-primary/10' : 'hover:border-primary/20 border-foreground/10'}`}
                                 >
                                     Claro
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setTheme('dark')}
-                                    className={`cursor-pointer rounded-full border px-5 py-2 font-sans text-sm transition-colors ${theme === 'dark' ? 'border-primary/30 bg-primary/10' : 'border-foreground/10 hover:border-primary/20'}`}
+                                    className={`cursor-pointer rounded-full border px-5 py-2 font-sans text-sm transition-colors ${theme === 'dark' ? 'border-primary/30 bg-primary/10' : 'hover:border-primary/20 border-foreground/10'}`}
                                 >
                                     Escuro
                                 </button>

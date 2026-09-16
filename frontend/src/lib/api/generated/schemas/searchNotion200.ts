@@ -5,11 +5,8 @@
  * API documentation for the Second Brain application
  * OpenAPI spec version: 1.0.0
  */
+import type { SearchNotion200ResultsItem } from './searchNotion200ResultsItem';
 
-export type GetWidgetTasksOverview200 = {
-    total: number;
-    completed: number;
-    pending: number;
-    completionRate: number;
-    currentStreak: number;
+export type SearchNotion200 = {
+    results: SearchNotion200ResultsItem[];
 };

@@ -6,8 +6,10 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetWidgetTasksOverview404 = {
-    error: string;
-    message: string;
-    code: string;
+export type CreateWidgetProfileBody = {
+    /** @minLength 1 */
+    name: string;
+    avatar: string;
+    /** @minLength 1 */
+    mysticOrder: string;
 };

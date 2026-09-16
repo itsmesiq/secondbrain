@@ -56,21 +56,21 @@ export default function Sidebar({
                 <button
                     type="button"
                     onClick={() => onSectionChange('widgets')}
-                    className={`w-full cursor-pointer rounded-full border py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 ${activeSection === 'widgets' ? 'border-primary/20 bg-primary font-semibold text-foreground' : 'border-foreground/10 text-foreground/60 hover:border-primary/20 hover:bg-primary/5'}`}
+                    className={`w-full cursor-pointer rounded-full border py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 ${activeSection === 'widgets' ? 'border-primary/20 bg-primary font-semibold text-foreground' : 'hover:border-primary/20 hover:bg-primary/5 border-foreground/10 text-foreground/60'}`}
                 >
                     Widgets
                 </button>
                 <button
                     type="button"
                     onClick={() => onSectionChange('templates')}
-                    className={`w-full cursor-pointer rounded-full border py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 ${activeSection === 'templates' ? 'border-primary/20 bg-primary font-semibold text-foreground' : 'border-foreground/10 text-foreground/60 hover:border-primary/20 hover:bg-primary/5'}`}
+                    className={`w-full cursor-pointer rounded-full border py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 ${activeSection === 'templates' ? 'border-primary/20 bg-primary font-semibold text-foreground' : 'hover:border-primary/20 hover:bg-primary/5 border-foreground/10 text-foreground/60'}`}
                 >
                     Templates
                 </button>
                 <button
                     type="button"
                     onClick={() => onSectionChange('account')}
-                    className={`w-full cursor-pointer rounded-full border py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 ${activeSection === 'account' ? 'border-primary/20 bg-primary font-semibold text-foreground' : 'border-foreground/10 text-foreground/60 hover:border-primary/20 hover:bg-primary/5'}`}
+                    className={`w-full cursor-pointer rounded-full border py-3 text-center font-sans text-sm font-light tracking-[2.4px] text-foreground transition-colors duration-600 ${activeSection === 'account' ? 'border-primary/20 bg-primary font-semibold text-foreground' : 'hover:border-primary/20 hover:bg-primary/5 border-foreground/10 text-foreground/60'}`}
                 >
                     Account
                 </button>

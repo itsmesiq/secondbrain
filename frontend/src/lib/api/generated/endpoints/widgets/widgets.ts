@@ -23,6 +23,24 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { customFetch } from '../../../fetch';
 import type {
+    CreateHabitCompletion201,
+    CreateHabitCompletion400,
+    CreateHabitCompletion401,
+    CreateHabitCompletion404,
+    CreateHabitCompletion500,
+    CreateWidgetHabit201,
+    CreateWidgetHabit400,
+    CreateWidgetHabit401,
+    CreateWidgetHabit404,
+    CreateWidgetHabit500,
+    CreateWidgetHabitBody,
+    CreateWidgetProfile201,
+    CreateWidgetProfile400,
+    CreateWidgetProfile401,
+    CreateWidgetProfile404,
+    CreateWidgetProfile409,
+    CreateWidgetProfile500,
+    CreateWidgetProfileBody,
     CreateWidgetTask201,
     CreateWidgetTask400,
     CreateWidgetTask401,
@@ -32,15 +50,30 @@ import type {
     GetWidgetClock200,
     GetWidgetClock401,
     GetWidgetClock500,
+    GetWidgetHabits200,
+    GetWidgetHabits401,
+    GetWidgetHabits404,
+    GetWidgetHabits500,
+    GetWidgetHabitsParams,
+    GetWidgetProfile200,
+    GetWidgetProfile401,
+    GetWidgetProfile404,
+    GetWidgetProfile500,
+    GetWidgetStats200,
+    GetWidgetStats401,
+    GetWidgetStats404,
+    GetWidgetStats500,
     GetWidgetTasks200,
     GetWidgetTasks401,
     GetWidgetTasks404,
     GetWidgetTasks500,
-    GetWidgetTasksOverview200,
-    GetWidgetTasksOverview401,
-    GetWidgetTasksOverview404,
-    GetWidgetTasksOverview500,
     GetWidgetTasksParams,
+    UpdateWidgetTask200,
+    UpdateWidgetTask400,
+    UpdateWidgetTask401,
+    UpdateWidgetTask404,
+    UpdateWidgetTask500,
+    UpdateWidgetTaskBody,
 } from '../../schemas';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -201,103 +234,96 @@ export function useGetWidgetClock<
     return withQueryKey(query, queryOptions.queryKey);
 }
 
-export type getWidgetTasksOverviewResponse200 = {
-    data: GetWidgetTasksOverview200;
+export type getWidgetProfileResponse200 = {
+    data: GetWidgetProfile200;
     status: 200;
 };
 
-export type getWidgetTasksOverviewResponse401 = {
-    data: GetWidgetTasksOverview401;
+export type getWidgetProfileResponse401 = {
+    data: GetWidgetProfile401;
     status: 401;
 };
 
-export type getWidgetTasksOverviewResponse404 = {
-    data: GetWidgetTasksOverview404;
+export type getWidgetProfileResponse404 = {
+    data: GetWidgetProfile404;
     status: 404;
 };
 
-export type getWidgetTasksOverviewResponse500 = {
-    data: GetWidgetTasksOverview500;
+export type getWidgetProfileResponse500 = {
+    data: GetWidgetProfile500;
     status: 500;
 };
 
-export type getWidgetTasksOverviewResponseSuccess = getWidgetTasksOverviewResponse200 & {
+export type getWidgetProfileResponseSuccess = getWidgetProfileResponse200 & {
     headers: Headers;
 };
-export type getWidgetTasksOverviewResponseError = (
-    | getWidgetTasksOverviewResponse401
-    | getWidgetTasksOverviewResponse404
-    | getWidgetTasksOverviewResponse500
+export type getWidgetProfileResponseError = (
+    getWidgetProfileResponse401 | getWidgetProfileResponse404 | getWidgetProfileResponse500
 ) & {
     headers: Headers;
 };
 
-export type getWidgetTasksOverviewResponse =
-    getWidgetTasksOverviewResponseSuccess | getWidgetTasksOverviewResponseError;
+export type getWidgetProfileResponse =
+    getWidgetProfileResponseSuccess | getWidgetProfileResponseError;
 
-export const getGetWidgetTasksOverviewUrl = () => {
-    return `/api/widgets/tasks-overview`;
+export const getGetWidgetProfileUrl = () => {
+    return `/api/widgets/profile`;
 };
 
 /**
- * @summary Get task overview data for the authenticated user.
+ * @summary Get the profile widget data for the authenticated user.
  */
-export const getWidgetTasksOverview = async (
+export const getWidgetProfile = async (
     options?: Parameters<typeof customFetch>[1],
-): Promise<getWidgetTasksOverviewResponse> => {
-    return customFetch<getWidgetTasksOverviewResponse>(getGetWidgetTasksOverviewUrl(), {
+): Promise<getWidgetProfileResponse> => {
+    return customFetch<getWidgetProfileResponse>(getGetWidgetProfileUrl(), {
         ...options,
         method: 'GET',
     });
 };
 
-export const getGetWidgetTasksOverviewQueryKey = () => {
-    return [`/api/widgets/tasks-overview`] as const;
+export const getGetWidgetProfileQueryKey = () => {
+    return [`/api/widgets/profile`] as const;
 };
 
-export const getGetWidgetTasksOverviewQueryOptions = <
-    TData = Awaited<ReturnType<typeof getWidgetTasksOverview>>,
-    TError = GetWidgetTasksOverview401 | GetWidgetTasksOverview404 | GetWidgetTasksOverview500,
+export const getGetWidgetProfileQueryOptions = <
+    TData = Awaited<ReturnType<typeof getWidgetProfile>>,
+    TError = GetWidgetProfile401 | GetWidgetProfile404 | GetWidgetProfile500,
 >(options?: {
-    query?: Partial<
-        UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasksOverview>>, TError, TData>
-    >;
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetProfile>>, TError, TData>>;
     request?: SecondParameter<typeof customFetch>;
 }) => {
     const { query: queryOptions, request: requestOptions } = options ?? {};
 
-    const queryKey = queryOptions?.queryKey ?? getGetWidgetTasksOverviewQueryKey();
+    const queryKey = queryOptions?.queryKey ?? getGetWidgetProfileQueryKey();
 
-    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWidgetTasksOverview>>> = ({
-        signal,
-    }) => getWidgetTasksOverview({ signal, ...requestOptions });
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWidgetProfile>>> = ({ signal }) =>
+        getWidgetProfile({ signal, ...requestOptions });
 
     return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
-        Awaited<ReturnType<typeof getWidgetTasksOverview>>,
+        Awaited<ReturnType<typeof getWidgetProfile>>,
         TError,
         TData
     > & { queryKey: DataTag<QueryKey, TData, TError> };
 };
 
-export type GetWidgetTasksOverviewQueryResult = NonNullable<
-    Awaited<ReturnType<typeof getWidgetTasksOverview>>
->;
-export type GetWidgetTasksOverviewQueryError =
-    GetWidgetTasksOverview401 | GetWidgetTasksOverview404 | GetWidgetTasksOverview500;
+export type GetWidgetProfileQueryResult = NonNullable<Awaited<ReturnType<typeof getWidgetProfile>>>;
+export type GetWidgetProfileQueryError =
+    GetWidgetProfile401 | GetWidgetProfile404 | GetWidgetProfile500;
 
-export function useGetWidgetTasksOverview<
-    TData = Awaited<ReturnType<typeof getWidgetTasksOverview>>,
-    TError = GetWidgetTasksOverview401 | GetWidgetTasksOverview404 | GetWidgetTasksOverview500,
+export function useGetWidgetProfile<
+    TData = Awaited<ReturnType<typeof getWidgetProfile>>,
+    TError = GetWidgetProfile401 | GetWidgetProfile404 | GetWidgetProfile500,
 >(
     options: {
         query: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasksOverview>>, TError, TData>
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetProfile>>, TError, TData>
         > &
             Pick<
                 DefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getWidgetTasksOverview>>,
+                    Awaited<ReturnType<typeof getWidgetProfile>>,
                     TError,
-                    Awaited<ReturnType<typeof getWidgetTasksOverview>>
+                    Awaited<ReturnType<typeof getWidgetProfile>>
                 >,
                 'initialData'
             >;
@@ -305,19 +331,19 @@ export function useGetWidgetTasksOverview<
     },
     queryClient?: QueryClient,
 ): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetWidgetTasksOverview<
-    TData = Awaited<ReturnType<typeof getWidgetTasksOverview>>,
-    TError = GetWidgetTasksOverview401 | GetWidgetTasksOverview404 | GetWidgetTasksOverview500,
+export function useGetWidgetProfile<
+    TData = Awaited<ReturnType<typeof getWidgetProfile>>,
+    TError = GetWidgetProfile401 | GetWidgetProfile404 | GetWidgetProfile500,
 >(
     options?: {
         query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasksOverview>>, TError, TData>
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetProfile>>, TError, TData>
         > &
             Pick<
                 UndefinedInitialDataOptions<
-                    Awaited<ReturnType<typeof getWidgetTasksOverview>>,
+                    Awaited<ReturnType<typeof getWidgetProfile>>,
                     TError,
-                    Awaited<ReturnType<typeof getWidgetTasksOverview>>
+                    Awaited<ReturnType<typeof getWidgetProfile>>
                 >,
                 'initialData'
             >;
@@ -325,35 +351,339 @@ export function useGetWidgetTasksOverview<
     },
     queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
-export function useGetWidgetTasksOverview<
-    TData = Awaited<ReturnType<typeof getWidgetTasksOverview>>,
-    TError = GetWidgetTasksOverview401 | GetWidgetTasksOverview404 | GetWidgetTasksOverview500,
+export function useGetWidgetProfile<
+    TData = Awaited<ReturnType<typeof getWidgetProfile>>,
+    TError = GetWidgetProfile401 | GetWidgetProfile404 | GetWidgetProfile500,
 >(
     options?: {
         query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasksOverview>>, TError, TData>
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetProfile>>, TError, TData>
         >;
         request?: SecondParameter<typeof customFetch>;
     },
     queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
- * @summary Get task overview data for the authenticated user.
+ * @summary Get the profile widget data for the authenticated user.
  */
 
-export function useGetWidgetTasksOverview<
-    TData = Awaited<ReturnType<typeof getWidgetTasksOverview>>,
-    TError = GetWidgetTasksOverview401 | GetWidgetTasksOverview404 | GetWidgetTasksOverview500,
+export function useGetWidgetProfile<
+    TData = Awaited<ReturnType<typeof getWidgetProfile>>,
+    TError = GetWidgetProfile401 | GetWidgetProfile404 | GetWidgetProfile500,
 >(
     options?: {
         query?: Partial<
-            UseQueryOptions<Awaited<ReturnType<typeof getWidgetTasksOverview>>, TError, TData>
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetProfile>>, TError, TData>
         >;
         request?: SecondParameter<typeof customFetch>;
     },
     queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
-    const queryOptions = getGetWidgetTasksOverviewQueryOptions(options);
+    const queryOptions = getGetWidgetProfileQueryOptions(options);
+
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type createWidgetProfileResponse201 = {
+    data: CreateWidgetProfile201;
+    status: 201;
+};
+
+export type createWidgetProfileResponse400 = {
+    data: CreateWidgetProfile400;
+    status: 400;
+};
+
+export type createWidgetProfileResponse401 = {
+    data: CreateWidgetProfile401;
+    status: 401;
+};
+
+export type createWidgetProfileResponse404 = {
+    data: CreateWidgetProfile404;
+    status: 404;
+};
+
+export type createWidgetProfileResponse409 = {
+    data: CreateWidgetProfile409;
+    status: 409;
+};
+
+export type createWidgetProfileResponse500 = {
+    data: CreateWidgetProfile500;
+    status: 500;
+};
+
+export type createWidgetProfileResponseSuccess = createWidgetProfileResponse201 & {
+    headers: Headers;
+};
+export type createWidgetProfileResponseError = (
+    | createWidgetProfileResponse400
+    | createWidgetProfileResponse401
+    | createWidgetProfileResponse404
+    | createWidgetProfileResponse409
+    | createWidgetProfileResponse500
+) & {
+    headers: Headers;
+};
+
+export type createWidgetProfileResponse =
+    createWidgetProfileResponseSuccess | createWidgetProfileResponseError;
+
+export const getCreateWidgetProfileUrl = () => {
+    return `/api/widgets/profile`;
+};
+
+/**
+ * @summary Create a new profile for the authenticated user.
+ */
+export const createWidgetProfile = async (
+    createWidgetProfileBody: CreateWidgetProfileBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<createWidgetProfileResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<createWidgetProfileResponse>(getCreateWidgetProfileUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(createWidgetProfileBody),
+    });
+};
+
+export const getCreateWidgetProfileMutationKey = () => ['createWidgetProfile'] as const;
+
+export const getCreateWidgetProfileMutationOptions = <
+    TError =
+        | CreateWidgetProfile400
+        | CreateWidgetProfile401
+        | CreateWidgetProfile404
+        | CreateWidgetProfile409
+        | CreateWidgetProfile500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof createWidgetProfile>>,
+        TError,
+        CreateWidgetProfileMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof createWidgetProfile>>,
+    TError,
+    CreateWidgetProfileMutationVariables,
+    TContext
+> => {
+    const mutationKey = getCreateWidgetProfileMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof createWidgetProfile>>,
+        CreateWidgetProfileMutationVariables
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return createWidgetProfile(data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type CreateWidgetProfileMutationResult = NonNullable<
+    Awaited<ReturnType<typeof createWidgetProfile>>
+>;
+export type CreateWidgetProfileMutationBody = CreateWidgetProfileBody;
+export type CreateWidgetProfileMutationError =
+    | CreateWidgetProfile400
+    | CreateWidgetProfile401
+    | CreateWidgetProfile404
+    | CreateWidgetProfile409
+    | CreateWidgetProfile500;
+export type CreateWidgetProfileMutationVariables = { data: CreateWidgetProfileBody };
+
+/**
+ * @summary Create a new profile for the authenticated user.
+ */
+export const useCreateWidgetProfile = <
+    TError =
+        | CreateWidgetProfile400
+        | CreateWidgetProfile401
+        | CreateWidgetProfile404
+        | CreateWidgetProfile409
+        | CreateWidgetProfile500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof createWidgetProfile>>,
+            TError,
+            CreateWidgetProfileMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof createWidgetProfile>>,
+    TError,
+    CreateWidgetProfileMutationVariables,
+    TContext
+> => {
+    return useMutation(getCreateWidgetProfileMutationOptions(options), queryClient);
+};
+export type getWidgetStatsResponse200 = {
+    data: GetWidgetStats200;
+    status: 200;
+};
+
+export type getWidgetStatsResponse401 = {
+    data: GetWidgetStats401;
+    status: 401;
+};
+
+export type getWidgetStatsResponse404 = {
+    data: GetWidgetStats404;
+    status: 404;
+};
+
+export type getWidgetStatsResponse500 = {
+    data: GetWidgetStats500;
+    status: 500;
+};
+
+export type getWidgetStatsResponseSuccess = getWidgetStatsResponse200 & {
+    headers: Headers;
+};
+export type getWidgetStatsResponseError = (
+    getWidgetStatsResponse401 | getWidgetStatsResponse404 | getWidgetStatsResponse500
+) & {
+    headers: Headers;
+};
+
+export type getWidgetStatsResponse = getWidgetStatsResponseSuccess | getWidgetStatsResponseError;
+
+export const getGetWidgetStatsUrl = () => {
+    return `/api/widgets/stats`;
+};
+
+/**
+ * @summary Get the stats widget data for the authenticated user.
+ */
+export const getWidgetStats = async (
+    options?: Parameters<typeof customFetch>[1],
+): Promise<getWidgetStatsResponse> => {
+    return customFetch<getWidgetStatsResponse>(getGetWidgetStatsUrl(), {
+        ...options,
+        method: 'GET',
+    });
+};
+
+export const getGetWidgetStatsQueryKey = () => {
+    return [`/api/widgets/stats`] as const;
+};
+
+export const getGetWidgetStatsQueryOptions = <
+    TData = Awaited<ReturnType<typeof getWidgetStats>>,
+    TError = GetWidgetStats401 | GetWidgetStats404 | GetWidgetStats500,
+>(options?: {
+    query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetStats>>, TError, TData>>;
+    request?: SecondParameter<typeof customFetch>;
+}) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetWidgetStatsQueryKey();
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWidgetStats>>> = ({ signal }) =>
+        getWidgetStats({ signal, ...requestOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getWidgetStats>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetWidgetStatsQueryResult = NonNullable<Awaited<ReturnType<typeof getWidgetStats>>>;
+export type GetWidgetStatsQueryError = GetWidgetStats401 | GetWidgetStats404 | GetWidgetStats500;
+
+export function useGetWidgetStats<
+    TData = Awaited<ReturnType<typeof getWidgetStats>>,
+    TError = GetWidgetStats401 | GetWidgetStats404 | GetWidgetStats500,
+>(
+    options: {
+        query: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetStats>>, TError, TData>> &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getWidgetStats>>,
+                    TError,
+                    Awaited<ReturnType<typeof getWidgetStats>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetWidgetStats<
+    TData = Awaited<ReturnType<typeof getWidgetStats>>,
+    TError = GetWidgetStats401 | GetWidgetStats404 | GetWidgetStats500,
+>(
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetStats>>, TError, TData>
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getWidgetStats>>,
+                    TError,
+                    Awaited<ReturnType<typeof getWidgetStats>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetWidgetStats<
+    TData = Awaited<ReturnType<typeof getWidgetStats>>,
+    TError = GetWidgetStats401 | GetWidgetStats404 | GetWidgetStats500,
+>(
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetStats>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get the stats widget data for the authenticated user.
+ */
+
+export function useGetWidgetStats<
+    TData = Awaited<ReturnType<typeof getWidgetStats>>,
+    TError = GetWidgetStats401 | GetWidgetStats404 | GetWidgetStats500,
+>(
+    options?: {
+        query?: Partial<UseQueryOptions<Awaited<ReturnType<typeof getWidgetStats>>, TError, TData>>;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetWidgetStatsQueryOptions(options);
 
     const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
         queryKey: DataTag<QueryKey, TData, TError>;
@@ -410,7 +740,7 @@ export const getGetWidgetTasksUrl = (params: GetWidgetTasksParams) => {
 };
 
 /**
- * @summary Get tasks for the authenticated user, optionally filtered by project.
+ * @summary Get tasks for the authenticated user
  */
 export const getWidgetTasks = async (
     params: GetWidgetTasksParams,
@@ -505,7 +835,7 @@ export function useGetWidgetTasks<
     queryClient?: QueryClient,
 ): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
 /**
- * @summary Get tasks for the authenticated user, optionally filtered by project.
+ * @summary Get tasks for the authenticated user
  */
 
 export function useGetWidgetTasks<
@@ -665,4 +995,597 @@ export const useCreateWidgetTask = <
     TContext
 > => {
     return useMutation(getCreateWidgetTaskMutationOptions(options), queryClient);
+};
+export type updateWidgetTaskResponse200 = {
+    data: UpdateWidgetTask200;
+    status: 200;
+};
+
+export type updateWidgetTaskResponse400 = {
+    data: UpdateWidgetTask400;
+    status: 400;
+};
+
+export type updateWidgetTaskResponse401 = {
+    data: UpdateWidgetTask401;
+    status: 401;
+};
+
+export type updateWidgetTaskResponse404 = {
+    data: UpdateWidgetTask404;
+    status: 404;
+};
+
+export type updateWidgetTaskResponse500 = {
+    data: UpdateWidgetTask500;
+    status: 500;
+};
+
+export type updateWidgetTaskResponseSuccess = updateWidgetTaskResponse200 & {
+    headers: Headers;
+};
+export type updateWidgetTaskResponseError = (
+    | updateWidgetTaskResponse400
+    | updateWidgetTaskResponse401
+    | updateWidgetTaskResponse404
+    | updateWidgetTaskResponse500
+) & {
+    headers: Headers;
+};
+
+export type updateWidgetTaskResponse =
+    updateWidgetTaskResponseSuccess | updateWidgetTaskResponseError;
+
+export const getUpdateWidgetTaskUrl = (id: string) => {
+    return `/api/widgets/tasks/${id}`;
+};
+
+/**
+ * @summary Update a task for the authenticated user.
+ */
+export const updateWidgetTask = async (
+    id: string,
+    updateWidgetTaskBody: UpdateWidgetTaskBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<updateWidgetTaskResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<updateWidgetTaskResponse>(getUpdateWidgetTaskUrl(id), {
+        ...options,
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(updateWidgetTaskBody),
+    });
+};
+
+export const getUpdateWidgetTaskMutationKey = () => ['updateWidgetTask'] as const;
+
+export const getUpdateWidgetTaskMutationOptions = <
+    TError = UpdateWidgetTask400 | UpdateWidgetTask401 | UpdateWidgetTask404 | UpdateWidgetTask500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof updateWidgetTask>>,
+        TError,
+        UpdateWidgetTaskMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof updateWidgetTask>>,
+    TError,
+    UpdateWidgetTaskMutationVariables,
+    TContext
+> => {
+    const mutationKey = getUpdateWidgetTaskMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof updateWidgetTask>>,
+        UpdateWidgetTaskMutationVariables
+    > = (props) => {
+        const { id, data } = props ?? {};
+
+        return updateWidgetTask(id, data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type UpdateWidgetTaskMutationResult = NonNullable<
+    Awaited<ReturnType<typeof updateWidgetTask>>
+>;
+export type UpdateWidgetTaskMutationBody = UpdateWidgetTaskBody;
+export type UpdateWidgetTaskMutationError =
+    UpdateWidgetTask400 | UpdateWidgetTask401 | UpdateWidgetTask404 | UpdateWidgetTask500;
+export type UpdateWidgetTaskMutationVariables = { id: string; data: UpdateWidgetTaskBody };
+
+/**
+ * @summary Update a task for the authenticated user.
+ */
+export const useUpdateWidgetTask = <
+    TError = UpdateWidgetTask400 | UpdateWidgetTask401 | UpdateWidgetTask404 | UpdateWidgetTask500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof updateWidgetTask>>,
+            TError,
+            UpdateWidgetTaskMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof updateWidgetTask>>,
+    TError,
+    UpdateWidgetTaskMutationVariables,
+    TContext
+> => {
+    return useMutation(getUpdateWidgetTaskMutationOptions(options), queryClient);
+};
+export type getWidgetHabitsResponse200 = {
+    data: GetWidgetHabits200;
+    status: 200;
+};
+
+export type getWidgetHabitsResponse401 = {
+    data: GetWidgetHabits401;
+    status: 401;
+};
+
+export type getWidgetHabitsResponse404 = {
+    data: GetWidgetHabits404;
+    status: 404;
+};
+
+export type getWidgetHabitsResponse500 = {
+    data: GetWidgetHabits500;
+    status: 500;
+};
+
+export type getWidgetHabitsResponseSuccess = getWidgetHabitsResponse200 & {
+    headers: Headers;
+};
+export type getWidgetHabitsResponseError = (
+    getWidgetHabitsResponse401 | getWidgetHabitsResponse404 | getWidgetHabitsResponse500
+) & {
+    headers: Headers;
+};
+
+export type getWidgetHabitsResponse = getWidgetHabitsResponseSuccess | getWidgetHabitsResponseError;
+
+export const getGetWidgetHabitsUrl = (params?: GetWidgetHabitsParams) => {
+    const normalizedParams = new URLSearchParams();
+
+    Object.entries(params || {}).forEach(([key, value]) => {
+        if (value !== undefined) {
+            normalizedParams.append(key, value === null ? 'null' : String(value));
+        }
+    });
+
+    const stringifiedParams = normalizedParams.toString();
+
+    return stringifiedParams.length > 0
+        ? `/api/widgets/habits?${stringifiedParams}`
+        : `/api/widgets/habits`;
+};
+
+/**
+ * @summary Get habits for the authenticated user
+ */
+export const getWidgetHabits = async (
+    params?: GetWidgetHabitsParams,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<getWidgetHabitsResponse> => {
+    return customFetch<getWidgetHabitsResponse>(getGetWidgetHabitsUrl(params), {
+        ...options,
+        method: 'GET',
+    });
+};
+
+export const getGetWidgetHabitsQueryKey = (params?: GetWidgetHabitsParams) => {
+    return [`/api/widgets/habits`, ...(params ? [params] : [])] as const;
+};
+
+export const getGetWidgetHabitsQueryOptions = <
+    TData = Awaited<ReturnType<typeof getWidgetHabits>>,
+    TError = GetWidgetHabits401 | GetWidgetHabits404 | GetWidgetHabits500,
+>(
+    params?: GetWidgetHabitsParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetHabits>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+) => {
+    const { query: queryOptions, request: requestOptions } = options ?? {};
+
+    const queryKey = queryOptions?.queryKey ?? getGetWidgetHabitsQueryKey(params);
+
+    const queryFn: QueryFunction<Awaited<ReturnType<typeof getWidgetHabits>>> = ({ signal }) =>
+        getWidgetHabits(params, { signal, ...requestOptions });
+
+    return { queryKey, queryFn, ...queryOptions } as UseQueryOptions<
+        Awaited<ReturnType<typeof getWidgetHabits>>,
+        TError,
+        TData
+    > & { queryKey: DataTag<QueryKey, TData, TError> };
+};
+
+export type GetWidgetHabitsQueryResult = NonNullable<Awaited<ReturnType<typeof getWidgetHabits>>>;
+export type GetWidgetHabitsQueryError =
+    GetWidgetHabits401 | GetWidgetHabits404 | GetWidgetHabits500;
+
+export function useGetWidgetHabits<
+    TData = Awaited<ReturnType<typeof getWidgetHabits>>,
+    TError = GetWidgetHabits401 | GetWidgetHabits404 | GetWidgetHabits500,
+>(
+    params: undefined | GetWidgetHabitsParams,
+    options: {
+        query: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetHabits>>, TError, TData>
+        > &
+            Pick<
+                DefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getWidgetHabits>>,
+                    TError,
+                    Awaited<ReturnType<typeof getWidgetHabits>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): DefinedUseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetWidgetHabits<
+    TData = Awaited<ReturnType<typeof getWidgetHabits>>,
+    TError = GetWidgetHabits401 | GetWidgetHabits404 | GetWidgetHabits500,
+>(
+    params?: GetWidgetHabitsParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetHabits>>, TError, TData>
+        > &
+            Pick<
+                UndefinedInitialDataOptions<
+                    Awaited<ReturnType<typeof getWidgetHabits>>,
+                    TError,
+                    Awaited<ReturnType<typeof getWidgetHabits>>
+                >,
+                'initialData'
+            >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+export function useGetWidgetHabits<
+    TData = Awaited<ReturnType<typeof getWidgetHabits>>,
+    TError = GetWidgetHabits401 | GetWidgetHabits404 | GetWidgetHabits500,
+>(
+    params?: GetWidgetHabitsParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetHabits>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> };
+/**
+ * @summary Get habits for the authenticated user
+ */
+
+export function useGetWidgetHabits<
+    TData = Awaited<ReturnType<typeof getWidgetHabits>>,
+    TError = GetWidgetHabits401 | GetWidgetHabits404 | GetWidgetHabits500,
+>(
+    params?: GetWidgetHabitsParams,
+    options?: {
+        query?: Partial<
+            UseQueryOptions<Awaited<ReturnType<typeof getWidgetHabits>>, TError, TData>
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseQueryResult<TData, TError> & { queryKey: DataTag<QueryKey, TData, TError> } {
+    const queryOptions = getGetWidgetHabitsQueryOptions(params, options);
+
+    const query = useQuery(queryOptions, queryClient) as UseQueryResult<TData, TError> & {
+        queryKey: DataTag<QueryKey, TData, TError>;
+    };
+
+    return withQueryKey(query, queryOptions.queryKey);
+}
+
+export type createWidgetHabitResponse201 = {
+    data: CreateWidgetHabit201;
+    status: 201;
+};
+
+export type createWidgetHabitResponse400 = {
+    data: CreateWidgetHabit400;
+    status: 400;
+};
+
+export type createWidgetHabitResponse401 = {
+    data: CreateWidgetHabit401;
+    status: 401;
+};
+
+export type createWidgetHabitResponse404 = {
+    data: CreateWidgetHabit404;
+    status: 404;
+};
+
+export type createWidgetHabitResponse500 = {
+    data: CreateWidgetHabit500;
+    status: 500;
+};
+
+export type createWidgetHabitResponseSuccess = createWidgetHabitResponse201 & {
+    headers: Headers;
+};
+export type createWidgetHabitResponseError = (
+    | createWidgetHabitResponse400
+    | createWidgetHabitResponse401
+    | createWidgetHabitResponse404
+    | createWidgetHabitResponse500
+) & {
+    headers: Headers;
+};
+
+export type createWidgetHabitResponse =
+    createWidgetHabitResponseSuccess | createWidgetHabitResponseError;
+
+export const getCreateWidgetHabitUrl = () => {
+    return `/api/widgets/habits`;
+};
+
+/**
+ * @summary Create a new habit for the authenticated user.
+ */
+export const createWidgetHabit = async (
+    createWidgetHabitBody: CreateWidgetHabitBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<createWidgetHabitResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<createWidgetHabitResponse>(getCreateWidgetHabitUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(createWidgetHabitBody),
+    });
+};
+
+export const getCreateWidgetHabitMutationKey = () => ['createWidgetHabit'] as const;
+
+export const getCreateWidgetHabitMutationOptions = <
+    TError =
+        CreateWidgetHabit400 | CreateWidgetHabit401 | CreateWidgetHabit404 | CreateWidgetHabit500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof createWidgetHabit>>,
+        TError,
+        CreateWidgetHabitMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof createWidgetHabit>>,
+    TError,
+    CreateWidgetHabitMutationVariables,
+    TContext
+> => {
+    const mutationKey = getCreateWidgetHabitMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof createWidgetHabit>>,
+        CreateWidgetHabitMutationVariables
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return createWidgetHabit(data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type CreateWidgetHabitMutationResult = NonNullable<
+    Awaited<ReturnType<typeof createWidgetHabit>>
+>;
+export type CreateWidgetHabitMutationBody = CreateWidgetHabitBody;
+export type CreateWidgetHabitMutationError =
+    CreateWidgetHabit400 | CreateWidgetHabit401 | CreateWidgetHabit404 | CreateWidgetHabit500;
+export type CreateWidgetHabitMutationVariables = { data: CreateWidgetHabitBody };
+
+/**
+ * @summary Create a new habit for the authenticated user.
+ */
+export const useCreateWidgetHabit = <
+    TError =
+        CreateWidgetHabit400 | CreateWidgetHabit401 | CreateWidgetHabit404 | CreateWidgetHabit500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof createWidgetHabit>>,
+            TError,
+            CreateWidgetHabitMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof createWidgetHabit>>,
+    TError,
+    CreateWidgetHabitMutationVariables,
+    TContext
+> => {
+    return useMutation(getCreateWidgetHabitMutationOptions(options), queryClient);
+};
+export type createHabitCompletionResponse201 = {
+    data: CreateHabitCompletion201;
+    status: 201;
+};
+
+export type createHabitCompletionResponse400 = {
+    data: CreateHabitCompletion400;
+    status: 400;
+};
+
+export type createHabitCompletionResponse401 = {
+    data: CreateHabitCompletion401;
+    status: 401;
+};
+
+export type createHabitCompletionResponse404 = {
+    data: CreateHabitCompletion404;
+    status: 404;
+};
+
+export type createHabitCompletionResponse500 = {
+    data: CreateHabitCompletion500;
+    status: 500;
+};
+
+export type createHabitCompletionResponseSuccess = createHabitCompletionResponse201 & {
+    headers: Headers;
+};
+export type createHabitCompletionResponseError = (
+    | createHabitCompletionResponse400
+    | createHabitCompletionResponse401
+    | createHabitCompletionResponse404
+    | createHabitCompletionResponse500
+) & {
+    headers: Headers;
+};
+
+export type createHabitCompletionResponse =
+    createHabitCompletionResponseSuccess | createHabitCompletionResponseError;
+
+export const getCreateHabitCompletionUrl = (id: string) => {
+    return `/api/widgets/habits/${id}/completions`;
+};
+
+/**
+ * @summary Complete a habit for the authenticated user.
+ */
+export const createHabitCompletion = async (
+    id: string,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<createHabitCompletionResponse> => {
+    return customFetch<createHabitCompletionResponse>(getCreateHabitCompletionUrl(id), {
+        ...options,
+        method: 'POST',
+    });
+};
+
+export const getCreateHabitCompletionMutationKey = () => ['createHabitCompletion'] as const;
+
+export const getCreateHabitCompletionMutationOptions = <
+    TError =
+        | CreateHabitCompletion400
+        | CreateHabitCompletion401
+        | CreateHabitCompletion404
+        | CreateHabitCompletion500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof createHabitCompletion>>,
+        TError,
+        CreateHabitCompletionMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof createHabitCompletion>>,
+    TError,
+    CreateHabitCompletionMutationVariables,
+    TContext
+> => {
+    const mutationKey = getCreateHabitCompletionMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof createHabitCompletion>>,
+        CreateHabitCompletionMutationVariables
+    > = (props) => {
+        const { id } = props ?? {};
+
+        return createHabitCompletion(id, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type CreateHabitCompletionMutationResult = NonNullable<
+    Awaited<ReturnType<typeof createHabitCompletion>>
+>;
+
+export type CreateHabitCompletionMutationError =
+    | CreateHabitCompletion400
+    | CreateHabitCompletion401
+    | CreateHabitCompletion404
+    | CreateHabitCompletion500;
+export type CreateHabitCompletionMutationVariables = { id: string };
+
+/**
+ * @summary Complete a habit for the authenticated user.
+ */
+export const useCreateHabitCompletion = <
+    TError =
+        | CreateHabitCompletion400
+        | CreateHabitCompletion401
+        | CreateHabitCompletion404
+        | CreateHabitCompletion500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof createHabitCompletion>>,
+            TError,
+            CreateHabitCompletionMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof createHabitCompletion>>,
+    TError,
+    CreateHabitCompletionMutationVariables,
+    TContext
+> => {
+    return useMutation(getCreateHabitCompletionMutationOptions(options), queryClient);
 };

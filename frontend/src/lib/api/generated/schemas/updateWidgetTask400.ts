@@ -6,7 +6,8 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetWidgetTasks200TasksItemProject = {
-    id: string;
-    name: string;
-} | null;
+export type UpdateWidgetTask400 = {
+    error: string;
+    message: string;
+    code: string;
+};
