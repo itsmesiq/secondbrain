@@ -80,6 +80,16 @@ export class NotionAdapter {
         });
     }
 
+    async updateBlock(
+        blockId: string,
+        data: Omit<Parameters<typeof this.client.blocks.update>[0], 'block_id'>,
+    ) {
+        return this.client.blocks.update({
+            block_id: blockId,
+            ...data,
+        });
+    }
+
     async retrievePage(pageId: string) {
         return this.client.pages.retrieve({
             page_id: pageId,

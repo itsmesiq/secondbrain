@@ -25,6 +25,9 @@ import {
     NotionStatusSchema,
     QueryNotionDataSourceParamsSchema,
     ReadNotionPageParamsSchema,
+    UpdateNotionBlockParamsSchema,
+    UpdateNotionBlockResponseSchema,
+    UpdateNotionBlockSchema,
     UpdateNotionPageParamsSchema,
     UpdateNotionPageResponseSchema,
     UpdateNotionPageSchema,
@@ -36,6 +39,7 @@ import { queryNotionDataSource } from '../usecases/queryNotionDataSource.js';
 import { readNotionPage } from '../usecases/readNotionPage.js';
 import { readNotionPageContent } from '../usecases/readNotionPageContent.js';
 import { searchNotion } from '../usecases/searchNotion.js';
+import { updateNotionBlock } from '../usecases/updateNotionBlock.js';
 import { updateNotionPage } from '../usecases/updateNotionPage.js';
 
 export async function notionRoutes(app: FastifyInstance) {
@@ -315,6 +319,33 @@ export async function notionRoutes(app: FastifyInstance) {
                 userId: request.user!.id,
                 pageId: request.params.id,
                 children: request.body.children,
+            });
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'PATCH',
+        url: '/api/notion/blocks/:id',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'updateNotionBlock',
+            tags: ['Notion'],
+            summary: 'Update a Notion block',
+            params: UpdateNotionBlockParamsSchema,
+            body: UpdateNotionBlockSchema,
+            response: {
+                200: UpdateNotionBlockResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return updateNotionBlock({
+                userId: request.user!.id,
+                blockId: request.params.id,
+                data: request.body,
             });
         },
     });
