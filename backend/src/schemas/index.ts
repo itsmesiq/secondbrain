@@ -34,6 +34,12 @@ export const NotionStatusSchema = z.object({
 
 export type NotionStatus = z.infer<typeof NotionStatusSchema>;
 
+export const OnboardingStatusSchema = z.object({
+    completed: z.boolean(),
+});
+
+export type OnboardingStatus = z.infer<typeof OnboardingStatusSchema>;
+
 export const NotionPageSchema = z.object({
     id: z.string(),
     title: z.string(),
