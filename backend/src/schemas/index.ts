@@ -89,6 +89,27 @@ export const NotionPageContentResponseSchema = z.object({
 
 export type NotionPageContentResponse = z.infer<typeof NotionPageContentResponseSchema>;
 
+export const QueryNotionDataSourceParamsSchema = z.object({
+    id: z.string(),
+});
+
+export type QueryNotionDataSourceParams = z.infer<typeof QueryNotionDataSourceParamsSchema>;
+
+export const NotionDataSourcePageSchema = z.object({
+    id: z.string(),
+    title: z.string(),
+    url: z.url(),
+    archived: z.boolean(),
+    properties: z.record(z.string(), z.unknown()),
+});
+
+export const NotionDataSourcePagesResponseSchema = z.object({
+    dataSourceId: z.string(),
+    pages: z.array(NotionDataSourcePageSchema),
+});
+
+export type NotionDataSourcePagesResponse = z.infer<typeof NotionDataSourcePagesResponseSchema>;
+
 export const EmbedTokenSchema = z.object({
     token: z.string(),
 });

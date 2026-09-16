@@ -28,7 +28,7 @@ async function readBlocksRecursively(
                 return block;
             }
 
-            const children = await readBlocksRecursively(notion, block.id);
+            const children = await readBlockChildren(notion, block.id);
 
             return {
                 ...block,
