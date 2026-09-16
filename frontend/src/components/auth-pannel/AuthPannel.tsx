@@ -1,4 +1,11 @@
-import { GoogleIcon, MysticGlyph } from '../icons';
+import {
+    GoogleIcon,
+    MysticGlyph,
+    PixelBorderBL,
+    PixelBorderBR,
+    PixelBorderTL,
+    PixelBorderTR,
+} from '../icons';
 import { SocialButton } from '../ui/SocialButton';
 
 type AuthPannelProps = {
@@ -36,6 +43,8 @@ export default function AuthPannel({ onSignInWithGoogle }: AuthPannelProps) {
                 />
             </div>
             <div className="absolute top-0 z-10 flex w-full items-center justify-between border-b border-stroke-secondary bg-surface/40 px-3.5 py-2 backdrop-blur-xs">
+                <PixelBorderTL className="absolute top-0 left-0 h-3 w-3" />
+                <PixelBorderTR className="absolute top-0 right-0 h-3 w-3" />
                 <span className="font-mono text-[10px] tracking-[2px] text-text-muted">
                     ETH-01 // ACCESS NODE
                 </span>
@@ -46,6 +55,8 @@ export default function AuthPannel({ onSignInWithGoogle }: AuthPannelProps) {
                 </div>
             </div>
             <div className="absolute bottom-0 z-10 flex w-full flex-col gap-1 border-t border-stroke-secondary bg-surface/10 px-3.5 py-3">
+                <PixelBorderBL className="absolute bottom-0 left-0 h-3 w-3" />
+                <PixelBorderBR className="absolute right-0 bottom-0 h-3 w-3" />
                 <span className="font-mono text-[10px] tracking-[2px] text-text-muted">
                     ETH-01 // ACCESS NODE
                 </span>
