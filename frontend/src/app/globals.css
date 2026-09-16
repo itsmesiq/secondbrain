@@ -4,7 +4,7 @@
 :root {
     --background: #ffffff;
     --surface: #f7f6f3;
-    --foreground: #171717;
+    --foreground: #0a0a0f;
     --primary: #ff0a54;
 
     /* Widgets */
@@ -68,7 +68,26 @@
     --color-background: var(--background);
     --color-foreground: var(--foreground);
     --color-surface: var(--surface);
-    --color-primary: var(--primary);
+    --color-surface-elevated: var(--surface-elevated);
+    --color-card: var(--card);
+    --color-stroke-primary: var(--stroke-primary);
+    --color-stroke-secondary: var(--stroke-secondary);
+    --color-text-secondary: var(--text-secondary);
+    --color-text-muted: var(--text-muted);
+    --color-etherea-purple: var(--etherea-purple);
+    --color-etherea-cyan: var(--etherea-cyan);
+    --color-etherea-magenta: var(--etherea-magenta);
+    --color-etherea-pink: var(--etherea-pink);
+    --color-mind-cyan: var(--mind-cyan);
+    --color-body-yellow: var(--body-yellow);
+    --color-soul-purple: var(--soul-purple);
+    --color-social-green: var(--social-green);
+    --color-power-pink: var(--power-pink);
+
+    --color-success-green: var(--success-green);
+    --color-warning-yellow: var(--warning-yellow);
+    --color-error-red: var(--error-red);
+
     --font-sans: var(--font-geist-sans);
     --font-mono: var(--font-geist-mono);
 
@@ -88,10 +107,30 @@
 
 @media (prefers-color-scheme: dark) {
     :root {
-        --background: #0a0a0a;
-        --surface: #0e0e0e;
-        --foreground: #ededed;
-        --primary: #ff0a54;
+        --background: #0a0a0f;
+        --surface: #0d0d1a;
+        --surface-elevated: #150d22;
+        --card: #141428;
+        --stroke-primary: #4a2a8a;
+        --stroke-secondary: #2a1f4a;
+        --foreground: #ffffff;
+        --text-secondary: #6a50a0;
+        --text-muted: #4a3a6a;
+
+        --etherea-purple: #9b3dff;
+        --etherea-cyan: #00e5ff;
+        --etherea-magenta: #e52bff;
+        --etherea-pink: #ff3f9f;
+
+        --mind-cyan: #00e5ff;
+        --body-yellow: #ffd700;
+        --soul-purple: #9b30ff;
+        --social-green: #00ffb3;
+        --power-pink: #ff2d78;
+
+        --success-green: #00d451;
+        --warning-yellow: #ffbf00;
+        --error-red: #e5262a;
     }
 }
 
