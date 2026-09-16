@@ -8,6 +8,8 @@ import { account } from '../db/schema.js';
 import { getNotionPageTitle } from '../lib/notion.js';
 import { requireAuth } from '../plugins/requireAuth.js';
 import {
+    CreateNotionChildPageParamsSchema,
+    CreateNotionChildPageSchema,
     CreateNotionPageParamsSchema,
     CreateNotionPageResponseSchema,
     CreateNotionPageSchema,
@@ -22,6 +24,7 @@ import {
     QueryNotionDataSourceParamsSchema,
     ReadNotionPageParamsSchema,
 } from '../schemas/index.js';
+import { createNotionChildPage } from '../usecases/createNotionChildPage.js';
 import { createNotionPage } from '../usecases/createNotionPage.js';
 import { queryNotionDataSource } from '../usecases/queryNotionDataSource.js';
 import { readNotionPage } from '../usecases/readNotionPage.js';
@@ -218,6 +221,34 @@ export async function notionRoutes(app: FastifyInstance) {
             const page = await createNotionPage({
                 userId: request.user!.id,
                 dateSourceId: request.params.id,
+                properties: request.body.properties,
+            });
+
+            return reply.status(201).send(page);
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/api/notion/pages/:id/children',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'createNotionChildPage',
+            tags: ['Notion'],
+            summary: 'Create a new child page under a Notion page',
+            params: CreateNotionChildPageParamsSchema,
+            body: CreateNotionChildPageSchema,
+            response: {
+                201: CreateNotionPageResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async (request, reply) => {
+            const page = await createNotionChildPage({
+                userId: request.user!.id,
+                parentPageId: request.params.id,
                 properties: request.body.properties,
             });
 

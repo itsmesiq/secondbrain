@@ -85,6 +85,15 @@ export class NotionAdapter {
         });
     }
 
+    async createChildPage(parentPageId: string, properties: CreatePageParameters['properties']) {
+        return this.client.pages.create({
+            parent: {
+                page_id: parentPageId,
+            },
+            properties,
+        });
+    }
+
     async updatePage(pageId: string, properties: UpdatePageParameters['properties']) {
         return this.client.pages.update({
             page_id: pageId,
