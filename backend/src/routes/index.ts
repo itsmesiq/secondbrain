@@ -5,6 +5,7 @@ import { embedTokenRoutes } from './embedToken.js';
 import { healthRoute } from './health.js';
 import { meRoute } from './me.js';
 import { notionRoutes } from './notion.js';
+import { onboardingRoutes } from './onboarding.js';
 import { widgetRoutes } from './widgets.js';
 
 export async function registerRoutes(app: FastifyInstance) {
@@ -14,4 +15,5 @@ export async function registerRoutes(app: FastifyInstance) {
     await app.register(notionRoutes);
     await app.register(embedTokenRoutes);
     await app.register(widgetRoutes);
+    await app.register(onboardingRoutes);
 }
