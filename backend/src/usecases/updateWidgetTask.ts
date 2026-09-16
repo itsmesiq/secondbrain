@@ -13,9 +13,11 @@ export async function updateWidgetTask({ userId, taskId, status }: UpdateWidgetT
 
     if (status) {
         await notion.updatePage(taskId, {
-            Status: {
-                status: {
-                    name: status,
+            properties: {
+                Status: {
+                    status: {
+                        name: status,
+                    },
                 },
             },
         });
@@ -28,19 +30,21 @@ export async function updateWidgetTask({ userId, taskId, status }: UpdateWidgetT
         });
 
         await notion.updatePage(taskId, {
-            'Completed At': {
-                date: {
-                    start: new Date().toISOString(),
+            properties: {
+                'Completed At': {
+                    date: {
+                        start: new Date().toISOString(),
+                    },
                 },
-            },
-            'XP Earned': {
-                number: reward.xp,
-            },
-            'Gold Earned': {
-                number: reward.gold,
-            },
-            'Reward Processed': {
-                checkbox: true,
+                'XP Earned': {
+                    number: reward.xp,
+                },
+                'Gold Earned': {
+                    number: reward.gold,
+                },
+                'Reward Processed': {
+                    checkbox: true,
+                },
             },
         });
     }

@@ -83,30 +83,34 @@ export async function updateProfileProgress({
     const totalGold = currentGold + gold + milestoneGold;
 
     await notion.updatePage(profilePage.id, {
-        XP: {
-            number: totalXP,
-        },
-        Gold: {
-            number: totalGold,
-        },
-        Level: {
-            number: currentLevel.level,
-        },
-        Title: {
-            rich_text: [
-                {
-                    text: {
-                        content: currentLevel.name,
+        properties: {
+            XP: {
+                number: totalXP,
+            },
+            Gold: {
+                number: totalGold,
+            },
+            Level: {
+                number: currentLevel.level,
+            },
+            Title: {
+                rich_text: [
+                    {
+                        text: {
+                            content: currentLevel.name,
+                        },
                     },
-                },
-            ],
+                ],
+            },
         },
     });
 
     for (const level of reachedLevels) {
         await notion.updatePage(level.id, {
-            Active: {
-                checkbox: true,
+            properties: {
+                Active: {
+                    checkbox: true,
+                },
             },
         });
     }
