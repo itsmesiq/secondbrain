@@ -6,7 +6,7 @@
  * OpenAPI spec version: 1.0.0
  */
 
-export type GetWidgetTasks200ProjectsItem = {
+export type CreateNotionChildPage201 = {
     id: string;
-    name: string;
+    url?: string;
 };

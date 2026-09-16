@@ -5,20 +5,26 @@
  * API documentation for the Second Brain application
  * OpenAPI spec version: 1.0.0
  */
-import type { GetWidgetTasks200TasksItemProject } from './getWidgetTasks200TasksItemProject';
+import type { GetWidgetTasks200TasksItemSpecializationsItem } from './getWidgetTasks200TasksItemSpecializationsItem';
 
 export type GetWidgetTasks200TasksItem = {
     id: string;
-    title: string;
-    /** @nullable */
-    description: string | null;
+    name: string;
+    status: string;
+    priority: string;
+    difficulty: string;
     /** @nullable */
     dueDate: string | null;
     /** @nullable */
-    category: string | null;
-    project: GetWidgetTasks200TasksItemProject;
-    status: string;
+    completedAt: string | null;
+    specializationIds: string[];
+    specializations: GetWidgetTasks200TasksItemSpecializationsItem[];
     /** @nullable */
-    priority: string | null;
-    url: string;
+    objectiveId: string | null;
+    /** @nullable */
+    projectId: string | null;
+    xpEarned: number;
+    goldEarned: number;
+    rewardProcessed: boolean;
+    createdAt: string;
 };
