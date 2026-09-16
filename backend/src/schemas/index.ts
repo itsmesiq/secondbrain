@@ -118,6 +118,7 @@ export type CreateNotionPageParams = z.infer<typeof CreateNotionPageParamsSchema
 
 export const CreateNotionPageSchema = z.object({
     properties: z.record(z.string(), z.unknown()),
+    children: z.array(z.unknown()).optional(),
 });
 
 export type CreateNotionPage = z.infer<typeof CreateNotionPageSchema>;
@@ -137,6 +138,7 @@ export type CreateNotionChildPageParams = z.infer<typeof CreateNotionChildPagePa
 
 export const CreateNotionChildPageSchema = z.object({
     properties: z.record(z.string(), z.unknown()),
+    children: z.array(z.unknown()).optional(),
 });
 
 export type CreateNotionChildPage = z.infer<typeof CreateNotionChildPageSchema>;
