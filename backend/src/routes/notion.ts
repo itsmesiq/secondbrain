@@ -9,6 +9,7 @@ import { getNotionPageTitle } from '../lib/notion.js';
 import { requireAuth } from '../plugins/requireAuth.js';
 import {
     ErrorSchema,
+    NotionPageContentResponseSchema,
     NotionPageResponseSchema,
     NotionPagesSchema,
     NotionSearchQuerySchema,
@@ -17,6 +18,7 @@ import {
     ReadNotionPageParamsSchema,
 } from '../schemas/index.js';
 import { readNotionPage } from '../usecases/readNotionPage.js';
+import { readNotionPageContent } from '../usecases/readNotionPageContent.js';
 import { searchNotion } from '../usecases/searchNotion.js';
 
 export async function notionRoutes(app: FastifyInstance) {
@@ -80,14 +82,18 @@ export async function notionRoutes(app: FastifyInstance) {
 
             const notion = new NotionAdapter(accessToken);
 
-            const pages = await notion.searchPages();
+            const pages = [];
 
-            return {
-                pages: pages.map(page => ({
+            for await (const page of notion.searchPages()) {
+                pages.push({
                     id: page.id,
                     title: getNotionPageTitle(page),
                     url: page.url,
-                })),
+                });
+            }
+
+            return {
+                pages,
             };
         },
     });
@@ -132,6 +138,29 @@ export async function notionRoutes(app: FastifyInstance) {
         },
         handler: async request => {
             return readNotionPage({
+                userId: request.user!.id,
+                pageId: request.params.id,
+            });
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'GET',
+        url: '/api/notion/pages/:id/content',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'getNotionPageContent',
+            tags: ['Notion'],
+            summary: 'Read the recursive content blocks of a Notion page',
+            params: ReadNotionPageParamsSchema,
+            response: {
+                200: NotionPageContentResponseSchema,
+                401: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return readNotionPageContent({
                 userId: request.user!.id,
                 pageId: request.params.id,
             });

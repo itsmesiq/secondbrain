@@ -8,20 +8,17 @@ interface SearchNotion {
 export async function searchNotion({ userId, query }: SearchNotion) {
     const notion = await getNotionAdapter(userId);
 
-    const [pages, dataSources] = await Promise.all([
-        notion.searchPages(),
-        notion.searchDataSources(query),
-    ]);
+    const pages = [];
 
-    const normalizeQuery = query?.trim().toLocaleLowerCase();
+    for await (const page of notion.searchPages(query)) {
+        pages.push(page);
+    }
 
-    const filteredPages = normalizeQuery
-        ? pages.filter(page => getNotionPageTitle(page).toLowerCase().includes(normalizeQuery))
-        : pages;
+    const dataSources = await notion.searchDataSources(query);
 
     return {
         results: [
-            ...filteredPages.map(page => ({
+            ...pages.map(page => ({
                 id: page.id,
                 type: 'page' as const,
                 title: getNotionPageTitle(page),

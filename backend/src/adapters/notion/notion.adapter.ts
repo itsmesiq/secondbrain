@@ -10,15 +10,18 @@ export class NotionAdapter {
         });
     }
 
-    async searchPages() {
-        const response = await this.client.search({
+    async *searchPages(query?: string) {
+        for await (const result of iteratePaginatedAPI(this.client.search, {
+            ...(query && { query }),
             filter: {
                 property: 'object',
                 value: 'page',
             },
-        });
-
-        return response.results.filter(isFullPage);
+        })) {
+            if (isFullPage(result)) {
+                yield result;
+            }
+        }
     }
 
     async searchDataSources(query?: string) {
@@ -44,6 +47,14 @@ export class NotionAdapter {
             if (isFullPage(result)) {
                 yield result;
             }
+        }
+    }
+
+    async *retrieveBlockChildren(blockId: string) {
+        for await (const result of iteratePaginatedAPI(this.client.blocks.children.list, {
+            block_id: blockId,
+        })) {
+            yield result;
         }
     }
 
