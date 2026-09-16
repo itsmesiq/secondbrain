@@ -82,6 +82,13 @@ export const ReadNotionPageParamsSchema = z.object({
 
 export type ReadNotionPageParams = z.infer<typeof ReadNotionPageParamsSchema>;
 
+export const NotionPageContentResponseSchema = z.object({
+    pageId: z.string(),
+    blocks: z.array(z.unknown()),
+});
+
+export type NotionPageContentResponse = z.infer<typeof NotionPageContentResponseSchema>;
+
 export const EmbedTokenSchema = z.object({
     token: z.string(),
 });
