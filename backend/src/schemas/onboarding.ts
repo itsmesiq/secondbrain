@@ -26,6 +26,13 @@ export const SaveOnboardingIdentitySchema = z.object({
 
 export type SaveOnboardingIdentity = z.infer<typeof SaveOnboardingIdentitySchema>;
 
+export const SaveOnboardingIdentityResponseSchema = z.object({
+    profileId: z.string(),
+    objectivePageId: z.string(),
+});
+
+export type SaveOnboardingIdentityResponse = z.infer<typeof SaveOnboardingIdentityResponseSchema>;
+
 export const CreateOnboardingSpecializationsSchema = z.object({
     name: z.string().trim().min(1).max(100),
     statsId: z.string().min(1),
