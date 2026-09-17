@@ -1,6 +1,6 @@
-import { PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../../icons';
+import type { OnboardingVisualStep } from '@/types/onboarding.types';
 
-type OnboardingVisualStep = 'template' | 'notion' | 'identity' | 'specializations' | 'order-quiz';
+import { PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../../icons';
 
 interface OnboardingSidebarProps {
     backgroundImage: string;
