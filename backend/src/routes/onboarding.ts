@@ -1,9 +1,6 @@
-import { and, eq } from 'drizzle-orm';
 import type { FastifyInstance } from 'fastify';
 import { ZodTypeProvider } from 'fastify-type-provider-zod';
 
-import { db } from '../db/index.js';
-import { account } from '../db/schema.js';
 import { requireAuth } from '../plugins/requireAuth.js';
 import {
     CreateOnboardingSpecializationResponseSchema,
@@ -12,7 +9,7 @@ import {
     OnboardingStatusSchema,
 } from '../schemas/index.js';
 import { createOnboardingSpecialization } from '../usecases/createOnboardingSpecialization.js';
-import { getWidgetProfile } from '../usecases/getWidgetProfile.js';
+import { getOnboardingStatus } from '../usecases/getOnboardingStatus.js';
 
 export async function onboardingRoutes(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().route({
@@ -30,29 +27,7 @@ export async function onboardingRoutes(app: FastifyInstance) {
             },
         },
         handler: async request => {
-            const notionAccount = await db
-                .select({ id: account.id })
-                .from(account)
-                .where(and(eq(account.userId, request.user!.id), eq(account.providerId, 'notion')))
-                .limit(1);
-
-            if (notionAccount.length === 0) {
-                return {
-                    completed: false,
-                };
-            }
-
-            try {
-                await getWidgetProfile(request.user!.id);
-
-                return {
-                    completed: true,
-                };
-            } catch {
-                return {
-                    completed: false,
-                };
-            }
+            return getOnboardingStatus(request.user!.id);
         },
     });
 
