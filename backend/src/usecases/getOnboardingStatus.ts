@@ -41,6 +41,31 @@ async function getProfile(userId: string): Promise<{ id: string; mysticOrder: st
     return null;
 }
 
+async function hasObjective(userId: string): Promise<boolean> {
+    const notion = await getNotionAdapter(userId);
+
+    const dataSources = await notion.searchDataSources('Objectives');
+
+    const dataSource = dataSources.find(
+        result =>
+            result.object === 'data_source' &&
+            'title' in result &&
+            result.title?.some(item => item.plain_text === 'Objectives'),
+    );
+
+    if (!dataSource) {
+        return false;
+    }
+
+    for await (const result of notion.queryDataSource(dataSource.id)) {
+        if (result) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 async function hasSpecializations(userId: string): Promise<boolean> {
     const notion = await getNotionAdapter(userId);
 
@@ -79,6 +104,15 @@ export async function getOnboardingStatus(userId: string): Promise<OnboardingSta
     const profile = await getProfile(userId);
 
     if (!profile) {
+        return {
+            completed: false,
+            currentStep: 'identity',
+        };
+    }
+
+    const objectiveExists = await hasObjective(userId);
+
+    if (!objectiveExists) {
         return {
             completed: false,
             currentStep: 'identity',
