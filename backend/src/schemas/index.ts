@@ -362,6 +362,7 @@ export type {
     OnboardingStatus,
     OnboardingSteps,
     SaveOnboardingIdentity,
+    SaveOnboardingIdentityResponse,
 } from './onboarding.js';
 export {
     CompleteOnboardingOrderSchema,
@@ -370,5 +371,6 @@ export {
     CreateOnboardingSpecializationsSchema,
     OnboardingStatusSchema,
     OnboardingStepsSchema,
+    SaveOnboardingIdentityResponseSchema,
     SaveOnboardingIdentitySchema,
 } from './onboarding.js';

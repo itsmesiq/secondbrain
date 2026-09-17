@@ -7,9 +7,12 @@ import {
     CreateOnboardingSpecializationsSchema,
     ErrorSchema,
     OnboardingStatusSchema,
+    SaveOnboardingIdentityResponseSchema,
+    SaveOnboardingIdentitySchema,
 } from '../schemas/index.js';
 import { createOnboardingSpecialization } from '../usecases/createOnboardingSpecialization.js';
 import { getOnboardingStatus } from '../usecases/getOnboardingStatus.js';
+import { saveOnboardingIndentity } from '../usecases/saveOnboardingIdentity.js';
 
 export async function onboardingRoutes(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().route({
@@ -28,6 +31,29 @@ export async function onboardingRoutes(app: FastifyInstance) {
         },
         handler: async request => {
             return getOnboardingStatus(request.user!.id);
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/onboarding/identity',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'saveOnboardingIdentity',
+            summary: 'Save the identity data of the authenticated user during onboarding',
+            tags: ['Onboarding'],
+            body: SaveOnboardingIdentitySchema,
+            response: {
+                200: SaveOnboardingIdentityResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                409: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return saveOnboardingIndentity(request.user!.id, request.body);
         },
     });
 
