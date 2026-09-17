@@ -1,5 +1,9 @@
 export { default as BackgroundClock } from '@/assets/background-clock-widget.svg';
 export { default as GoogleIcon } from '@/assets/google-logo.svg';
+export { default as HUDCornersBL } from '@/assets/icons/HUDCorners-BL.svg';
+export { default as HUDCornersBR } from '@/assets/icons/HUDCorners-BR.svg';
+export { default as HUDCornersTL } from '@/assets/icons/HUDCorners-TL.svg';
+export { default as HUDCornersTR } from '@/assets/icons/HUDCorners-TR.svg';
 export { default as MysticGlyph } from '@/assets/icons/MysticGlyph.svg';
 export { default as PixelBorderBL } from '@/assets/icons/pixel-border-bl.svg';
 export { default as PixelBorderBR } from '@/assets/icons/pixel-border-br.svg';
