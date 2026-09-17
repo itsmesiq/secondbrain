@@ -72,6 +72,7 @@
     --color-card: var(--card);
     --color-stroke-primary: var(--stroke-primary);
     --color-stroke-secondary: var(--stroke-secondary);
+    --color-text-primary: var(--text-primary);
     --color-text-secondary: var(--text-secondary);
     --color-text-muted: var(--text-muted);
     --color-etherea-purple: var(--etherea-purple);
@@ -114,6 +115,7 @@
         --stroke-primary: #4a2a8a;
         --stroke-secondary: #2a1f4a;
         --foreground: #ffffff;
+        --text-primary: #c0a0e0;
         --text-secondary: #6a50a0;
         --text-muted: #4a3a6a;
 
