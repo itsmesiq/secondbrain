@@ -9,20 +9,41 @@ import type {
     DataTag,
     DefinedInitialDataOptions,
     DefinedUseQueryResult,
+    MutationFunction,
     QueryClient,
     QueryFunction,
     QueryKey,
     UndefinedInitialDataOptions,
+    UseMutationOptions,
+    UseMutationResult,
     UseQueryOptions,
     UseQueryResult,
 } from '@tanstack/react-query';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 import { customFetch } from '../../../fetch';
 import type {
+    CompleteOnboardingOrder200,
+    CompleteOnboardingOrder400,
+    CompleteOnboardingOrder401,
+    CompleteOnboardingOrder404,
+    CompleteOnboardingOrder500,
+    CompleteOnboardingOrderBody,
+    CreateOnboardingSpecializations200,
+    CreateOnboardingSpecializations400,
+    CreateOnboardingSpecializations401,
+    CreateOnboardingSpecializations500,
+    CreateOnboardingSpecializationsBody,
     GetOnboardingStatus200,
     GetOnboardingStatus401,
     GetOnboardingStatus500,
+    SaveOnboardingIdentity200,
+    SaveOnboardingIdentity400,
+    SaveOnboardingIdentity401,
+    SaveOnboardingIdentity404,
+    SaveOnboardingIdentity409,
+    SaveOnboardingIdentity500,
+    SaveOnboardingIdentityBody,
 } from '../../schemas';
 
 type SecondParameter<T extends (...args: never) => unknown> = Parameters<T>[1];
@@ -193,3 +214,458 @@ export function useGetOnboardingStatus<
 
     return withQueryKey(query, queryOptions.queryKey);
 }
+
+export type saveOnboardingIdentityResponse200 = {
+    data: SaveOnboardingIdentity200;
+    status: 200;
+};
+
+export type saveOnboardingIdentityResponse400 = {
+    data: SaveOnboardingIdentity400;
+    status: 400;
+};
+
+export type saveOnboardingIdentityResponse401 = {
+    data: SaveOnboardingIdentity401;
+    status: 401;
+};
+
+export type saveOnboardingIdentityResponse404 = {
+    data: SaveOnboardingIdentity404;
+    status: 404;
+};
+
+export type saveOnboardingIdentityResponse409 = {
+    data: SaveOnboardingIdentity409;
+    status: 409;
+};
+
+export type saveOnboardingIdentityResponse500 = {
+    data: SaveOnboardingIdentity500;
+    status: 500;
+};
+
+export type saveOnboardingIdentityResponseSuccess = saveOnboardingIdentityResponse200 & {
+    headers: Headers;
+};
+export type saveOnboardingIdentityResponseError = (
+    | saveOnboardingIdentityResponse400
+    | saveOnboardingIdentityResponse401
+    | saveOnboardingIdentityResponse404
+    | saveOnboardingIdentityResponse409
+    | saveOnboardingIdentityResponse500
+) & {
+    headers: Headers;
+};
+
+export type saveOnboardingIdentityResponse =
+    saveOnboardingIdentityResponseSuccess | saveOnboardingIdentityResponseError;
+
+export const getSaveOnboardingIdentityUrl = () => {
+    return `/onboarding/identity`;
+};
+
+/**
+ * @summary Save the identity data of the authenticated user during onboarding
+ */
+export const saveOnboardingIdentity = async (
+    saveOnboardingIdentityBody: SaveOnboardingIdentityBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<saveOnboardingIdentityResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<saveOnboardingIdentityResponse>(getSaveOnboardingIdentityUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(saveOnboardingIdentityBody),
+    });
+};
+
+export const getSaveOnboardingIdentityMutationKey = () => ['saveOnboardingIdentity'] as const;
+
+export const getSaveOnboardingIdentityMutationOptions = <
+    TError =
+        | SaveOnboardingIdentity400
+        | SaveOnboardingIdentity401
+        | SaveOnboardingIdentity404
+        | SaveOnboardingIdentity409
+        | SaveOnboardingIdentity500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof saveOnboardingIdentity>>,
+        TError,
+        SaveOnboardingIdentityMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof saveOnboardingIdentity>>,
+    TError,
+    SaveOnboardingIdentityMutationVariables,
+    TContext
+> => {
+    const mutationKey = getSaveOnboardingIdentityMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof saveOnboardingIdentity>>,
+        SaveOnboardingIdentityMutationVariables
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return saveOnboardingIdentity(data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type SaveOnboardingIdentityMutationResult = NonNullable<
+    Awaited<ReturnType<typeof saveOnboardingIdentity>>
+>;
+export type SaveOnboardingIdentityMutationBody = SaveOnboardingIdentityBody;
+export type SaveOnboardingIdentityMutationError =
+    | SaveOnboardingIdentity400
+    | SaveOnboardingIdentity401
+    | SaveOnboardingIdentity404
+    | SaveOnboardingIdentity409
+    | SaveOnboardingIdentity500;
+export type SaveOnboardingIdentityMutationVariables = { data: SaveOnboardingIdentityBody };
+
+/**
+ * @summary Save the identity data of the authenticated user during onboarding
+ */
+export const useSaveOnboardingIdentity = <
+    TError =
+        | SaveOnboardingIdentity400
+        | SaveOnboardingIdentity401
+        | SaveOnboardingIdentity404
+        | SaveOnboardingIdentity409
+        | SaveOnboardingIdentity500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof saveOnboardingIdentity>>,
+            TError,
+            SaveOnboardingIdentityMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof saveOnboardingIdentity>>,
+    TError,
+    SaveOnboardingIdentityMutationVariables,
+    TContext
+> => {
+    return useMutation(getSaveOnboardingIdentityMutationOptions(options), queryClient);
+};
+export type completeOnboardingOrderResponse200 = {
+    data: CompleteOnboardingOrder200;
+    status: 200;
+};
+
+export type completeOnboardingOrderResponse400 = {
+    data: CompleteOnboardingOrder400;
+    status: 400;
+};
+
+export type completeOnboardingOrderResponse401 = {
+    data: CompleteOnboardingOrder401;
+    status: 401;
+};
+
+export type completeOnboardingOrderResponse404 = {
+    data: CompleteOnboardingOrder404;
+    status: 404;
+};
+
+export type completeOnboardingOrderResponse500 = {
+    data: CompleteOnboardingOrder500;
+    status: 500;
+};
+
+export type completeOnboardingOrderResponseSuccess = completeOnboardingOrderResponse200 & {
+    headers: Headers;
+};
+export type completeOnboardingOrderResponseError = (
+    | completeOnboardingOrderResponse400
+    | completeOnboardingOrderResponse401
+    | completeOnboardingOrderResponse404
+    | completeOnboardingOrderResponse500
+) & {
+    headers: Headers;
+};
+
+export type completeOnboardingOrderResponse =
+    completeOnboardingOrderResponseSuccess | completeOnboardingOrderResponseError;
+
+export const getCompleteOnboardingOrderUrl = () => {
+    return `/onboarding/order`;
+};
+
+/**
+ * @summary Complete the onboarding by selecting a Mystic Order
+ */
+export const completeOnboardingOrder = async (
+    completeOnboardingOrderBody: CompleteOnboardingOrderBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<completeOnboardingOrderResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<completeOnboardingOrderResponse>(getCompleteOnboardingOrderUrl(), {
+        ...options,
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+        body: JSON.stringify(completeOnboardingOrderBody),
+    });
+};
+
+export const getCompleteOnboardingOrderMutationKey = () => ['completeOnboardingOrder'] as const;
+
+export const getCompleteOnboardingOrderMutationOptions = <
+    TError =
+        | CompleteOnboardingOrder400
+        | CompleteOnboardingOrder401
+        | CompleteOnboardingOrder404
+        | CompleteOnboardingOrder500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof completeOnboardingOrder>>,
+        TError,
+        CompleteOnboardingOrderMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof completeOnboardingOrder>>,
+    TError,
+    CompleteOnboardingOrderMutationVariables,
+    TContext
+> => {
+    const mutationKey = getCompleteOnboardingOrderMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof completeOnboardingOrder>>,
+        CompleteOnboardingOrderMutationVariables
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return completeOnboardingOrder(data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type CompleteOnboardingOrderMutationResult = NonNullable<
+    Awaited<ReturnType<typeof completeOnboardingOrder>>
+>;
+export type CompleteOnboardingOrderMutationBody = CompleteOnboardingOrderBody;
+export type CompleteOnboardingOrderMutationError =
+    | CompleteOnboardingOrder400
+    | CompleteOnboardingOrder401
+    | CompleteOnboardingOrder404
+    | CompleteOnboardingOrder500;
+export type CompleteOnboardingOrderMutationVariables = { data: CompleteOnboardingOrderBody };
+
+/**
+ * @summary Complete the onboarding by selecting a Mystic Order
+ */
+export const useCompleteOnboardingOrder = <
+    TError =
+        | CompleteOnboardingOrder400
+        | CompleteOnboardingOrder401
+        | CompleteOnboardingOrder404
+        | CompleteOnboardingOrder500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof completeOnboardingOrder>>,
+            TError,
+            CompleteOnboardingOrderMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof completeOnboardingOrder>>,
+    TError,
+    CompleteOnboardingOrderMutationVariables,
+    TContext
+> => {
+    return useMutation(getCompleteOnboardingOrderMutationOptions(options), queryClient);
+};
+export type createOnboardingSpecializationsResponse200 = {
+    data: CreateOnboardingSpecializations200;
+    status: 200;
+};
+
+export type createOnboardingSpecializationsResponse400 = {
+    data: CreateOnboardingSpecializations400;
+    status: 400;
+};
+
+export type createOnboardingSpecializationsResponse401 = {
+    data: CreateOnboardingSpecializations401;
+    status: 401;
+};
+
+export type createOnboardingSpecializationsResponse500 = {
+    data: CreateOnboardingSpecializations500;
+    status: 500;
+};
+
+export type createOnboardingSpecializationsResponseSuccess =
+    createOnboardingSpecializationsResponse200 & {
+        headers: Headers;
+    };
+export type createOnboardingSpecializationsResponseError = (
+    | createOnboardingSpecializationsResponse400
+    | createOnboardingSpecializationsResponse401
+    | createOnboardingSpecializationsResponse500
+) & {
+    headers: Headers;
+};
+
+export type createOnboardingSpecializationsResponse =
+    createOnboardingSpecializationsResponseSuccess | createOnboardingSpecializationsResponseError;
+
+export const getCreateOnboardingSpecializationsUrl = () => {
+    return `/onboarding/specializations`;
+};
+
+/**
+ * @summary Create onboarding specializations for the authenticated user
+ */
+export const createOnboardingSpecializations = async (
+    createOnboardingSpecializationsBody: CreateOnboardingSpecializationsBody,
+    options?: Parameters<typeof customFetch>[1],
+): Promise<createOnboardingSpecializationsResponse> => {
+    const getHeaders = (
+        h?: NonNullable<RequestInit['headers']>,
+    ): Record<string, string | readonly string[]> => {
+        if (!h) return {};
+        if (h instanceof Headers) return Object.fromEntries(h.entries());
+        if (Array.isArray(h)) return Object.fromEntries(h);
+        return h;
+    };
+    return customFetch<createOnboardingSpecializationsResponse>(
+        getCreateOnboardingSpecializationsUrl(),
+        {
+            ...options,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', ...getHeaders(options?.headers) },
+            body: JSON.stringify(createOnboardingSpecializationsBody),
+        },
+    );
+};
+
+export const getCreateOnboardingSpecializationsMutationKey = () =>
+    ['createOnboardingSpecializations'] as const;
+
+export const getCreateOnboardingSpecializationsMutationOptions = <
+    TError =
+        | CreateOnboardingSpecializations400
+        | CreateOnboardingSpecializations401
+        | CreateOnboardingSpecializations500,
+    TContext = unknown,
+>(options?: {
+    mutation?: UseMutationOptions<
+        Awaited<ReturnType<typeof createOnboardingSpecializations>>,
+        TError,
+        CreateOnboardingSpecializationsMutationVariables,
+        TContext
+    >;
+    request?: SecondParameter<typeof customFetch>;
+}): UseMutationOptions<
+    Awaited<ReturnType<typeof createOnboardingSpecializations>>,
+    TError,
+    CreateOnboardingSpecializationsMutationVariables,
+    TContext
+> => {
+    const mutationKey = getCreateOnboardingSpecializationsMutationKey();
+    const { mutation: mutationOptions, request: requestOptions } = options
+        ? options.mutation && 'mutationKey' in options.mutation && options.mutation.mutationKey
+            ? options
+            : { ...options, mutation: { ...options.mutation, mutationKey } }
+        : { mutation: { mutationKey }, request: undefined };
+
+    const mutationFn: MutationFunction<
+        Awaited<ReturnType<typeof createOnboardingSpecializations>>,
+        CreateOnboardingSpecializationsMutationVariables
+    > = (props) => {
+        const { data } = props ?? {};
+
+        return createOnboardingSpecializations(data, requestOptions);
+    };
+
+    return { mutationFn, ...mutationOptions };
+};
+
+export type CreateOnboardingSpecializationsMutationResult = NonNullable<
+    Awaited<ReturnType<typeof createOnboardingSpecializations>>
+>;
+export type CreateOnboardingSpecializationsMutationBody = CreateOnboardingSpecializationsBody;
+export type CreateOnboardingSpecializationsMutationError =
+    | CreateOnboardingSpecializations400
+    | CreateOnboardingSpecializations401
+    | CreateOnboardingSpecializations500;
+export type CreateOnboardingSpecializationsMutationVariables = {
+    data: CreateOnboardingSpecializationsBody;
+};
+
+/**
+ * @summary Create onboarding specializations for the authenticated user
+ */
+export const useCreateOnboardingSpecializations = <
+    TError =
+        | CreateOnboardingSpecializations400
+        | CreateOnboardingSpecializations401
+        | CreateOnboardingSpecializations500,
+    TContext = unknown,
+>(
+    options?: {
+        mutation?: UseMutationOptions<
+            Awaited<ReturnType<typeof createOnboardingSpecializations>>,
+            TError,
+            CreateOnboardingSpecializationsMutationVariables,
+            TContext
+        >;
+        request?: SecondParameter<typeof customFetch>;
+    },
+    queryClient?: QueryClient,
+): UseMutationResult<
+    Awaited<ReturnType<typeof createOnboardingSpecializations>>,
+    TError,
+    CreateOnboardingSpecializationsMutationVariables,
+    TContext
+> => {
+    return useMutation(getCreateOnboardingSpecializationsMutationOptions(options), queryClient);
+};

@@ -5,7 +5,9 @@
  * API documentation for the Second Brain application
  * OpenAPI spec version: 1.0.0
  */
+import type { GetOnboardingStatus200CurrentStep } from './getOnboardingStatus200CurrentStep';
 
 export type GetOnboardingStatus200 = {
     completed: boolean;
+    currentStep: GetOnboardingStatus200CurrentStep;
 };
