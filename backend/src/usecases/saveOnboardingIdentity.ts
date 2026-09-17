@@ -40,7 +40,7 @@ async function createPrimaryObjective(userId: string, objective: string) {
     });
 }
 
-export async function saveOnboardingIndentity(
+export async function saveOnboardingIdentity(
     userId: string,
     { name, avatar, objective }: SaveOnboardingIdentity,
 ) {
