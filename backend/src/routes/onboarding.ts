@@ -12,7 +12,7 @@ import {
 } from '../schemas/index.js';
 import { createOnboardingSpecialization } from '../usecases/createOnboardingSpecialization.js';
 import { getOnboardingStatus } from '../usecases/getOnboardingStatus.js';
-import { saveOnboardingIndentity } from '../usecases/saveOnboardingIdentity.js';
+import { saveOnboardingIdentity } from '../usecases/saveOnboardingIdentity.js';
 
 export async function onboardingRoutes(app: FastifyInstance) {
     app.withTypeProvider<ZodTypeProvider>().route({
@@ -53,7 +53,7 @@ export async function onboardingRoutes(app: FastifyInstance) {
             },
         },
         handler: async request => {
-            return saveOnboardingIndentity(request.user!.id, request.body);
+            return saveOnboardingIdentity(request.user!.id, request.body);
         },
     });
 
