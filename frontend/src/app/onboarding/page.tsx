@@ -1,14 +1,41 @@
 'use client';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { EthereaLogo } from '@/components/images';
+import NotionStep from '@/components/onboarding/NotionStep';
 import TemplateStep from '@/components/onboarding/TemplateStep';
 import { useGetOnboardingStatus } from '@/lib/api/generated/endpoints/onboarding/onboarding';
 import type { OnboardingVisualStep } from '@/types/onboarding.types';
 
+import { authClient } from '../_lib/auth-client';
+
 export default function OnboardingPage() {
     const [visualStep, setVisualStep] = useState<OnboardingVisualStep>('template');
+    const [notionConnected, setNotionConnected] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        const fetchNotionStatus = async () => {
+            try {
+                const response = await fetch(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/notion/status`,
+                    {
+                        credentials: 'include',
+                    },
+                );
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch Notion status');
+                }
+
+                const data = await response.json();
+                setNotionConnected(data.connected);
+            } catch (error) {
+                console.error('Error fetching Notion status:', error);
+            }
+        };
+        fetchNotionStatus();
+    }, []);
 
     const {
         data: onboardingStatus,
@@ -36,7 +63,18 @@ export default function OnboardingPage() {
         );
     }
 
-    return <main className="flex min-h-screen">{renderStep(visualStep)}</main>;
+    const handleNotionConnect = async () => {
+        await authClient.linkSocial({
+            provider: 'notion',
+            callbackURL: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`,
+        });
+    };
+
+    return (
+        <main className="w-full">
+            <NotionStep handleNotionConnect={handleNotionConnect} />
+        </main>
+    );
 }
 
 function renderStep(step: OnboardingVisualStep) {

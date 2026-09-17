@@ -10,7 +10,7 @@ export function SocialButton({ icon, onClick, cta }: SocialButtonProps) {
             <button
                 type="button"
                 onClick={onClick}
-                className="flex w-full cursor-pointer items-center justify-center gap-2.5 border border-stroke-secondary bg-surface/85 py-3 transition-all duration-150 ease-linear hover:translate-y-[-1px] hover:border-etherea-purple hover:bg-surface-elevated"
+                className="flex w-full cursor-pointer items-center justify-center gap-2.5 border border-stroke-secondary bg-surface/85 py-4 transition-all duration-150 ease-linear hover:translate-y-[-1px] hover:border-etherea-purple hover:bg-surface-elevated"
             >
                 {icon}
                 <span className="font-mono text-sm tracking-[2px] text-foreground uppercase">
