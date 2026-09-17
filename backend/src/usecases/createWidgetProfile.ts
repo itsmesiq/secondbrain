@@ -17,7 +17,7 @@ interface CreateWidgetProfile {
     userId: string;
     name: string;
     avatar: string;
-    mysticOrder: string;
+    mysticOrder?: string;
 }
 
 function mapProfile(result: any): Profile {
@@ -86,11 +86,13 @@ export async function createWidgetProfile({
                 },
             ],
         },
-        'Mystic Order': {
-            select: {
-                name: mysticOrder,
+        ...(mysticOrder && {
+            'Mystic Order': {
+                select: {
+                    name: mysticOrder,
+                },
             },
-        },
+        }),
         Level: {
             number: initialLevel.level,
         },
