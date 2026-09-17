@@ -3,6 +3,8 @@ import { ZodTypeProvider } from 'fastify-type-provider-zod';
 
 import { requireAuth } from '../plugins/requireAuth.js';
 import {
+    CompleteOnboardingOrderResponseSchema,
+    CompleteOnboardingOrderSchema,
     CreateOnboardingSpecializationResponseSchema,
     CreateOnboardingSpecializationsSchema,
     ErrorSchema,
@@ -10,6 +12,7 @@ import {
     SaveOnboardingIdentityResponseSchema,
     SaveOnboardingIdentitySchema,
 } from '../schemas/index.js';
+import { completeOnboardingOrder } from '../usecases/completeOnboardingOrder.js';
 import { createOnboardingSpecialization } from '../usecases/createOnboardingSpecialization.js';
 import { getOnboardingStatus } from '../usecases/getOnboardingStatus.js';
 import { saveOnboardingIdentity } from '../usecases/saveOnboardingIdentity.js';
@@ -54,6 +57,28 @@ export async function onboardingRoutes(app: FastifyInstance) {
         },
         handler: async request => {
             return saveOnboardingIdentity(request.user!.id, request.body);
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/onboarding/order',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'completeOnboardingOrder',
+            summary: 'Complete the onboarding by selecting a Mystic Order',
+            tags: ['Onboarding'],
+            body: CompleteOnboardingOrderSchema,
+            response: {
+                200: CompleteOnboardingOrderResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                404: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return completeOnboardingOrder(request.user!.id, request.body);
         },
     });
 

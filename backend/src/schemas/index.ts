@@ -356,6 +356,7 @@ export type GetStatsResponse = z.infer<typeof GetStatsResponseSchema>;
 
 export type {
     CompleteOnboardingOrder,
+    CompleteOnboardingOrderResponse,
     CompleteSpecializations,
     CreateOnboardingSpecializationResponse,
     CreateOnboardingSpecializations,
@@ -365,6 +366,7 @@ export type {
     SaveOnboardingIdentityResponse,
 } from './onboarding.js';
 export {
+    CompleteOnboardingOrderResponseSchema,
     CompleteOnboardingOrderSchema,
     CompleteSpecializationsSchema,
     CreateOnboardingSpecializationResponseSchema,
