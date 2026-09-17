@@ -109,11 +109,17 @@ export function TopBarOnboarding({ currentStep }: TopBarOnboardingProps) {
                 {String(steps.length).padStart(2, '0')}
             </span>
             <div className="flex items-center gap-1.5">
-                <div className="h-0.5 w-4 bg-etherea-purple shadow-[0_0_4px_0_#9B30FF]"></div>
-                <div className="h-0.5 w-4 bg-text-muted"></div>
-                <div className="h-0.5 w-4 bg-text-muted"></div>
-                <div className="h-0.5 w-4 bg-text-muted"></div>
-                <div className="h-0.5 w-4 bg-text-muted"></div>
+                {steps.map((step, index) => {
+                    const isActive = step.number === activeStep;
+                    const isCompleted = step.number < activeStep;
+
+                    return (
+                        <div
+                            key={step.key}
+                            className={`h-0.5 w-4 ${isActive || isCompleted ? 'bg-etherea-purple shadow-[0_0_4px_0_#9B30FF]' : 'bg-text-muted'}`}
+                        ></div>
+                    );
+                })}
             </div>
         </div>
     );
