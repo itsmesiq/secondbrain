@@ -34,12 +34,6 @@ export const NotionStatusSchema = z.object({
 
 export type NotionStatus = z.infer<typeof NotionStatusSchema>;
 
-export const OnboardingStatusSchema = z.object({
-    completed: z.boolean(),
-});
-
-export type OnboardingStatus = z.infer<typeof OnboardingStatusSchema>;
-
 export const NotionPageSchema = z.object({
     id: z.string(),
     title: z.string(),
@@ -359,3 +353,22 @@ export const GetStatsResponseSchema = z.object({
 });
 
 export type GetStatsResponse = z.infer<typeof GetStatsResponseSchema>;
+
+export type {
+    CompleteOnboardingOrder,
+    CompleteSpecializations,
+    CreateOnboardingSpecializationResponse,
+    CreateOnboardingSpecializations,
+    OnboardingStatus,
+    OnboardingSteps,
+    SaveOnboardingIdentity,
+} from './onboarding.js';
+export {
+    CompleteOnboardingOrderSchema,
+    CompleteSpecializationsSchema,
+    CreateOnboardingSpecializationResponseSchema,
+    CreateOnboardingSpecializationsSchema,
+    OnboardingStatusSchema,
+    OnboardingStepsSchema,
+    SaveOnboardingIdentitySchema,
+} from './onboarding.js';

@@ -5,7 +5,13 @@ import { ZodTypeProvider } from 'fastify-type-provider-zod';
 import { db } from '../db/index.js';
 import { account } from '../db/schema.js';
 import { requireAuth } from '../plugins/requireAuth.js';
-import { ErrorSchema, OnboardingStatusSchema } from '../schemas/index.js';
+import {
+    CreateOnboardingSpecializationResponseSchema,
+    CreateOnboardingSpecializationsSchema,
+    ErrorSchema,
+    OnboardingStatusSchema,
+} from '../schemas/index.js';
+import { createOnboardingSpecialization } from '../usecases/createOnboardingSpecialization.js';
 import { getWidgetProfile } from '../usecases/getWidgetProfile.js';
 
 export async function onboardingRoutes(app: FastifyInstance) {
@@ -47,6 +53,27 @@ export async function onboardingRoutes(app: FastifyInstance) {
                     completed: false,
                 };
             }
+        },
+    });
+
+    app.withTypeProvider<ZodTypeProvider>().route({
+        method: 'POST',
+        url: '/onboarding/specializations',
+        preHandler: requireAuth,
+        schema: {
+            operationId: 'createOnboardingSpecializations',
+            summary: 'Create onboarding specializations for the authenticated user',
+            tags: ['Onboarding'],
+            body: CreateOnboardingSpecializationsSchema,
+            response: {
+                200: CreateOnboardingSpecializationResponseSchema,
+                400: ErrorSchema,
+                401: ErrorSchema,
+                500: ErrorSchema,
+            },
+        },
+        handler: async request => {
+            return createOnboardingSpecialization(request.user!.id, request.body);
         },
     });
 }
