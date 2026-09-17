@@ -10,7 +10,7 @@ export default function TemplateStep() {
                 backgroundImage="/images/lake-view-background.jpg"
                 currentStep="template"
             />
-            <main className="relative flex h-screen basis-2/3 flex-col items-center justify-center">
+            <section className="relative flex h-screen basis-2/3 flex-col items-center justify-center">
                 <TopBarOnboarding currentStep="template" />
                 <div className="flex max-w-[480px] flex-col">
                     <div className="flex w-full flex-col gap-3 font-mono">
@@ -59,7 +59,7 @@ export default function TemplateStep() {
                     </div>
                 </div>
                 <PixelBorderBR className="absolute right-0 bottom-0 h-3 w-3" />
-            </main>
+            </section>
         </div>
     );
 }
