@@ -109,7 +109,7 @@ export function TopBarOnboarding({ currentStep }: TopBarOnboardingProps) {
                 {String(steps.length).padStart(2, '0')}
             </span>
             <div className="flex items-center gap-1.5">
-                {steps.map((step, index) => {
+                {steps.map((step) => {
                     const isActive = step.number === activeStep;
                     const isCompleted = step.number < activeStep;
 
