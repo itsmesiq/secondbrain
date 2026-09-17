@@ -61,3 +61,10 @@ export const CompleteOnboardingOrderSchema = z.object({
 });
 
 export type CompleteOnboardingOrder = z.infer<typeof CompleteOnboardingOrderSchema>;
+
+export const CompleteOnboardingOrderResponseSchema = z.object({
+    profileId: z.string(),
+    mysticOrder: z.string(),
+});
+
+export type CompleteOnboardingOrderResponse = z.infer<typeof CompleteOnboardingOrderResponseSchema>;
