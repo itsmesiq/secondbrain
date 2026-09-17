@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 import { EthereaLogo } from '@/components/images';
+import IdentityStep from '@/components/onboarding/IdentityStep';
 import NotionStep from '@/components/onboarding/NotionStep';
 import TemplateStep from '@/components/onboarding/TemplateStep';
 import { useGetOnboardingStatus } from '@/lib/api/generated/endpoints/onboarding/onboarding';
@@ -72,7 +73,7 @@ export default function OnboardingPage() {
 
     return (
         <main className="w-full">
-            <NotionStep handleNotionConnect={handleNotionConnect} />
+            <IdentityStep />
         </main>
     );
 }

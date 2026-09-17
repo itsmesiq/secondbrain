@@ -23,7 +23,7 @@ export function OnboardingSidebar({ backgroundImage, currentStep }: OnboardingSi
 
     return (
         <aside
-            className="relative flex h-screen basis-1/3 flex-col items-center justify-end"
+            className="relative flex min-h-screen basis-1/3 flex-col items-center justify-end"
             style={{
                 backgroundImage: `url(${backgroundImage})`,
                 backgroundSize: 'cover',
@@ -31,7 +31,7 @@ export function OnboardingSidebar({ backgroundImage, currentStep }: OnboardingSi
                 backgroundRepeat: 'no-repeat',
             }}
         >
-            <div className="absolute inset-0 h-screen w-full bg-[radial-gradient(70.71%_70.71%_at_50%_50%,rgba(5,5,10,0.00)_40%,rgba(5,5,10,0.65)_100%),linear-gradient(135deg,rgba(155,48,255,0.12)_0%,rgba(188,47,210,0.09)_50%,rgba(255,45,120,0.06)_100%)]"></div>
+            <div className="absolute inset-0 h-full w-full bg-[radial-gradient(70.71%_70.71%_at_50%_50%,rgba(5,5,10,0.00)_40%,rgba(5,5,10,0.65)_100%),linear-gradient(135deg,rgba(155,48,255,0.12)_0%,rgba(188,47,210,0.09)_50%,rgba(255,45,120,0.06)_100%)]"></div>
 
             <div className="relative z-10 flex h-full w-full flex-col items-center justify-end">
                 <div className="absolute top-0 z-10 flex w-full items-center justify-between border-b border-stroke-secondary bg-surface/40 px-5 py-2.5 backdrop-blur-xs">
