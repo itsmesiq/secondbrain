@@ -14,7 +14,11 @@ import {
 } from '../../icons';
 import { PrimaryNextButton } from '../../ui/NextButton';
 
-export default function OrderQuizIntro() {
+interface OrderQuizIntroProps {
+    onStart: () => void;
+}
+
+export default function OrderQuizIntro({ onStart }: OrderQuizIntroProps) {
     return (
         <div className="relative flex h-dvh w-dvw flex-col items-center bg-[linear-gradient(0deg,rgba(0,0,0,0.60)_0%,rgba(0,0,0,0.60)_100%),linear-gradient(180deg,rgba(155,48,255,0.02)_0.11%,rgba(0,0,0,0.00)_0.11%),linear-gradient(90deg,_rgba(155,48,255,0.02)_0.07%,rgba(0,0,0,0.00)_0.07%),url('/images/etherea-pallace-background.jpg')] bg-cover bg-center bg-no-repeat shadow-[0_0_40px_0_rgba(155,48,255,0.20),0_0_80px_0_rgba(0,0,0,0.90)]">
             <div className="absolute top-0 z-10 flex w-full items-center justify-between border-b border-stroke-secondary bg-surface/40 px-10 py-3 font-mono text-xs tracking-[2px] text-text-muted backdrop-blur-xs">
@@ -63,7 +67,7 @@ export default function OrderQuizIntro() {
                         <p>Etheria fará o resto.</p>
                     </div>
                     <div className="my-8 h-0.5 w-full bg-[linear-gradient(90deg,rgba(42,31,74,0.00)_0%,#2A1F4A_20%,#9B30FF_50%,#2A1F4A_80%,rgba(42,31,74,0.00)_100%)]"></div>
-                    <PrimaryNextButton onClick={() => {}} ctaText="Choose Your Path" />
+                    <PrimaryNextButton onClick={onStart} ctaText="Choose Your Path" />
                 </div>
                 <div className="absolute bottom-0 flex w-full items-center justify-between border-t border-stroke-secondary px-5 py-2 font-mono text-[10px] tracking-[2px] text-text-muted">
                     <span>PROTOCOL:ACTIVE</span>

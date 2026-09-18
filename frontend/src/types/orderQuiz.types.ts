@@ -13,16 +13,20 @@ export type QuizQuestion = {
     answers: QuizAnswer[];
 };
 
-export type OrderInfo = {
-    name: string;
+export type OrderData = {
+    name: MysticOrder;
+
+    symbol: string;
+    leader: string;
+    details: string;
+    sprite: string;
+
     archetype: string;
     element: string;
-    color: string;
-    description: string;
+
+    quote: string;
     lore: string;
     tags: string[];
-    mainImage: string;
-    portraitImage: string;
-    spriteImage: string;
-    symbolImage: string;
+
+    accent: string;
 };

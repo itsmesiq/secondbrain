@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 import { EthereaLogo } from '@/components/images';
 import IdentityStep from '@/components/onboarding/IdentityStep';
 import NotionStep from '@/components/onboarding/NotionStep';
+import OrderQuizResult from '@/components/onboarding/order/OrderQuizResult';
 import OrderQuizStep from '@/components/onboarding/OrderQuizStep';
 import SpecializationStep from '@/components/onboarding/SpecializationStep';
 import TemplateStep from '@/components/onboarding/TemplateStep';
@@ -75,7 +76,7 @@ export default function OnboardingPage() {
 
     return (
         <main className="w-full">
-            <OrderQuizStep />
+            <OrderQuizResult />
         </main>
     );
 }
