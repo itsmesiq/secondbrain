@@ -79,6 +79,14 @@
     --color-etherea-cyan: var(--etherea-cyan);
     --color-etherea-magenta: var(--etherea-magenta);
     --color-etherea-pink: var(--etherea-pink);
+
+    --color-arcane-purple: var(--arcane-purple);
+    --color-vanguard-red: var(--vanguard-red);
+    --color-verdant-green: var(--verdant-green);
+    --color-forge-yellow: var(--forge-yellow);
+    --color-veil-blue: var(--veil-blue);
+    --color-ballad-pink: var(--ballad-pink);
+
     --color-mind-cyan: var(--mind-cyan);
     --color-body-yellow: var(--body-yellow);
     --color-soul-purple: var(--soul-purple);
@@ -123,6 +131,13 @@
         --etherea-cyan: #00e5ff;
         --etherea-magenta: #e52bff;
         --etherea-pink: #ff3f9f;
+
+        --arcane-purple: #702ff0;
+        --vanguard-red: #f32e2d;
+        --verdant-green: #6ce881;
+        --forge-yellow: #f7b954;
+        --veil-blue: #2081fd;
+        --ballad-pink: #f93599;
 
         --mind-cyan: #00e5ff;
         --body-yellow: #ffd700;

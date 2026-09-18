@@ -1,7 +1,23 @@
+import type { QuizQuestion } from '@/types/orderQuiz.types';
+
 import { PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../../icons';
 import { PrimaryNextButton } from '../../ui/NextButton';
 
-export default function OrderQuizQuestion() {
+interface OrderQuizQuestionProps {
+    question: QuizQuestion;
+    selectedAnswer?: string;
+    onSelectAnswer: (answerId: string) => void;
+    onNext: () => void;
+}
+
+export default function OrderQuizQuestion({
+    question,
+    selectedAnswer,
+    onSelectAnswer,
+    onNext,
+}: OrderQuizQuestionProps) {
+    const canContinue = !!selectedAnswer;
+
     return (
         <div className="flex min-h-screen w-full items-stretch">
             <aside
@@ -56,65 +72,54 @@ export default function OrderQuizQuestion() {
                         <div className="flex items-center gap-2.5">
                             <div className="h-3.5 w-0.5 bg-etherea-purple"></div>
                             <span className="text-xs tracking-[3px] text-etherea-purple uppercase">
-                                Question 01
+                                Question {String(question.id).padStart(2, '0')}
                             </span>
                         </div>
                         <h1 className="font-orbitron text-xl tracking-[1px] text-foreground">
-                            Diante de um desafio que parece impossível, você...
+                            {question.question}
                         </h1>
                     </div>
 
                     <div className="my-6 h-0.5 w-full bg-[linear-gradient(90deg,#2A1F4A_0%,rgba(42,31,74,0.00)_100%)]"></div>
 
                     <div className="grid grid-cols-2 gap-2.5">
-                        <button className="relative flex h-[160px] w-full items-center justify-between border border-stroke-secondary bg-surface-elevated/50 px-6 font-mono text-xs tracking-[0.5px] text-text-primary">
-                            <div className="flex items-center gap-3">
-                                <div className="size-4 border border-stroke-secondary"></div>
-                                <span>A</span>
-                            </div>
-                            <div className="h-5 w-0.5 bg-stroke-secondary"></div>
-                            <span>Recua, observa e age no momento exato</span>
-                        </button>
-                        <button className="relative flex h-[160px] w-full items-center justify-between border border-stroke-secondary bg-surface-elevated/50 px-6 font-mono text-xs tracking-[0.5px] text-text-primary">
-                            <div className="flex items-center gap-3">
-                                <div className="size-4 border border-stroke-secondary"></div>
-                                <span>A</span>
-                            </div>
-                            <div className="h-5 w-0.5 bg-stroke-secondary"></div>
-                            <span>Recua, observa e age no momento exato</span>
-                        </button>
-                        <button className="relative flex h-[160px] w-full items-center justify-between border border-stroke-secondary bg-surface-elevated/50 px-6 font-mono text-xs tracking-[0.5px] text-text-primary">
-                            <div className="flex items-center gap-3">
-                                <div className="size-4 border border-stroke-secondary"></div>
-                                <span>A</span>
-                            </div>
-                            <div className="h-5 w-0.5 bg-stroke-secondary"></div>
-                            <span>Recua, observa e age no momento exato</span>
-                        </button>
-                        <button className="relative flex h-[160px] w-full items-center justify-between border border-stroke-secondary bg-surface-elevated/50 px-6 font-mono text-xs tracking-[0.5px] text-text-primary">
-                            <div className="flex items-center gap-3">
-                                <div className="size-4 border border-stroke-secondary"></div>
-                                <span>A</span>
-                            </div>
-                            <div className="h-5 w-0.5 bg-stroke-secondary"></div>
-                            <span>Recua, observa e age no momento exato</span>
-                        </button>
-                        <button className="relative flex h-[160px] w-full items-center justify-between border border-stroke-secondary bg-surface-elevated/50 px-6 font-mono text-xs tracking-[0.5px] text-text-primary">
-                            <div className="flex items-center gap-3">
-                                <div className="size-4 border border-stroke-secondary"></div>
-                                <span>A</span>
-                            </div>
-                            <div className="h-5 w-0.5 bg-stroke-secondary"></div>
-                            <span>Recua, observa e age no momento exato</span>
-                        </button>
-                        <button className="relative flex h-[160px] w-full items-center justify-between border border-stroke-secondary bg-surface-elevated/50 px-6 font-mono text-xs tracking-[0.5px] text-text-primary">
-                            <div className="flex items-center gap-3">
-                                <div className="size-4 border border-stroke-secondary"></div>
-                                <span>A</span>
-                            </div>
-                            <div className="h-5 w-0.5 bg-stroke-secondary"></div>
-                            <span>Recua, observa e age no momento exato</span>
-                        </button>
+                        {question.answers.map((answer) => {
+                            const isSelected = selectedAnswer === answer.id;
+
+                            return (
+                                <button
+                                    key={answer.id}
+                                    type="button"
+                                    onClick={() => onSelectAnswer(answer.id)}
+                                    className={`relative flex h-[160px] w-full cursor-pointer items-center justify-between border px-6 font-mono text-xs tracking-[0.5px] transition-all duration-200 ${
+                                        isSelected
+                                            ? 'border-etherea-purple bg-etherea-purple/10 text-foreground shadow-[0_0_20px_rgba(155,48,255,0.12)]'
+                                            : 'border-stroke-secondary bg-surface-elevated/50 text-text-primary hover:border-etherea-purple/50 hover:bg-etherea-purple/5'
+                                    }`}
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div
+                                            className={`flex size-4 items-center justify-center border ${
+                                                isSelected
+                                                    ? 'border-etherea-purple bg-etherea-purple'
+                                                    : 'border-stroke-secondary'
+                                            }`}
+                                        >
+                                            {isSelected && (
+                                                <div className="size-1.5 bg-background"></div>
+                                            )}
+                                        </div>
+                                        <span>{answer.id.toUpperCase()}</span>
+                                    </div>
+                                    <div
+                                        className={`h-5 w-0.5 ${
+                                            isSelected ? 'bg-etherea-purple' : 'bg-stroke-secondary'
+                                        }`}
+                                    ></div>
+                                    <span className="max-w-[78%] text-left">{answer.label}</span>
+                                </button>
+                            );
+                        })}
                     </div>
                     <div className="mt-6 mb-3 h-0.5 w-full bg-[linear-gradient(90deg,#2A1F4A_0%,rgba(42,31,74,0.00)_100%)]"></div>
                     <div className="flex items-center gap-6">
@@ -125,26 +130,37 @@ export default function OrderQuizQuestion() {
                                 </span>
 
                                 <div className="flex items-center gap-2 font-orbitron text-[10px] text-etherea-purple uppercase">
-                                    <span>02</span>
+                                    <span>{String(question.id).padStart(2, '0')}</span>
                                     <span>/</span>
-                                    <span>06</span>
+                                    <span>{String(10).padStart(2, '0')}</span>
                                 </div>
                             </div>
                             <div className="flex w-full items-center gap-0">
-                                <div className="h-0.5 w-full bg-etherea-purple/50"></div>
-                                <div className="h-0.5 w-full bg-etherea-purple"></div>
-                                <div className="h-0.5 w-full bg-etherea-purple/20"></div>
-                                <div className="h-0.5 w-full bg-etherea-purple/20"></div>
-                                <div className="h-0.5 w-full bg-etherea-purple/20"></div>
-                                <div className="h-0.5 w-full bg-etherea-purple/20"></div>
-                                <div className="h-0.5 w-full bg-etherea-purple/20"></div>
-                                <div className="h-0.5 w-full bg-etherea-purple/20"></div>
-                                <div className="h-0.5 w-full bg-etherea-purple/20"></div>
-                                <div className="h-0.5 w-full bg-etherea-purple/20"></div>
+                                {question.answers.length > 0 &&
+                                    Array.from({ length: 10 }).map((_, index) => {
+                                        const segmentNumber = index + 1;
+
+                                        return (
+                                            <div
+                                                key={segmentNumber}
+                                                className={`h-0.5 w-full ${
+                                                    segmentNumber < question.id
+                                                        ? 'bg-etherea-purple/50'
+                                                        : segmentNumber === question.id
+                                                          ? 'bg-etherea-purple'
+                                                          : 'bg-etherea-purple/20'
+                                                }`}
+                                            ></div>
+                                        );
+                                    })}
                             </div>
                         </div>
                         <div className="basis-1/4">
-                            <PrimaryNextButton onClick={() => {}} ctaText="Next" />
+                            <PrimaryNextButton
+                                onClick={onNext}
+                                ctaText={question.id === 10 ? 'Reveal' : 'Next'}
+                                disabled={!canContinue}
+                            />
                         </div>
                     </div>
                 </div>

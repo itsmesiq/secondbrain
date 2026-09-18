@@ -1,4 +1,4 @@
-import type { QuizQuestion } from '@/types/orderQuiz.types';
+import type { MysticOrder, OrderData, QuizQuestion } from '@/types/orderQuiz.types';
 
 export const orderQuizQuestions: QuizQuestion[] = [
     {
@@ -371,3 +371,138 @@ export const orderQuizQuestions: QuizQuestion[] = [
         ],
     },
 ];
+
+export const orders: Record<MysticOrder, OrderData> = {
+    Arcane: {
+        name: 'Arcane',
+
+        symbol: '/images/orders/arcane-symbol.png',
+        leader: '/images/orders/arcane-leader.jpg',
+        details: '/images/orders/arcane-details.jpg',
+        sprite: '/images/orders/arcane-sprite.png',
+
+        archetype: 'Mage',
+        element: 'Éter',
+
+        quote: 'Todo conhecimento é um novo mundo à espera.',
+
+        lore: `O Arcane é movido pela sede de entender. Onde outros veem rotina,
+ele vê padrões. Onde alguns veem limites, ele enxerga possibilidades.
+
+Seu caminho é feito de perguntas, experimentos e descobertas. Ele transforma
+curiosidade em criação, conhecimento em poder e ideias em realidade.
+
+No universo Etherea, o Arcane é aquele que conecta o invisível, traduz o caos
+e encontra sentido onde outros apenas observam.`,
+
+        tags: ['Conhecimento', 'Curiosidade', 'Descoberta'],
+        accent: 'var(--arcane-purple)',
+    },
+
+    Vanguard: {
+        name: 'Vanguard',
+
+        symbol: '/images/orders/vanguard-symbol.png',
+        leader: '/images/orders/vanguard-leader.jpg',
+        details: '/images/orders/vanguard-details.jpg',
+        sprite: '/images/orders/vanguard-sprite.png',
+
+        archetype: 'Warrior',
+        element: 'Fogo',
+
+        quote: 'Movimento hoje. Liberdade amanhã.',
+        lore: `O Vanguard é movido pela ação. Ele acredita que a verdadeira transformação nasce da disciplina e da constância.
+
+Enquanto outros observam, ele avança. Não teme o esforço, o desconforto ou os recomeços — pois sabe que é na fricção que o caráter é forjado.
+
+No universo Etherea, o Vanguard é aquele que abre caminho, transforma intenções em resultados e inspira pelo exemplo.`,
+        tags: ['Disciplina', 'Ação', 'Resiliência'],
+        accent: 'var(--vanguard-red)',
+    },
+
+    Verdant: {
+        name: 'Verdant',
+
+        symbol: '/images/orders/verdant-symbol.png',
+        leader: '/images/orders/verdant-leader.jpg',
+        details: '/images/orders/verdant-details.jpg',
+        sprite: '/images/orders/verdant-sprite.png',
+
+        archetype: 'Druid',
+        element: 'Vida',
+
+        quote: 'Raízes profundas sustentam amanhãs mais fortes.',
+        lore: `O Verdant é guiado pela harmonia entre o corpo, a mente e o mundo ao seu redor. Ele entende que toda evolução verdadeira nasce do equilíbrio e do cuidado contínuo.
+
+Enquanto muitos buscam apenas resultados, ele cultiva o processo. Vê força na constância, na simplicidade e na conexão com o essencial.
+
+No universo Etherea, o Verdant é aquele que lembra que crescer também é saber preservar — a si mesmo, aos outros e ao que realmente importa.`,
+        tags: ['Equilíbrio', 'Saúde', 'Crescimento'],
+        accent: 'var(--verdant-green)',
+    },
+
+    Forge: {
+        name: 'Forge',
+
+        symbol: '/images/orders/forge-symbol.png',
+        leader: '/images/orders/forge-leader.jpg',
+        details: '/images/orders/forge-details.jpg',
+        sprite: '/images/orders/forge-sprite.png',
+
+        archetype: 'Engineer',
+        element: 'Terra',
+
+        quote: 'Ideias também mudam mundos.',
+        lore: `The Forge acredita que construir é um ato de resistência. Ela transforma ideias em lugares, caos em estrutura e visão em realidade.
+
+Entre o concreto e o sonho, encontra beleza no processo. Seu trabalho não é apenas erguer, mas criar espaços onde pessoas possam existir melhor.
+
+Ela vê potencial onde outros veem ruínas, e acredita que todo detalhe importa — da fundação ao último raio de luz.
+
+Constrói hoje o amanhã que gostaria de habitar.`,
+        tags: ['Construção', 'Trabalho', 'Criatividade'],
+        accent: 'var(--forge-yellow)',
+    },
+
+    Veil: {
+        name: 'Veil',
+
+        symbol: '/images/orders/veil-symbol.png',
+        leader: '/images/orders/veil-leader.jpg',
+        details: '/images/orders/veil-details.jpg',
+        sprite: '/images/orders/veil-sprite.png',
+
+        archetype: 'Rogue',
+        element: 'Sombra',
+
+        quote: 'O que é invisível também transforma.',
+        lore: `The Veil observa o que os outros não veem. Entre sombras e silêncios, encontra padrões, conecta fragmentos e revela verdades que mudam destinos.
+
+Ela se move entre mundos — física e mentalmente — como quem dança no limite do visível. Carrega o mistério como ferramenta, não como fuga. Para ela, conhecimento é poder, e a intuição é mapa.
+
+Onde outros veem escuridão, ela enxerga possibilidades. The Veil não apenas descobre segredos — ela os protege, redefine e transforma em algo maior.`,
+        tags: ['Introspecção', 'Estratégia', 'Mistério'],
+        accent: 'var(--veil-blue)',
+    },
+
+    Ballad: {
+        name: 'Ballad',
+
+        symbol: '/images/orders/ballad-symbol.png',
+        leader: '/images/orders/ballad-leader.jpg',
+        details: '/images/orders/ballad-details.jpg',
+        sprite: '/images/orders/ballad-sprite.png',
+
+        archetype: 'Bard',
+        element: 'Som',
+
+        quote: 'Algumas verdades só podem ser ditas em forma de canção.',
+        lore: `The Ballad é uma barda que transforma emoções em pontes. Ela acredita que histórias têm o poder de curar, provocar e unir — mesmo em mundos em ruínas.
+
+Com sua música, revela o que muitos tentam esconder, dá voz ao que foi silenciado e desperta novas formas de ver a realidade. Viaja por entre cidades e fronteiras, levando consigo melodias, memórias e perguntas.
+
+No universo Etherea, The Ballad é a lembrança de que a sensibilidade também é força. Ela encontra beleza no caos e acredita que a imaginação pode ser o primeiro passo para um futuro melhor.`,
+        tags: ['Expressão', 'Imaginação', 'Experiência'],
+        accent: 'var(--ballad-pink)',
+    },
+};
