@@ -74,17 +74,17 @@ export async function getWidgetStats(userId: string) {
 
     const statMap = new Map(stats.map(stat => [stat.id, stat]));
 
-    const specializationDataSources = await notion.searchDataSources('Specialization');
+    const specializationDataSources = await notion.searchDataSources('Specializations');
 
     const specializationDataSource = specializationDataSources.find(
         result =>
             result.object === 'data_source' &&
             'title' in result &&
-            result.title?.some(item => item.plain_text === 'Specialization'),
+            result.title?.some(item => item.plain_text === 'Specializations'),
     );
 
     if (!specializationDataSource) {
-        throw new DataSourceNotFoundError('Specialization');
+        throw new DataSourceNotFoundError('Specializations');
     }
 
     const specializationStatMap = new Map<string, string>();
@@ -117,7 +117,7 @@ export async function getWidgetStats(userId: string) {
             continue;
         }
 
-        const specializationIds = getRelationIds(result.properties.Specialization);
+        const specializationIds = getRelationIds(result.properties.Specializations);
 
         for (const specializationId of specializationIds) {
             const statId = specializationStatMap.get(specializationId);
