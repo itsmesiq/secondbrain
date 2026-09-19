@@ -1,9 +1,36 @@
+import { useState } from 'react';
+
+import { characters } from '@/data/characters';
+import type { Character } from '@/types/character.types';
+
 import { PixelBorderBR } from '../icons';
 import { PrimaryNextButton } from '../ui/NextButton';
 import { CharacterCarousel } from './base/CharacterCarousel';
 import { OnboardingSidebar, TopBarOnboarding } from './base/ComponentsAside';
 
 export default function IdentityStep() {
+    const [selectedCharacter, setSelectedCharacter] = useState<Character>(characters[1]);
+
+    const handleNextCharacter = () => {
+        const currentIndex = characters.findIndex(
+            (character) => character.archetype === selectedCharacter.archetype,
+        );
+
+        const nextIndex = (currentIndex + 1) % characters.length;
+
+        setSelectedCharacter(characters[nextIndex]);
+    };
+
+    const handlePreviousCharacter = () => {
+        const currentIndex = characters.findIndex(
+            (character) => character.archetype === selectedCharacter.archetype,
+        );
+
+        const previousIndex = (currentIndex - 1 + characters.length) % characters.length;
+
+        setSelectedCharacter(characters[previousIndex]);
+    };
+
     return (
         <div className="flex min-h-screen items-stretch">
             <OnboardingSidebar
@@ -33,7 +60,12 @@ export default function IdentityStep() {
                         </span>
                         <div className="h-0.5 w-full bg-[linear-gradient(90deg,#2A1F4A_0%,rgba(42,31,74,0.00)_100%)]"></div>
                     </div>
-                    <CharacterCarousel />
+                    <CharacterCarousel
+                        currentCharacter={selectedCharacter}
+                        onNext={handleNextCharacter}
+                        onPrev={handlePreviousCharacter}
+                    />
+
                     <div className="my-8 h-0.5 w-full bg-[linear-gradient(90deg,#2A1F4A_0%,rgba(42,31,74,0.00)_100%)]"></div>
                     <div className="flex flex-col gap-5 font-mono text-xs">
                         <div className="flex flex-col gap-3.5">
