@@ -20,7 +20,7 @@ export type OnboardingStatus = z.infer<typeof OnboardingStatusSchema>;
 
 export const SaveOnboardingIdentitySchema = z.object({
     name: z.string().trim().min(1).max(100),
-    avatar: z.url(),
+    avatar: z.string().trim().min(1),
     objective: z.string().trim().min(1).max(500),
 });
 

@@ -43,6 +43,8 @@ export async function createWidgetProfile({
 }: CreateWidgetProfile): Promise<Profile> {
     const notion = await getNotionAdapter(userId);
 
+    const avatarUrl = new URL(avatar, process.env.WEB_APP_BASE_URL).toString();
+
     const dataSources = await notion.searchDataSources('Profile');
     const dataSource = dataSources.find(
         result =>
@@ -81,7 +83,7 @@ export async function createWidgetProfile({
                     type: 'external' as const,
                     name: 'Avatar',
                     external: {
-                        url: avatar,
+                        url: avatarUrl,
                     },
                 },
             ],
