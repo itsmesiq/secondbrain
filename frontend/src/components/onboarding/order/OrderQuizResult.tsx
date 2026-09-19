@@ -137,9 +137,9 @@ export default function OrderQuizResult({
 
                     <div className="flex w-full items-stretch gap-8">
                         <div
-                            className="relative max-w-[364px] border border-stroke-secondary bg-surface px-6 py-5 font-mono text-sm leading-[175%] tracking-[0.2px] text-text-primary"
+                            className="relative max-w-[364px] border border-stroke-secondary bg-surface px-6 py-5 font-mono text-xs leading-[175%] tracking-[0.2px] text-text-primary"
                             style={{
-                                borderColor: 'var(--order-accent-border)',
+                                borderColor: 'var(--order-accent)',
                                 boxShadow:
                                     '0 0 24px 0 var(--order-accent-glow), inset 0 0 40px 0 rgba(0,0,0,0.60)',
                             }}

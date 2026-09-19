@@ -55,12 +55,15 @@ export default function OrderQuizStep() {
         }));
     };
 
-    const calculateResult = (finalScores: Record<MysticOrder, number>): MysticOrder => {
-        const orders = Object.keys(finalScores) as MysticOrder[];
+    const calculateResult = (
+        finalScores: Record<MysticOrder, number>,
+        answers: Record<number, string>,
+    ): MysticOrder => {
+        const availableOrders = Object.keys(finalScores) as MysticOrder[];
 
-        const highestScore = Math.max(...orders.map((order) => finalScores[order]));
+        const highestScore = Math.max(...availableOrders.map((order) => finalScores[order]));
 
-        const tiedOrders = orders.filter((order) => finalScores[order] === highestScore);
+        const tiedOrders = availableOrders.filter((order) => finalScores[order] === highestScore);
 
         if (tiedOrders.length === 1) {
             return tiedOrders[0];
@@ -68,7 +71,7 @@ export default function OrderQuizStep() {
 
         for (let index = orderQuizQuestions.length - 1; index >= 0; index -= 1) {
             const question = orderQuizQuestions[index];
-            const answerId = selectedAnswers[question.id];
+            const answerId = answers[question.id];
 
             if (!answerId) {
                 continue;
@@ -95,6 +98,13 @@ export default function OrderQuizStep() {
             return;
         }
 
+        const nextSelectedAnswers = {
+            ...selectedAnswers,
+            [currentQuestion.id]: selectedAnswer,
+        };
+
+        setSelectedAnswers(nextSelectedAnswers);
+
         const nextScores = {
             ...scores,
             [answer.order]: scores[answer.order] + 1,
@@ -109,7 +119,7 @@ export default function OrderQuizStep() {
             return;
         }
 
-        const result = calculateResult(nextScores);
+        const result = calculateResult(nextScores, nextSelectedAnswers);
 
         setResultOrder(result);
         setPhase('result');
