@@ -16,10 +16,10 @@ export const characters: Character[] = [
         secondaryImage: '/images/characters/character-explorer.png',
     },
     {
-        archetype: 'creator',
-        type: 'expressive',
+        archetype: 'oracle',
+        type: 'knowledge',
         description: 'Transforma imaginação em criação e progresso inovador.',
-        mainImage: '/images/characters/character-creator.jpg',
-        secondaryImage: '/images/characters/character-creator.png',
+        mainImage: '/images/characters/character-oracle.jpg',
+        secondaryImage: '/images/characters/character-oracle.png',
     },
 ];

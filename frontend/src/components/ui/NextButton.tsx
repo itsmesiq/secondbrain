@@ -6,6 +6,7 @@ type NextButtonProps = {
     ctaText: string;
     disabled?: boolean;
     accentColor?: string;
+    type?: 'button' | 'submit';
 };
 
 export function PrimaryNextButton({
@@ -13,6 +14,7 @@ export function PrimaryNextButton({
     ctaText,
     disabled = false,
     accentColor = 'var(--etherea-purple)',
+    type = 'button',
 }: NextButtonProps) {
     const style = {
         '--next-button-accent': accentColor,
@@ -20,7 +22,7 @@ export function PrimaryNextButton({
 
     return (
         <button
-            type="button"
+            type={type}
             onClick={onClick}
             disabled={disabled}
             style={style}
