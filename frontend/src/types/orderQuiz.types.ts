@@ -1,5 +1,4 @@
-export type MysticOrder =
-    'Arcane' | 'Vanguard' | 'Verdant' | 'Verdant' | 'Forge' | 'Veil' | 'Ballad';
+export type MysticOrder = 'Arcane' | 'Vanguard' | 'Verdant' | 'Forge' | 'Veil' | 'Ballad';
 
 export type QuizAnswer = {
     id: string;

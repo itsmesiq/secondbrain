@@ -91,7 +91,7 @@ export default function OrderQuizQuestion({
                                     key={answer.id}
                                     type="button"
                                     onClick={() => onSelectAnswer(answer.id)}
-                                    className={`relative flex h-[160px] w-full cursor-pointer items-center justify-between border px-6 font-mono text-xs tracking-[0.5px] transition-all duration-200 ${
+                                    className={`relative flex h-[160px] w-full cursor-pointer items-center justify-start gap-5 border px-6 font-mono text-xs tracking-[0.5px] transition-all duration-200 ${
                                         isSelected
                                             ? 'border-etherea-purple bg-etherea-purple/10 text-foreground shadow-[0_0_20px_rgba(155,48,255,0.12)]'
                                             : 'border-stroke-secondary bg-surface-elevated/50 text-text-primary hover:border-etherea-purple/50 hover:bg-etherea-purple/5'
@@ -106,7 +106,7 @@ export default function OrderQuizQuestion({
                                             }`}
                                         >
                                             {isSelected && (
-                                                <div className="size-1.5 bg-background"></div>
+                                                <div className="size-2 bg-background"></div>
                                             )}
                                         </div>
                                         <span>{answer.id.toUpperCase()}</span>

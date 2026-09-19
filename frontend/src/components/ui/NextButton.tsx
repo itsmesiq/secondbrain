@@ -24,7 +24,7 @@ export function PrimaryNextButton({
             onClick={onClick}
             disabled={disabled}
             style={style}
-            className="flex w-full cursor-pointer items-center justify-center gap-2.5 border border-stroke-secondary bg-etherea-purple/8 py-4 font-orbitron text-sm tracking-[2px] text-foreground uppercase shadow-[0_0_16px_0] shadow-transparent transition-all duration-300 ease-linear hover:translate-y-[-1px] hover:border-etherea-purple hover:bg-etherea-purple/15 hover:shadow-[rgba(155,48,255,0.25)]"
+            className="flex w-full cursor-pointer items-center justify-center gap-2.5 border [border-color:color-mix(in_srgb,var(--next-button-accent)_50%,transparent)] [background-color:color-mix(in_srgb,var(--next-button-accent)_8%,transparent)] py-4 font-orbitron text-sm tracking-[2px] text-foreground uppercase transition-all duration-300 ease-linear hover:translate-y-[-1px] hover:[border-color:var(--next-button-accent)] hover:[background-color:color-mix(in_srgb,var(--next-button-accent)_15%,transparent)] hover:[box-shadow:0_0_20px_color-mix(in_srgb,var(--next-button-accent)_25%,transparent)] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:[box-shadow:none]"
         >
             <span>{ctaText}</span>
             <MoveRight className="size-4" style={{ color: 'var(--next-button-accent)' }} />
