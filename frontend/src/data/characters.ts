@@ -2,6 +2,7 @@ import type { Character } from '../types/character.types';
 
 export const characters: Character[] = [
     {
+        codename: 'The Echo',
         archetype: 'messenger',
         type: 'frequency',
         description: 'Entre ruídos e silêncios, encontra a voz que te conecta ao mundo.',
@@ -9,13 +10,15 @@ export const characters: Character[] = [
         secondaryImage: '/images/characters/character-messenger.png',
     },
     {
-        archetype: 'explorer',
-        type: 'enthusiastic',
-        description: 'Transforma curiosidade em descoberta e progresso constante.',
-        mainImage: '/images/characters/character-explorer.jpg',
-        secondaryImage: '/images/characters/character-explorer.png',
+        codename: 'The Strider',
+        archetype: 'paladin',
+        type: 'light',
+        description: 'Fiel em cada passo, livre em cada horizonte.',
+        mainImage: '/images/characters/character-strider.jpg',
+        secondaryImage: '/images/characters/character-strider.png',
     },
     {
+        codename: 'The Veyra',
         archetype: 'oracle',
         type: 'knowledge',
         description: 'Transforma imaginação em criação e progresso inovador.',

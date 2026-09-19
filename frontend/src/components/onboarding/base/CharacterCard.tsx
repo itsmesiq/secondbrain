@@ -11,7 +11,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
         <article className="relative h-[432px] w-[324px] border border-etherea-purple shadow-[0_0_24px_0] shadow-etherea-purple/35">
             <Image
                 src={character.mainImage}
-                alt={`Character ${character.archetype}`}
+                alt={`Character ${character.codename}`}
                 fill
                 sizes="324px"
                 className="object-cover"
@@ -21,7 +21,7 @@ export function CharacterCard({ character }: CharacterCardProps) {
 
             <div className="relative h-full w-full">
                 <div className="absolute top-0 flex w-full items-center justify-between border-b border-etherea-purple/20 bg-etherea-purple/10 px-3 py-1.5 font-mono text-[10px] tracking-[1.5px] text-etherea-purple uppercase backdrop-blur-xs">
-                    <span>ID: {character.archetype}</span>
+                    <span>ID: {character.codename}</span>
                     <span>▶ SELECTED</span>
                 </div>
                 <div className="absolute bottom-0 flex w-full items-center justify-between border-t border-etherea-purple/20 bg-background/40 px-3 py-2 backdrop-blur-xs">
