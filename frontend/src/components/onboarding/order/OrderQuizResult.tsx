@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { CSSProperties } from 'react';
+import { CSSProperties, useState } from 'react';
 
 import { orders } from '@/data/orderQuiz';
 import type { MysticOrder } from '@/types/orderQuiz.types';
@@ -9,24 +9,23 @@ import { PrimaryNextButton } from '../../ui/NextButton';
 
 interface OrderQuizResultProps {
     order: MysticOrder;
-    score: number;
-    onAccept: () => void;
+    onAccept: (order: MysticOrder) => void;
     isAccepting?: boolean;
 }
 
 export default function OrderQuizResult({
     order,
-    score,
     onAccept,
     isAccepting = false,
 }: OrderQuizResultProps) {
-    const data = orders[order];
+    const [activeOrder, setActiveOrder] = useState<MysticOrder>(order);
+    const data = orders[activeOrder];
 
     const orderStyle = {
         '--order-accent': data.accent,
         '--order-accent-soft': `color-mix(in srgb, ${data.accent} 10%, transparent)`,
         '--order-accent-border': `color-mix(in srgb, ${data.accent} 25%, transparent)`,
-        '--order-accent=glow': `color-mix(in srgb, ${data.accent} 35%, transparent)`,
+        '--order-accent-glow': `color-mix(in srgb, ${data.accent} 35%, transparent)`,
         '--order-accent-strong': `color-mix(in srgb, ${data.accent} 60%, transparent)`,
     } as CSSProperties;
 
@@ -280,7 +279,7 @@ export default function OrderQuizResult({
 
                     <div className="mx-auto mt-12 w-[300px]">
                         <PrimaryNextButton
-                            onClick={onAccept}
+                            onClick={() => onAccept(activeOrder)}
                             ctaText={isAccepting ? 'CONFIRMANDO' : 'ACEITAR MINHA ORDEM'}
                             disabled={isAccepting}
                             accentColor={data.accent}
@@ -298,20 +297,22 @@ export default function OrderQuizResult({
                 <div className="flex w-full items-center justify-center gap-10 px-16 py-8">
                     {(Object.keys(orders) as MysticOrder[]).map((item) => {
                         const itemData = orders[item];
-                        const isCurrent = item === order;
+                        const isActive = item === activeOrder;
 
                         return (
-                            <div
+                            <button
                                 key={item}
-                                className="flex flex-col items-center gap-2 border p-3 transition-all duration-300 ease-linear"
+                                type="button"
+                                onClick={() => setActiveOrder(item)}
+                                className="flex cursor-pointer flex-col items-center gap-2 border p-3 transition-all duration-300 ease-linear hover:translate-y-[-1px]"
                                 style={{
-                                    borderColor: isCurrent
+                                    borderColor: isActive
                                         ? itemData.accent
                                         : 'var(--stroke-primary)',
-                                    backgroundColor: isCurrent
+                                    backgroundColor: isActive
                                         ? `color-mix(in srgb, ${itemData.accent} 10%, transparent)`
                                         : 'var(--surface)',
-                                    boxShadow: isCurrent
+                                    boxShadow: isActive
                                         ? `0 0 24px 0 color-mix(in srgb, ${itemData.accent} 25%, transparent)`
                                         : 'none',
                                 }}
@@ -325,12 +326,12 @@ export default function OrderQuizResult({
                                 <span
                                     className="font-mono text-xs tracking-[1px] uppercase"
                                     style={{
-                                        color: isCurrent ? itemData.accent : 'var(--text-primary)',
+                                        color: isActive ? itemData.accent : 'var(--text-primary)',
                                     }}
                                 >
                                     {item}
                                 </span>
-                            </div>
+                            </button>
                         );
                     })}
                 </div>
