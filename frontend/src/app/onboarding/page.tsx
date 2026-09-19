@@ -50,7 +50,7 @@ export default function OnboardingPage() {
         },
     });
 
-    if (isPending) {
+    if (isPending || notionConnected === null) {
         return (
             <div className="flex h-screen items-center justify-center bg-background">
                 <Image src={EthereaLogo} alt="Etherea Logo" className="max-w-lg animate-pulse" />
@@ -69,35 +69,37 @@ export default function OnboardingPage() {
     const handleNotionConnect = async () => {
         await authClient.linkSocial({
             provider: 'notion',
-            callbackURL: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard`,
+            callbackURL: `${process.env.NEXT_PUBLIC_BASE_URL}/onboarding`,
         });
     };
 
-    return (
-        <main className="w-full">
-            <OrderQuizStep />
-        </main>
-    );
-}
+    const handleTemplateContinue = () => {
+        setVisualStep('notion');
+    };
 
-function renderStep(step: OnboardingVisualStep) {
-    switch (step) {
-        case 'template':
-            return <TemplateStep />;
+    const renderStep = () => {
+        switch (visualStep) {
+            case 'template':
+                return (
+                    <TemplateStep
+                        onContinue={handleTemplateContinue}
+                        templateUrl={process.env.NEXT_PUBLIC_NOTION_TEMPLATE_URL}
+                    />
+                );
 
-        case 'notion':
-            return <div>Notion Step</div>;
+            case 'notion':
+                return <NotionStep handleNotionConnect={handleNotionConnect} />;
 
-        case 'identity':
-            return <div>Identity Step</div>;
+            case 'identity':
+                return <div>Identity Step</div>;
 
-        case 'specializations':
-            return <div>Specializations Step</div>;
+            case 'specializations':
+                return <div>Specializations Step</div>;
 
-        case 'order-quiz':
-            return <div>Order Quiz Step</div>;
+            case 'order-quiz':
+                return <OrderQuizStep />;
+        }
+    };
 
-        default:
-            break;
-    }
+    return <main className="w-full">{renderStep()}</main>;
 }
