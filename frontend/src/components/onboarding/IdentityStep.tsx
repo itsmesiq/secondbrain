@@ -78,7 +78,7 @@ export default function IdentityStep() {
                 },
             });
 
-            if (response.status === 200) {
+            if (response.status !== 200) {
                 return;
             }
 
