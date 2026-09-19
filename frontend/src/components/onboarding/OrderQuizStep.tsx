@@ -1,6 +1,6 @@
 'use client';
 import { useRouter } from 'next/navigation';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { orderQuizQuestions } from '@/data/orderQuiz';
 import { useCompleteOnboardingOrder } from '@/lib/api/generated/endpoints/onboarding/onboarding';
@@ -115,40 +115,21 @@ export default function OrderQuizStep() {
         setPhase('result');
     };
 
-    const handleAcceptOrder = async () => {
-        if (!resultOrder || completeOrder.isPending) {
+    const handleAcceptOrder = async (selectedOrder: MysticOrder) => {
+        if (completeOrder.isPending) {
             return;
         }
 
         const response = await completeOrder.mutateAsync({
-            data: { mysticOrder: resultOrder },
+            data: { mysticOrder: selectedOrder },
         });
 
         if (response.status !== 200) {
             return;
         }
 
-        window.location.href = '/dashboard';
+        router.push('/dashboard');
     };
-
-    const handleRestart = () => {
-        setPhase('intro');
-        setCurrentQuestionIndex(0);
-        setSelectedAnswers({});
-        setScores(initialScores);
-        setResultOrder(null);
-    };
-
-    const result = useMemo(() => {
-        if (!resultOrder) {
-            return null;
-        }
-
-        return {
-            order: resultOrder,
-            score: scores[resultOrder],
-        };
-    }, [resultOrder, scores]);
 
     if (phase === 'intro') {
         return <OrderQuizIntro onStart={handleStart} />;
@@ -165,14 +146,12 @@ export default function OrderQuizStep() {
         );
     }
 
-    if (phase === 'result' && result) {
+    if (phase === 'result' && resultOrder) {
         return (
             <OrderQuizResult
-                order={result.order}
-                score={result.score}
+                order={resultOrder}
                 onAccept={handleAcceptOrder}
-                onRestart={handleRestart}
-                isAccepting={completeOrderMutation.isPending}
+                isAccepting={completeOrder.isPending}
             />
         );
     }
