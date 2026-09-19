@@ -18,7 +18,7 @@ import { authClient } from '../_lib/auth-client';
 export default function OnboardingPage() {
     const router = useRouter();
 
-    const [visualStep, setVisualStep] = useState<OnboardingVisualStep>('template');
+    const [visualStep, setVisualStep] = useState<OnboardingVisualStep | null>(null);
 
     const {
         data: onboardingStatus,
