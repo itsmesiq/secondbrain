@@ -115,7 +115,7 @@ export function SpecializationCard({
                 <span className="font-mono">{appearance.symbol}</span>
                 <h3 className="font-orbitron">{name}</h3>
             </div>
-            <div className="flex items-center gap-2 font-mono text-xs text-text-muted">
+            <div className="flex items-center gap-2 font-mono text-xs text-text-muted uppercase">
                 <span>{description}</span>
             </div>
             <form onSubmit={handleSubmit} className="flex w-full items-center gap-2">

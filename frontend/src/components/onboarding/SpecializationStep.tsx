@@ -1,8 +1,71 @@
+import { LoaderCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
+
+import { useGetWidgetStats } from '@/lib/api/generated/endpoints/widgets/widgets';
+
 import { PrimaryNextButton } from '../ui/NextButton';
 import { OnboardingSidebar, TopBarOnboarding } from './base/ComponentsAside';
 import { SpecializationCard } from './base/SpecializationCard';
 
+type Specialization = {
+    id: string;
+    name: string;
+};
+
 export default function SpecializationStep() {
+    const router = useRouter();
+
+    const [specializations, setSpecializations] = useState<Record<string, Specialization[]>>({});
+
+    const {
+        data: stats,
+        isPending,
+        isError,
+    } = useGetWidgetStats({
+        query: {
+            select: (response) => (response.status === 200 ? response.data.stats : null),
+        },
+    });
+
+    const totalSpecialization = Object.values(specializations).reduce(
+        (total, items) => total + items.length,
+        0,
+    );
+
+    const handleSpecializationCreated = (statsId: string, specialization: Specialization) => {
+        setSpecializations((current) => ({
+            ...current,
+            [statsId]: [...(current[statsId] ?? []), specialization],
+        }));
+    };
+
+    const handleContinue = () => {
+        if (totalSpecialization === 0) {
+            return;
+        }
+
+        router.replace('/onboarding');
+    };
+
+    if (isPending) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-background">
+                <LoaderCircle className="size-6 animate-spin text-etherea-purple" />
+            </div>
+        );
+    }
+
+    if (isError || !stats) {
+        return (
+            <div className="flex min-h-screen items-center justify-center bg-background">
+                <p className="font-mono text-sm text-error-red">
+                    Não foi possivel carregar seus atributos.
+                </p>
+            </div>
+        );
+    }
+
     return (
         <div className="flex min-h-screen items-stretch">
             <OnboardingSidebar
@@ -28,17 +91,28 @@ export default function SpecializationStep() {
                     <div className="my-8 h-0.5 w-full bg-[linear-gradient(90deg,#2A1F4A_0%,rgba(42,31,74,0.00)_100%)]"></div>
 
                     <div className="grid grid-cols-2 gap-2.5">
-                        <SpecializationCard />
-                        <SpecializationCard />
-                        <SpecializationCard />
-                        <SpecializationCard />
-                        <SpecializationCard />
+                        {stats?.map((stat) => (
+                            <SpecializationCard
+                                key={stat.id}
+                                statsId={stat.id}
+                                name={stat.name}
+                                description={stat.description}
+                                specializations={specializations[stat.id] ?? []}
+                                onSpecializationCreated={(specialization) =>
+                                    handleSpecializationCreated(stat.id, specialization)
+                                }
+                            />
+                        ))}
                     </div>
 
                     <div className="my-8 h-0.5 w-full bg-[linear-gradient(90deg,#2A1F4A_0%,rgba(42,31,74,0.00)_100%)]"></div>
 
                     <div className="flex w-full flex-col items-center gap-3">
-                        <PrimaryNextButton onClick={() => {}} ctaText="Continuar" />
+                        <PrimaryNextButton
+                            onClick={handleContinue}
+                            ctaText="Continuar"
+                            disabled={totalSpecialization === 0}
+                        />
                         <span className="font-mono text-[10px] tracking-[0.5px] text-text-muted">
                             Suas especializações poderão ser alteradas posteriormente.
                         </span>
