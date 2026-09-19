@@ -1,8 +1,7 @@
-export type Archetypes = 'strategist' | 'explorer' | 'creator';
-
 export type Character = {
-    archetype: Archetypes;
-    type: 'analytical' | 'enthusiastic' | 'expressive';
+    archetype: string;
+    type: string;
+    description: string;
     mainImage: string;
     secondaryImage: string;
 };

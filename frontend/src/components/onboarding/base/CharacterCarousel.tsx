@@ -1,6 +1,5 @@
 'use client';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
 
 import {
     CarouselNextButton,
@@ -12,39 +11,46 @@ import { Character } from '@/types/character.types';
 
 import { CharacterCard } from './CharacterCard';
 
-export function CharacterCarousel() {
-    const [currentIndex, setCurrentIndex] = useState(0);
-    const [currentCharacter, setCurrentCharacter] = useState<Character>(characters[0]);
+type CharacterCarouselProps = {
+    currentCharacter: Character;
+    onNext: () => void;
+    onPrev: () => void;
+};
 
-    const handleNext = () => {
-        setCurrentIndex((prevIndex) => (prevIndex + 1) % characters.length);
-    };
+export function CharacterCarousel({ currentCharacter, onNext, onPrev }: CharacterCarouselProps) {
+    const currentIndex = characters.findIndex(
+        (character) => character.archetype === currentCharacter.archetype,
+    );
 
-    const handlePrev = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + characters.length) % characters.length);
-    };
+    const previousIndex = (currentIndex - 1 + characters.length) % characters.length;
+
+    const nextIndex = (currentIndex + 1) % characters.length;
+
+    const previousCharacter = characters[previousIndex];
+
+    const nextCharacter = characters[nextIndex];
 
     return (
         <div className="flex w-full flex-col items-center gap-5">
             <div className="flex w-full items-center gap-6 py-6">
                 <div className="h-[244px] w-full overflow-hidden border border-stroke-secondary opacity-40">
                     <Image
-                        src="/images/characters/character-strategist.png"
-                        alt="Character Strategist"
+                        src={previousCharacter.secondaryImage}
+                        alt={`Character ${previousCharacter.archetype}`}
                         width={180}
                         height={270}
                         className="object-cover"
                     />
                 </div>
                 <div className="flex items-center justify-center gap-6">
-                    <CarouselPrevButton onClick={handlePrev} />
-                    <CharacterCard />
-                    <CarouselNextButton onClick={handleNext} />
+                    <CarouselPrevButton onClick={onPrev} />
+                    <CharacterCard character={currentCharacter} />
+                    <CarouselNextButton onClick={onNext} />
                 </div>
                 <div className="h-[244px] w-full overflow-hidden border border-stroke-secondary opacity-40">
                     <Image
-                        src="/images/characters/character-creator.png"
-                        alt="Character Creator"
+                        src={nextCharacter.secondaryImage}
+                        alt={`Character ${nextCharacter.archetype}`}
                         width={180}
                         height={270}
                         className="object-cover"
@@ -52,9 +58,9 @@ export function CharacterCarousel() {
                 </div>
             </div>
             <span className="font-mono text-sm leading-[20px] tracking-[0.3px] text-text-secondary">
-                Transforma curiosidade em descoberta e progresso constante.
+                {currentCharacter.description}
             </span>
-            <CarouselPagination />
+            <CarouselPagination currentIndex={currentIndex} totalItems={characters.length} />
         </div>
     );
 }
