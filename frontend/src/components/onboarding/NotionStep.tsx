@@ -1,3 +1,6 @@
+'use client';
+import { useState } from 'react';
+
 import { NotionIcon, PixelBorderBR } from '../icons';
 import { SocialButton } from '../ui/SocialButton';
 import { OnboardingSidebar, TopBarOnboarding } from './base/ComponentsAside';
@@ -7,6 +10,23 @@ type NotionStepProps = {
 };
 
 export default function NotionStep({ handleNotionConnect }: NotionStepProps) {
+    const [isConnecting, setIsConnecting] = useState(false);
+
+    const handleConnect = async () => {
+        if (isConnecting) {
+            return;
+        }
+
+        setIsConnecting(true);
+
+        try {
+            await handleNotionConnect();
+        } catch (error) {
+            console.error('Error connecting to Notion:', error);
+            setIsConnecting(false);
+        }
+    };
+
     return (
         <div className="flex min-h-screen items-center">
             <OnboardingSidebar
@@ -35,8 +55,8 @@ export default function NotionStep({ handleNotionConnect }: NotionStepProps) {
                     <div className="flex w-full flex-col gap-2.5">
                         <SocialButton
                             icon={<NotionIcon className="size-5 text-foreground" />}
-                            onClick={handleNotionConnect}
-                            cta="Connect Notion"
+                            onClick={handleConnect}
+                            cta={isConnecting ? 'Connecting...' : 'Connect Notion'}
                         />
                     </div>
                 </div>
