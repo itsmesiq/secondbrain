@@ -2,6 +2,7 @@
 import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 
+import TasksWidget from '@/components/widgets/tasks';
 import TasksController from '@/components/widgets/tasksController';
 import { getWidgetTheme } from '@/lib/widgets/config';
 
@@ -14,7 +15,7 @@ function TasksContent() {
             data-theme={urlTheme}
             className="flex h-screen w-full items-center justify-center bg-notion-background"
         >
-            <TasksController />
+            <TasksWidget />
         </section>
     );
 }
