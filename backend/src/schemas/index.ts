@@ -252,6 +252,20 @@ export const GetTasksResponseSchema = z.object({
         currentStreak: z.number(),
     }),
     tasks: z.array(TaskSchema),
+    filters: z.object({
+        projects: z.array(
+            z.object({
+                id: z.string(),
+                name: z.string(),
+            }),
+        ),
+        stats: z.array(
+            z.object({
+                id: z.string(),
+                name: z.string(),
+            }),
+        ),
+    }),
 });
 
 export type GetTasksResponse = z.infer<typeof GetTasksResponseSchema>;
