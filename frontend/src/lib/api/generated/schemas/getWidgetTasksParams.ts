@@ -14,5 +14,5 @@ export type GetWidgetTasksParams = {
      */
     date?: string;
     projectId?: string;
-    areaId?: string;
+    statsId?: string;
 };
