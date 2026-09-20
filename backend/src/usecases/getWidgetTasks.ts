@@ -139,6 +139,38 @@ export async function getWidgetTasks({ userId, status, date, projectId, statsId 
         ]),
     );
 
+    const statsDataSources = await notion.searchDataSources('Stats');
+
+    const statsDataSource = statsDataSources.find(result => result.object === 'data_source');
+
+    if (!statsDataSource) {
+        throw new DataSourceNotFoundError('Stats');
+    }
+
+    const stats = [];
+
+    for await (const result of notion.queryDataSource(statsDataSource.id)) {
+        stats.push({
+            id: result.id,
+            name: getTitle(result.properties.Nome),
+        });
+    }
+
+    const projectDataSources = await notion.searchDataSources('Projects');
+
+    const projectDataSource = projectDataSources.find(result => result.object === 'data_source');
+
+    const projects = [];
+
+    if (projectDataSource) {
+        for await (const result of notion.queryDataSource(projectDataSource.id)) {
+            projects.push({
+                id: result.id,
+                name: getTitle(result.properties.Nome),
+            });
+        }
+    }
+
     const overviewTasks = allTasks.filter(task => task.status !== 'Cancelada');
 
     const tasks = allTasks
@@ -188,5 +220,9 @@ export async function getWidgetTasks({ userId, status, date, projectId, statsId 
     return {
         overview: calculateOverview(overviewTasks),
         tasks,
+        filters: {
+            projects,
+            stats,
+        },
     };
 }
