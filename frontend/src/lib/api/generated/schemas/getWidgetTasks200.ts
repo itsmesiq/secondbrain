@@ -5,10 +5,12 @@
  * API documentation for the Second Brain application
  * OpenAPI spec version: 1.0.0
  */
+import type { GetWidgetTasks200Filters } from './getWidgetTasks200Filters';
 import type { GetWidgetTasks200Overview } from './getWidgetTasks200Overview';
 import type { GetWidgetTasks200TasksItem } from './getWidgetTasks200TasksItem';
 
 export type GetWidgetTasks200 = {
     overview: GetWidgetTasks200Overview;
     tasks: GetWidgetTasks200TasksItem[];
+    filters: GetWidgetTasks200Filters;
 };

@@ -12,6 +12,7 @@ export type SaveOnboardingIdentityBody = {
      * @maxLength 100
      */
     name: string;
+    /** @minLength 1 */
     avatar: string;
     /**
      * @minLength 1
