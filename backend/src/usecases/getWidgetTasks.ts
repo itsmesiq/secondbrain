@@ -204,6 +204,8 @@ export async function getWidgetTasks({ userId, status, date, projectId, statsId 
                     return false;
                 }
             }
+
+            return true;
         })
         .map(task => ({
             ...task,
