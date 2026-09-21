@@ -111,7 +111,7 @@ export default function TaskFilterModal({
         onChange: (value: string) => void,
     ) => {
         return (
-            <div className="gao-1.5 flex flex-wrap">
+            <div className="flex flex-wrap gap-2.5">
                 {options.map((option) => {
                     const isSelected = value === option.value;
 
@@ -136,7 +136,11 @@ export default function TaskFilterModal({
 
     return (
         <div className="absolute inset-0 z-50 flex items-center justify-center bg-background/80 p-4 backdrop-blur-sm">
-            <div className="w-full max-w-[360px] border border-etherea-purple/60 bg-background shadow-[0_0_30px_rgba(155,48,255,0.15)]">
+            <div className="relative w-full max-w-[360px] border border-etherea-purple/60 bg-background shadow-[0_0_30px_rgba(155,48,255,0.15)]">
+                <PixelBorderTL className="absolute top-0 left-0 size-2.5" />
+                <PixelBorderTR className="absolute top-0 right-0 size-2.5" />
+                <PixelBorderBL className="absolute bottom-0 left-0 size-2.5" />
+                <PixelBorderBR className="absolute right-0 bottom-0 size-2.5" />
                 <div className="flex items-center justify-between border-b border-stroke-secondary px-4 py-3">
                     <span className="font-orbitron text-xs tracking-[2px] text-etherea-purple uppercase">
                         Filter Quests

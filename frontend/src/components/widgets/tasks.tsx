@@ -1,11 +1,12 @@
 'use client';
 import { useQueryClient } from '@tanstack/react-query';
 import { Check, ListFilter, LoaderCircle, Plus } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useWidgetAuth } from '@/app/widgets/_lib/context';
 import {
     getGetWidgetTasksQueryKey,
+    getGetWidgetTasksQueryOptions,
     useCreateWidgetTask,
     useGetWidgetTasks,
     useUpdateWidgetTask,
@@ -44,27 +45,50 @@ export default function TasksWidget() {
 
     const [isCreateModelOpen, setIsCreateModelOpen] = useState(false);
 
-    const status = activeTab === 'active' ? 'active' : 'completed';
+    const status: 'active' | 'completed' = activeTab === 'active' ? 'active' : 'completed';
+
+    const taskQueryParams = {
+        status,
+        ...(filters.projectId ? { projectId: filters.projectId } : {}),
+        ...(filters.statsId ? { statsId: filters.statsId } : {}),
+    };
 
     const {
         data: tasksResponse,
         isPending,
         isFetching,
-    } = useGetWidgetTasks(
-        {
-            status,
+    } = useGetWidgetTasks(taskQueryParams, {
+        query: {
+            staleTime: 0,
+        },
+        request: {
+            headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+        },
+    });
+
+    useEffect(() => {
+        if (!tasksResponse || isFetching) {
+            return;
+        }
+
+        const nextStatus: 'active' | 'completed' = status === 'active' ? 'completed' : 'active';
+
+        const nextQueryParams = {
+            status: nextStatus,
             ...(filters.projectId ? { projectId: filters.projectId } : {}),
             ...(filters.statsId ? { statsId: filters.statsId } : {}),
-        },
-        {
-            query: {
-                placeholderData: (previousData) => previousData,
-            },
-            request: {
-                headers: token ? { Authorization: `Bearer ${token}` } : undefined,
-            },
-        },
-    );
+        };
+
+        void queryClient
+            .query(
+                getGetWidgetTasksQueryOptions(nextQueryParams, {
+                    request: {
+                        headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+                    },
+                }),
+            )
+            .catch(() => {});
+    }, [queryClient, tasksResponse, isFetching, status, filters.projectId, filters.statsId, token]);
 
     const updateTaskMutation = useUpdateWidgetTask({
         request: {
