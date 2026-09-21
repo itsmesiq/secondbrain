@@ -90,10 +90,26 @@ function calculateOverview(tasks: ReturnType<typeof mapTask>[]) {
     };
 }
 
+async function collectDataSourceResults<T>(source: AsyncIterable<T>): Promise<T[]> {
+    const results: T[] = [];
+
+    for await (const result of source) {
+        results.push(result);
+    }
+
+    return results;
+}
+
 export async function getWidgetTasks({ userId, status, date, projectId, statsId }: GetWidgetTasks) {
     const notion = await getNotionAdapter(userId);
 
-    const tasksDataSources = await notion.searchDataSources('Tasks');
+    const [tasksDataSources, specializationsDataSources, statsDataSources, projectDataSources] =
+        await Promise.all([
+            notion.searchDataSources('Tasks'),
+            notion.searchDataSources('Specializations'),
+            notion.searchDataSources('Stats'),
+            notion.searchDataSources('Projects'),
+        ]);
 
     const taskDataSource = tasksDataSources.find(result => result.object === 'data_source');
 
@@ -101,15 +117,7 @@ export async function getWidgetTasks({ userId, status, date, projectId, statsId 
         throw new DataSourceNotFoundError('Tasks');
     }
 
-    const allTasks = [];
-
-    for await (const result of notion.queryDataSource(taskDataSource.id)) {
-        allTasks.push(mapTask(result));
-    }
-
-    const specializationDataSources = await notion.searchDataSources('Specializations');
-
-    const specializationDataSource = specializationDataSources.find(
+    const specializationDataSource = specializationsDataSources.find(
         result => result.object === 'data_source',
     );
 
@@ -117,15 +125,30 @@ export async function getWidgetTasks({ userId, status, date, projectId, statsId 
         throw new DataSourceNotFoundError('Specializations');
     }
 
-    const specializations = [];
+    const statsDataSource = statsDataSources.find(result => result.object === 'data_source');
 
-    for await (const result of notion.queryDataSource(specializationDataSource.id)) {
-        specializations.push({
-            id: result.id,
-            name: getTitle(result.properties.Nome),
-            statsId: getRelationId(result.properties.Stats)!,
-        });
+    if (!statsDataSource) {
+        throw new DataSourceNotFoundError('Stats');
     }
+
+    const projectDataSource = projectDataSources.find(result => result.object === 'data_source');
+
+    const [taskResults, specializationResults, statsResults, projectResults] = await Promise.all([
+        collectDataSourceResults(notion.queryDataSource(taskDataSource.id)),
+        collectDataSourceResults(notion.queryDataSource(specializationDataSource.id)),
+        collectDataSourceResults(notion.queryDataSource(statsDataSource.id)),
+        projectDataSource
+            ? collectDataSourceResults(notion.queryDataSource(projectDataSource.id))
+            : Promise.resolve([]),
+    ]);
+
+    const allTasks = taskResults.map(mapTask);
+
+    const specializations = specializationResults.map(result => ({
+        id: result.id,
+        name: getTitle(result.properties.Nome),
+        statsId: getRelationId(result.properties.Stats)!,
+    }));
 
     const specializationStatsMap = createSpecializationStatsMap(specializations);
 
@@ -139,37 +162,15 @@ export async function getWidgetTasks({ userId, status, date, projectId, statsId 
         ]),
     );
 
-    const statsDataSources = await notion.searchDataSources('Stats');
+    const stats = statsResults.map(result => ({
+        id: result.id,
+        name: getTitle(result.properties.Nome),
+    }));
 
-    const statsDataSource = statsDataSources.find(result => result.object === 'data_source');
-
-    if (!statsDataSource) {
-        throw new DataSourceNotFoundError('Stats');
-    }
-
-    const stats = [];
-
-    for await (const result of notion.queryDataSource(statsDataSource.id)) {
-        stats.push({
-            id: result.id,
-            name: getTitle(result.properties.Nome),
-        });
-    }
-
-    const projectDataSources = await notion.searchDataSources('Projects');
-
-    const projectDataSource = projectDataSources.find(result => result.object === 'data_source');
-
-    const projects = [];
-
-    if (projectDataSource) {
-        for await (const result of notion.queryDataSource(projectDataSource.id)) {
-            projects.push({
-                id: result.id,
-                name: getTitle(result.properties.Nome),
-            });
-        }
-    }
+    const projects = projectResults.map(result => ({
+        id: result.id,
+        name: getTitle(result.properties.Nome),
+    }));
 
     const overviewTasks = allTasks.filter(task => task.status !== 'Cancelada');
 
@@ -199,13 +200,10 @@ export async function getWidgetTasks({ userId, status, date, projectId, statsId 
                 const belongsToStats = task.specializationIds.some(
                     specializationId => specializationStatsMap.get(specializationId) === statsId,
                 );
-
                 if (!belongsToStats) {
                     return false;
                 }
             }
-
-            return true;
         })
         .map(task => ({
             ...task,
