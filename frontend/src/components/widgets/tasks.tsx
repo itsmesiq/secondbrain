@@ -1,6 +1,6 @@
 'use client';
 import { useQueryClient } from '@tanstack/react-query';
-import { Check, ListFilter, LoaderCircle, Plus, Trash, X } from 'lucide-react';
+import { Check, ListFilter, LoaderCircle, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 import { useWidgetAuth } from '@/app/widgets/_lib/context';
@@ -12,9 +12,9 @@ import {
 } from '@/lib/api/generated/endpoints/widgets/widgets';
 import { formatDueDate } from '@/lib/widgets/formatDueDate';
 
-type Tab = 'active' | 'completed';
+import TaskFilterModal, { type TaskDateFilter, type TaskFilters } from './taskFilterModal';
 
-type PriorityFilter = 'all' | 'High' | 'Medium' | 'Low';
+type Tab = 'active' | 'completed';
 
 const priorityLabel: Record<PriorityFilter, string> = {
     all: 'All',
@@ -40,8 +40,14 @@ export default function TasksWidget() {
     const queryClient = useQueryClient();
 
     const [activeTab, setActiveTab] = useState<Tab>('active');
-    const [priorityFilter, setPriorityFilter] = useState<PriorityFilter>('all');
+
+    const [filters, setFilters] = useState<TaskFilters>({
+        projectId: null,
+        statsId: null,
+        date: 'all',
+    });
     const [isFilterOpen, setIsFilterOpen] = useState(false);
+
     const [isCreateModelOpen, setIsCreateModelOpen] = useState(false);
 
     const status = activeTab === 'active' ? 'active' : 'completed';
