@@ -12,16 +12,9 @@ import {
 } from '@/lib/api/generated/endpoints/widgets/widgets';
 import { formatDueDate } from '@/lib/widgets/formatDueDate';
 
-import TaskFilterModal, { type TaskDateFilter, type TaskFilters } from './taskFilterModal';
+import TaskFilterModal, { type TaskFilters } from './taskFilterModal';
 
 type Tab = 'active' | 'completed';
-
-const priorityLabel: Record<PriorityFilter, string> = {
-    all: 'All',
-    High: 'High',
-    Medium: 'Medium',
-    Low: 'Low',
-};
 
 const priorityClass: Record<string, string> = {
     High: 'text-power-pink',
@@ -46,6 +39,7 @@ export default function TasksWidget() {
         statsId: null,
         date: 'all',
     });
+
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
     const [isCreateModelOpen, setIsCreateModelOpen] = useState(false);
@@ -59,6 +53,8 @@ export default function TasksWidget() {
     } = useGetWidgetTasks(
         {
             status,
+            ...(filters.projectId ? { projectId: filters.projectId } : {}),
+            ...(filters.statsId ? { statsId: filters.statsId } : {}),
         },
         {
             query: {
@@ -88,21 +84,79 @@ export default function TasksWidget() {
     const data = tasksResponse?.status === 200 ? tasksResponse.data : null;
 
     const tasks = data?.tasks ?? [];
+    const projects = data?.filters.projects ?? [];
+    const stats = data?.filters.stats ?? [];
 
     const activeCount = data?.overview.pending ?? 0;
     const completedCount = data?.overview.completed ?? 0;
 
+    const getDateKey = (date: Date) => {
+        return [
+            date.getFullYear(),
+            String(date.getMonth() + 1).padStart(2, '0'),
+            String(date.getDate()).padStart(2, '0'),
+        ].join('-');
+    };
+
+    const getStartOfWeekKey = () => {
+        const date = new Date();
+        const dayOfWeek = date.getDay();
+        const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+        date.setDate(date.getDate() + mondayOffset);
+
+        return getDateKey(date);
+    };
+
+    const getEndOfWeekKey = () => {
+        const date = new Date();
+        const dayOfWeek = date.getDay();
+        const mondayOffset = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
+
+        date.setDate(date.getDate() + mondayOffset + 6);
+
+        return getDateKey(date);
+    };
+
+    const todayKey = getDateKey(new Date());
+    const startOfWeekKey = getStartOfWeekKey();
+    const endOfWeekKey = getEndOfWeekKey();
+
     const filteredTasks = tasks.filter((task) => {
-        if (priorityFilter === 'all') {
+        if (filters.date === 'all') {
             return true;
         }
 
-        return task.priority === priorityFilter;
+        if (!task.dueDate) {
+            return false;
+        }
+
+        const dueDate = task.dueDate.slice(0, 10);
+
+        if (filters.date === 'today') {
+            return dueDate === todayKey;
+        }
+
+        if (filters.date === 'this-week') {
+            return dueDate >= startOfWeekKey && dueDate <= endOfWeekKey;
+        }
+
+        if (filters.date === 'overdue') {
+            return dueDate < todayKey;
+        }
+
+        if (filters.date === 'upcoming') {
+            return dueDate > todayKey;
+        }
+
+        return true;
     });
+
+    const hasActiveFilters =
+        filters.projectId !== null || filters.statsId !== null || filters.date !== 'all';
 
     const handleTabChange = (tab: Tab) => {
         setActiveTab(tab);
-        setPriorityFilter('all');
         setIsFilterOpen(false);
     };
 
@@ -193,6 +247,7 @@ export default function TasksWidget() {
                         Active Quests
                     </span>
                 </div>
+
                 <button
                     type="button"
                     onClick={() => setIsCreateModelOpen(true)}
@@ -224,61 +279,58 @@ export default function TasksWidget() {
             </div>
 
             <div className="flex items-center justify-between border-b border-stroke-secondary px-4 text-text-muted uppercase">
-                <div className="flex items-center font-orbitron">
+                <div className="flex w-full items-center justify-between font-orbitron">
+                    <div className="flex items-center">
+                        <button
+                            type="button"
+                            onClick={() => handleTabChange('active')}
+                            className={`cursor-pointer border-b p-2.5 text-[10px] tracking-[2px] uppercase ${
+                                activeTab === 'active'
+                                    ? 'border-etherea-purple text-etherea-purple'
+                                    : 'border-transparent text-text-muted'
+                            }`}
+                        >
+                            Active
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => handleTabChange('completed')}
+                            className={`cursor-pointer border-b p-2.5 text-[10px] tracking-[2px] uppercase ${
+                                activeTab === 'completed'
+                                    ? 'border-etherea-purple text-etherea-purple'
+                                    : 'border-transparent text-text-muted'
+                            }`}
+                        >
+                            Completed
+                        </button>
+                    </div>
                     <button
                         type="button"
-                        onClick={() => handleTabChange('active')}
-                        className={`cursor-pointer border-b p-2.5 text-[10px] tracking-[2px] uppercase ${
-                            activeTab === 'active'
-                                ? 'border-etherea-purple text-etherea-purple'
-                                : 'border-transparent text-text-muted'
-                        }`}
+                        onClick={() => setIsFilterOpen(true)}
+                        className="item-center flex cursor-pointer gap-1.5 text-[10px] tracking-[2px] text-text-muted uppercase transition-colors hover:text-text-primary"
                     >
-                        Active
-                    </button>
-                    <button
-                        type="button"
-                        onClick={() => handleTabChange('completed')}
-                        className={`cursor-pointer border-b p-2.5 text-[10px] tracking-[2px] uppercase ${
-                            activeTab === 'completed'
-                                ? 'border-etherea-purple text-etherea-purple'
-                                : 'border-transparent text-text-muted'
-                        }`}
-                    >
-                        Completed
+                        <ListFilter className="size-3" />
+                        <span>Filter</span>
                     </button>
                 </div>
-                <button
-                    type="button"
-                    onClick={() => setIsFilterOpen((previous) => !previous)}
-                    className={`flex cursor-pointer items-center gap-1.5 py-1 text-[10px] tracking-[2px] uppercase transition-colors ${priorityFilter !== 'all' ? 'text-etherea-purple' : 'text-text-muted hover:text-text-primary'}`}
-                >
-                    <ListFilter className="size-3" />
-                    <span>Filter</span>
-                </button>
 
                 {isFilterOpen && (
-                    <div className="absolute top-full right-4 z-30 mt-1 w-32 border border-stroke-secondary bg-surface p-1 shadow-lg">
-                        {(Object.keys(priorityLabel) as PriorityFilter[]).map((filter) => (
-                            <button
-                                key={filter}
-                                type="button"
-                                onClick={() => {
-                                    setPriorityFilter(filter);
-                                    setIsFilterOpen(false);
-                                }}
-                                className={`block w-full px-2 py-1.5 text-left font-mono text-[10px] uppercase transition-colors hover:bg-etherea-purple/10 ${
-                                    priorityFilter === filter
-                                        ? 'text-etherea-purple'
-                                        : 'text-text-muted'
-                                }`}
-                            >
-                                {priorityLabel[filter]}
-                            </button>
-                        ))}
-                    </div>
+                    <TaskFilterModal
+                        initialFilters={filters}
+                        projects={projects.map((project) => ({
+                            value: project.id,
+                            label: project.name,
+                        }))}
+                        stats={stats.map((stat) => ({
+                            value: stat.id,
+                            label: stat.name,
+                        }))}
+                        onClose={() => setIsFilterOpen(false)}
+                        onApply={setFilters}
+                    />
                 )}
             </div>
+
             <div className="relative max-h-[350px] overflow-auto font-mono">
                 {isUpdating && (
                     <div className="absolute inset-0 z-20 flex items-start justify-center bg-background/30 pt-6 backdrop-blur-[1px]">
@@ -289,8 +341,8 @@ export default function TasksWidget() {
                 {filteredTasks.length === 0 ? (
                     <div className="flex h-[250px] items-center justify-center px-6 text-center">
                         <span className="font-mono text-[10px] tracking-[1.5px] text-text-muted uppercase">
-                            {priorityFilter !== 'all'
-                                ? 'Nenhuma tarefa encontrada com o filtro selecionado.'
+                            {hasActiveFilters
+                                ? 'Nenhuma tarefa encontrada com os filtros selecionados.'
                                 : activeTab === 'active'
                                   ? 'Nenhuma tarefa ativa.'
                                   : 'Nenhuma tarefa concluída.'}
@@ -303,35 +355,37 @@ export default function TasksWidget() {
                         return (
                             <div
                                 key={task.id}
-                                className="group flex items-center gap-4 bg-transparent px-4 py-2 transition-colors hover:bg-surface/50"
+                                className="group flex items-start gap-4 bg-transparent px-4 py-2 transition-colors hover:bg-surface/50"
                             >
                                 <button
                                     type="button"
                                     disabled={isCompleted || updateTaskMutation.isPending}
                                     onClick={() => handleCompleteTask(task.id)}
-                                    className={`flex size-4 shrink-0 items-center justify-center border transition-colors ${
+                                    className={`mt-1 flex size-4 shrink-0 items-center justify-center border transition-colors ${
                                         isCompleted
                                             ? 'border-etherea-purple bg-etherea-purple text-background'
-                                            : 'border-stroke-secondary hover:border-etherea-purple'
+                                            : 'border-stroke-secondary text-text-muted hover:border-etherea-purple/50 hover:text-text-primary'
                                     } disabled:cursor-default`}
                                     aria-label={
-                                        isCompleted ? 'Tarefa concluída' : 'Marcar como concluída'
+                                        isCompleted
+                                            ? 'Tarefa concluída'
+                                            : 'Marcar tarefa como concluída'
                                     }
                                 >
                                     {isCompleted && <Check className="size-3" />}
                                 </button>
-
-                                <div className="min-w-0 flex-1">
-                                    <span
-                                        className={`block truncate text-sm ${
-                                            isCompleted
-                                                ? 'text-text-muted line-through'
-                                                : 'text-text-primary'
-                                        }`}
-                                    >
-                                        {task.name}
-                                    </span>
-
+                                <div>
+                                    <div className="min-w-0 flex-1">
+                                        <span
+                                            className={`block truncate text-sm ${
+                                                isCompleted
+                                                    ? 'text-text-muted line-through'
+                                                    : 'text-text-primary'
+                                            }`}
+                                        >
+                                            {task.name}
+                                        </span>
+                                    </div>
                                     <div className="my-1 flex flex-wrap items-center gap-3 text-[10px] text-text-muted uppercase">
                                         {task.specializations.length > 0 && (
                                             <span className="border border-text-muted px-1.5 py-0.5">
@@ -354,6 +408,7 @@ export default function TasksWidget() {
                                                         'bg-text-muted'
                                                     }`}
                                                 ></div>
+
                                                 <span>{task.priority}</span>
                                             </div>
                                         )}
@@ -364,6 +419,7 @@ export default function TasksWidget() {
                     })
                 )}
             </div>
+
             <div className="absolute bottom-0 flex w-full items-center justify-between border-t border-stroke-secondary bg-surface px-4 py-2 font-mono text-[10px] tracking-[1.5px] text-text-muted uppercase">
                 <span>ETHEREA // QUEST LOG</span>
                 <div className="flex items-center gap-1">

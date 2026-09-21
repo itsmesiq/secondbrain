@@ -73,10 +73,6 @@ export default function TaskFilterModal({
         ...stats,
     ];
 
-    const selectedProject = filters.projectId ?? 'all';
-    const selectedDate = filters.date ?? 'all';
-    const selectedStats = filters.statsId ?? 'all';
-
     const updateProject = (value: string) => {
         setFilters((previous) => ({
             ...previous,
@@ -99,11 +95,43 @@ export default function TaskFilterModal({
     };
 
     const handleClear = () => {
-        setFilters({
+        const clearedFilters: TaskFilters = {
             projectId: null,
             statsId: null,
             date: 'all',
-        });
+        };
+        setFilters(clearedFilters);
+        onApply(clearedFilters);
+        onClose();
+    };
+
+    const renderOptions = (
+        options: FilterOption[],
+        value: string,
+        onChange: (value: string) => void,
+    ) => {
+        return (
+            <div className="gao-1.5 flex flex-wrap">
+                {options.map((option) => {
+                    const isSelected = value === option.value;
+
+                    return (
+                        <button
+                            key={option.value}
+                            type="button"
+                            onClick={() => onChange(option.value)}
+                            className={`border px-2 py-1.5 font-mono text-[10px] tracking-[1px] uppercase transition-colors ${
+                                isSelected
+                                    ? 'border-etherea-purple bg-etherea-purple/10 text-etherea-purple'
+                                    : 'border-stroke-secondary text-text-muted hover:border-etherea-purple/50 hover:text-text-primary'
+                            }`}
+                        >
+                            {option.label}
+                        </button>
+                    );
+                })}
+            </div>
+        );
     };
 
     return (
@@ -123,7 +151,48 @@ export default function TaskFilterModal({
                         <X className="size-3" />
                     </button>
                 </div>
-                <div className="flex flex-col gap-4 p-3"></div>
+
+                <div className="flex flex-col gap-4 p-4">
+                    <div className="flex flex-col gap-2">
+                        <span className="font-mono text-[10px] tracking-[1.5px]">Project</span>
+
+                        {renderOptions(projectOptions, filters.projectId ?? 'all', updateProject)}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <span className="font-mono text-[9px] tracking-[1.5px] text-text-muted uppercase">
+                            Stats
+                        </span>
+
+                        {renderOptions(statsOptions, filters.statsId ?? 'all', updateStats)}
+                    </div>
+                    <div className="flex flex-col gap-2">
+                        <span className="font-mono text-[10px] tracking-[1.5px] text-text-muted uppercase">
+                            Date
+                        </span>
+
+                        {renderOptions(dateOptions, filters.date, updateDate)}
+                    </div>
+                    <div className="flex items-center gap-2 border-t border-stroke-secondary pt-3">
+                        <button
+                            type="button"
+                            onClick={handleClear}
+                            className="flex-1 border border-stroke-secondary px-2 py-2 font-mono text-[10px] tracking-[1.5px] text-text-muted uppercase transition-colors hover:border-etherea-purple/50 hover:text-text-primary"
+                        >
+                            Clear
+                        </button>
+
+                        <button
+                            type="button"
+                            onClick={() => {
+                                onApply(filters);
+                                onClose();
+                            }}
+                            className="flex-1 border border-etherea-purple bg-etherea-purple/10 px-3 py-2 font-mono text-[9px] tracking-[1.5px] text-etherea-purple uppercase transition-colors hover:bg-etherea-purple/20"
+                        >
+                            Apply Filters
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     );
