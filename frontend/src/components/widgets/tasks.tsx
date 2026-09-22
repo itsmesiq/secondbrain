@@ -430,11 +430,14 @@ export default function TasksWidget() {
                                         </span>
                                     </div>
                                     <div className="my-1 flex flex-wrap items-center gap-3 text-[10px] text-text-muted uppercase">
-                                        {task.specializations.length > 0 && (
-                                            <span className="border border-text-muted px-1.5 py-0.5">
-                                                {task.specializations[0].name}
+                                        {projects.map((project) => (
+                                            <span
+                                                className="border border-text-muted px-1.5 py-0.5"
+                                                key={project.id}
+                                            >
+                                                {project.name}
                                             </span>
-                                        )}
+                                        ))}
 
                                         {task.dueDate && <span>{formatDueDate(task.dueDate)}</span>}
 
