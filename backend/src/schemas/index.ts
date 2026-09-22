@@ -265,6 +265,12 @@ export const GetTasksResponseSchema = z.object({
                 name: z.string(),
             }),
         ),
+        specializations: z.array(
+            z.object({
+                id: z.string(),
+                name: z.string(),
+            }),
+        ),
     }),
 });
 
