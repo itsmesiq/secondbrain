@@ -112,6 +112,7 @@ export * from './getWidgetStats500';
 export * from './getWidgetTasks200';
 export * from './getWidgetTasks200Filters';
 export * from './getWidgetTasks200FiltersProjectsItem';
+export * from './getWidgetTasks200FiltersSpecializationsItem';
 export * from './getWidgetTasks200FiltersStatsItem';
 export * from './getWidgetTasks200Overview';
 export * from './getWidgetTasks200TasksItem';
