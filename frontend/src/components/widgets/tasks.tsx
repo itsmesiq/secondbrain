@@ -13,6 +13,7 @@ import {
 } from '@/lib/api/generated/endpoints/widgets/widgets';
 import { formatDueDate } from '@/lib/widgets/formatDueDate';
 
+import CreateTaskModal from './createTaskModal';
 import TaskFilterModal, { type TaskFilters } from './taskFilterModal';
 
 type Tab = 'active' | 'completed';
@@ -43,7 +44,7 @@ export default function TasksWidget() {
 
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
-    const [isCreateModelOpen, setIsCreateModelOpen] = useState(false);
+    const [isCreateModalOpen, setisCreateModalOpen] = useState(false);
 
     const status: 'active' | 'completed' = activeTab === 'active' ? 'active' : 'completed';
 
@@ -215,16 +216,19 @@ export default function TasksWidget() {
 
     const handleCreateTask = async ({
         name,
+        projectId,
         priority,
         dueDate,
     }: {
         name: string;
+        projectId?: string;
         priority?: string;
         dueDate?: string;
     }) => {
         const response = await createTaskMutation.mutateAsync({
             data: {
                 name,
+                projectId,
                 priority,
                 dueDate,
             },
@@ -246,7 +250,7 @@ export default function TasksWidget() {
             }),
         });
 
-        setIsCreateModelOpen(false);
+        setisCreateModalOpen(false);
         return true;
     };
 
@@ -262,6 +266,15 @@ export default function TasksWidget() {
 
     return (
         <article className="relative h-full max-h-[520px] w-full max-w-[400px] border border-etherea-purple/25 bg-background">
+            {isCreateModalOpen && (
+                <CreateTaskModal
+                    isOpen={isCreateModalOpen}
+                    isSubmitting={createTaskMutation.isPending}
+                    onClose={() => setisCreateModalOpen(false)}
+                    onSubmit={handleCreateTask}
+                />
+            )}
+
             <div className="flex items-center justify-between border-b border-stroke-secondary bg-surface px-4 py-3">
                 <div className="flex flex-col">
                     <span className="font-orbitron text-xs tracking-[4px] text-etherea-magenta uppercase">
@@ -274,7 +287,7 @@ export default function TasksWidget() {
 
                 <button
                     type="button"
-                    onClick={() => setIsCreateModelOpen(true)}
+                    onClick={() => setisCreateModalOpen(true)}
                     aria-label="Adicionar Tarefa"
                     className="border border-stroke-secondary p-2 text-text-muted transition duration-300 ease-in-out hover:border-etherea-purple hover:bg-etherea-purple/10 hover:text-etherea-purple hover:shadow-etherea-purple/25"
                 >
