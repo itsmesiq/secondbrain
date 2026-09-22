@@ -6,9 +6,11 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { GetWidgetTasks200FiltersProjectsItem } from './getWidgetTasks200FiltersProjectsItem';
+import type { GetWidgetTasks200FiltersSpecializationsItem } from './getWidgetTasks200FiltersSpecializationsItem';
 import type { GetWidgetTasks200FiltersStatsItem } from './getWidgetTasks200FiltersStatsItem';
 
 export type GetWidgetTasks200Filters = {
     projects: GetWidgetTasks200FiltersProjectsItem[];
     stats: GetWidgetTasks200FiltersStatsItem[];
+    specializations: GetWidgetTasks200FiltersSpecializationsItem[];
 };
