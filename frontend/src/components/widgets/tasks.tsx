@@ -60,7 +60,7 @@ export default function TasksWidget() {
         isFetching,
     } = useGetWidgetTasks(taskQueryParams, {
         query: {
-            staleTime: 0,
+            staleTime: 30_000,
         },
         request: {
             headers: token ? { Authorization: `Bearer ${token}` } : undefined,
@@ -83,6 +83,9 @@ export default function TasksWidget() {
         void queryClient
             .query(
                 getGetWidgetTasksQueryOptions(nextQueryParams, {
+                    query: {
+                        staleTime: 30_000,
+                    },
                     request: {
                         headers: token ? { Authorization: `Bearer ${token}` } : undefined,
                     },
@@ -248,12 +251,6 @@ export default function TasksWidget() {
         await queryClient.invalidateQueries({
             queryKey: getGetWidgetTasksQueryKey({
                 status: 'active',
-            }),
-        });
-
-        await queryClient.invalidateQueries({
-            queryKey: getGetWidgetTasksQueryKey({
-                status: 'completed',
             }),
         });
 
