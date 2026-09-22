@@ -1,5 +1,5 @@
 'use client';
-import { X } from 'lucide-react';
+import { ListFilter, X } from 'lucide-react';
 import { useState } from 'react';
 
 import { PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../icons';
@@ -142,9 +142,12 @@ export default function TaskFilterModal({
                 <PixelBorderBL className="absolute bottom-0 left-0 size-2.5" />
                 <PixelBorderBR className="absolute right-0 bottom-0 size-2.5" />
                 <div className="flex items-center justify-between border-b border-stroke-secondary px-4 py-3">
-                    <span className="font-orbitron text-xs tracking-[2px] text-etherea-purple uppercase">
-                        Filter Quests
-                    </span>
+                    <div className="flex items-center gap-2 text-etherea-purple">
+                        <ListFilter className="size-3" />
+                        <span className="font-orbitron text-[10px] tracking-[2px] uppercase">
+                            Filter Quests
+                        </span>
+                    </div>
 
                     <button
                         type="button"
