@@ -223,6 +223,10 @@ export async function getWidgetTasks({ userId, status, date, projectId, statsId 
         filters: {
             projects,
             stats,
+            specializations: specializations.map(specialization => ({
+                id: specialization.id,
+                name: specialization.name,
+            })),
         },
     };
 }
