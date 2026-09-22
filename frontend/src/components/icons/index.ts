@@ -1,5 +1,6 @@
 export { default as BackgroundClock } from '@/assets/background-clock-widget.svg';
 export { default as GoogleIcon } from '@/assets/google-logo.svg';
+export { default as EthereaSystem } from '@/assets/icons/etherea-system-icon.svg';
 export { default as HUDCornersBL } from '@/assets/icons/HUDCorners-BL.svg';
 export { default as HUDCornersBR } from '@/assets/icons/HUDCorners-BR.svg';
 export { default as HUDCornersTL } from '@/assets/icons/HUDCorners-TL.svg';
