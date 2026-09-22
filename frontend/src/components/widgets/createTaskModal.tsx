@@ -4,14 +4,26 @@ import { useState } from 'react';
 
 import { PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../icons';
 
+type SpecializationOption = {
+    id: string;
+    name: string;
+};
+
+type ProjectOption = {
+    id: string;
+    name: string;
+};
+
 type CreateTaskModalProps = {
     isOpen: boolean;
     isSubmitting: boolean;
+    specializations: SpecializationOption[];
+    projects: ProjectOption[];
     onClose: () => void;
     onSubmit: (data: {
         name: string;
         difficulty?: string;
-        specialization?: string;
+        specialization?: string[];
         projectId?: string;
         priority?: string;
         dueDate?: string;
@@ -57,19 +69,62 @@ const difficultyOptions = [
 export default function CreateTaskModal({
     isOpen,
     isSubmitting = false,
+    projects,
     onClose,
     onSubmit,
+    specializations,
 }: CreateTaskModalProps) {
     const [name, setName] = useState('');
     const [projectId, setProjectId] = useState('');
     const [difficulty, setDifficulty] = useState('');
-    const [specialization, setSpecialization] = useState('');
+    const [specializationId, setSpecializationId] = useState('');
     const [priority, setPriority] = useState('');
     const [dueDate, setDueDate] = useState('');
 
     if (!isOpen) {
         return null;
     }
+
+    const formatDueDate = (value: string) => {
+        const digits = value.replace(/\D/g, '').slice(0, 8);
+
+        if (digits.length <= 2) {
+            return digits;
+        }
+
+        if (digits.length <= 4) {
+            return `${digits.slice(0, 2)}/${digits.slice(2)}`;
+        }
+
+        return `${digits.slice(0, 2)}/${digits.slice(2, 4)}/${digits.slice(4)}`;
+    };
+
+    const parseDueDate = (value: string) => {
+        if (!value) {
+            return undefined;
+        }
+
+        const match = value.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+
+        if (!match) {
+            return undefined;
+        }
+
+        const [, day, month, year] = match;
+
+        const date = new Date(Number(year), Number(month) - 1, Number(day));
+
+        const isValidDate =
+            date.getFullYear() === Number(year) &&
+            date.getMonth() === Number(month) - 1 &&
+            date.getDate() === Number(day);
+
+        if (!isValidDate) {
+            return undefined;
+        }
+
+        return `${year}-${month}-${day}`;
+    };
 
     const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -80,13 +135,15 @@ export default function CreateTaskModal({
             return;
         }
 
+        const parsedDueDate = parseDueDate(dueDate);
+
         await onSubmit({
             name: trimmedName,
             difficulty: difficulty || undefined,
-            specialization: specialization || undefined,
+            specialization: specializationId ? [specializationId] : undefined,
             projectId: projectId || undefined,
             priority: priority || undefined,
-            dueDate: dueDate || undefined,
+            dueDate: parsedDueDate,
         });
     };
 
@@ -142,15 +199,27 @@ export default function CreateTaskModal({
                                 >
                                     Project
                                 </label>
-                                <input
-                                    type="text"
+                                <select
                                     id="create-task-project"
                                     value={projectId}
                                     onChange={(event) => setProjectId(event.target.value)}
-                                    placeholder="Etherea..."
                                     disabled={isSubmitting}
-                                    className="border border-stroke-secondary bg-background px-3 py-2 text-xs text-text-primary outline-none placeholder:text-text-muted/60 focus:border-etherea-purple disabled:cursor-default disabled:opacity-50"
-                                />
+                                    className="appearance-none border border-stroke-secondary bg-background px-3 py-2 text-xs text-text-primary outline-none placeholder:text-text-muted/60 focus:border-etherea-purple disabled:cursor-default disabled:opacity-50"
+                                >
+                                    <option value="" disabled hidden>
+                                        Select
+                                    </option>
+
+                                    {projects.map((project) => (
+                                        <option
+                                            key={project.id}
+                                            value={project.id}
+                                            className="font-mono uppercase"
+                                        >
+                                            {project.name}
+                                        </option>
+                                    ))}
+                                </select>
                             </div>
                             <div className="flex w-full flex-col gap-2">
                                 <label
@@ -161,12 +230,24 @@ export default function CreateTaskModal({
                                 </label>
                                 <select
                                     id="create-task-specialization"
-                                    value={specialization}
-                                    onChange={(event) => setSpecialization(event.target.value)}
+                                    value={specializationId}
+                                    onChange={(event) => setSpecializationId(event.target.value)}
                                     disabled={isSubmitting}
                                     className="w-full appearance-none border border-stroke-secondary bg-background px-3 py-2 text-xs text-text-primary outline-none placeholder:text-text-muted/60 focus:border-etherea-purple disabled:cursor-default disabled:opacity-50"
                                 >
-                                    <option value="">Select</option>
+                                    <option value="" disabled hidden>
+                                        Select
+                                    </option>
+
+                                    {specializations.map((specialization) => (
+                                        <option
+                                            key={specialization.id}
+                                            value={specialization.id}
+                                            className="font-mono uppercase"
+                                        >
+                                            {specialization.name}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
@@ -178,11 +259,14 @@ export default function CreateTaskModal({
                                 Due Date
                             </label>
                             <input
-                                type="date"
+                                type="text"
                                 id="create-task-due-date"
                                 value={dueDate}
-                                onChange={(event) => setDueDate(event.target.value)}
+                                onChange={(event) => setDueDate(formatDueDate(event.target.value))}
+                                inputMode="numeric"
+                                maxLength={10}
                                 disabled={isSubmitting}
+                                placeholder="DD/MM/AAAA"
                                 className="w-full border border-stroke-secondary bg-background px-3 py-2 text-xs text-text-primary outline-none placeholder:text-text-muted/60 focus:border-etherea-purple disabled:cursor-default disabled:opacity-50"
                             />
                         </div>

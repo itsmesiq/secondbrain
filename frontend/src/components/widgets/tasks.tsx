@@ -111,6 +111,7 @@ export default function TasksWidget() {
     const tasks = data?.tasks ?? [];
     const projects = data?.filters.projects ?? [];
     const stats = data?.filters.stats ?? [];
+    const specializations = data?.filters.specializations ?? [];
 
     const activeCount = data?.overview.pending ?? 0;
     const completedCount = data?.overview.completed ?? 0;
@@ -216,11 +217,15 @@ export default function TasksWidget() {
 
     const handleCreateTask = async ({
         name,
+        difficulty,
+        specializationIds,
         projectId,
         priority,
         dueDate,
     }: {
         name: string;
+        difficulty?: string;
+        specializationIds?: string[];
         projectId?: string;
         priority?: string;
         dueDate?: string;
@@ -228,6 +233,8 @@ export default function TasksWidget() {
         const response = await createTaskMutation.mutateAsync({
             data: {
                 name,
+                difficulty,
+                specializationIds,
                 projectId,
                 priority,
                 dueDate,
@@ -270,6 +277,8 @@ export default function TasksWidget() {
                 <CreateTaskModal
                     isOpen={isCreateModalOpen}
                     isSubmitting={createTaskMutation.isPending}
+                    specializations={specializations}
+                    projects={projects}
                     onClose={() => setisCreateModalOpen(false)}
                     onSubmit={handleCreateTask}
                 />
