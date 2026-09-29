@@ -1,10 +1,9 @@
 'use client';
 
-import { CircleCheck } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 import Sidebar from '@/components/dashboard/Sidebar';
-import WidgetCatalog from '@/components/dashboard/WidgetCatalog';
+import WidgetCatalog from '@/components/dashboard/Widgets';
 
 import { authClient } from '../_lib/auth-client';
 
@@ -53,11 +52,11 @@ export default function DashboardPage() {
                 activeSection={activeSection}
                 onSectionChange={setActiveSection}
             />
-            <main className="relative h-screen w-[75%] overflow-auto px-8 py-16">
+            <main className="relative h-screen w-[80%] overflow-auto px-8 py-10">
                 {notionConnected && (
-                    <div className="absolute top-3 right-3 flex items-center justify-center gap-3 rounded-full bg-[#30a46c]/10 px-4 py-2 text-[#30a46c]">
-                        <CircleCheck className="h-4 w-4" />
-                        <span className="font-sans text-sm leading-[120%] font-medium tracking-[2.4px] whitespace-nowrap">
+                    <div className="absolute top-10 right-8 flex items-center justify-center gap-2 border border-success-green/20 bg-[#002814]/50 px-4 py-2 text-success-green">
+                        <div className="size-1.5 bg-success-green shadow-[0_0_4px_0_#00C850]"></div>
+                        <span className="font-mono text-[10px] leading-[120%] tracking-[2.4px] whitespace-nowrap uppercase">
                             Notion Conectado
                         </span>
                     </div>
@@ -66,7 +65,7 @@ export default function DashboardPage() {
                 {activeSection === 'widgets' && <WidgetCatalog />}
 
                 {activeSection === 'templates' && (
-                    <div className="flex h-full w-full flex-col items-center justify-center gap-4">
+                    <div className="flex flex-col items-center justify-center gap-4 px-4 py-2">
                         <h1 className="font-sans text-4xl font-bold">🚀 Templates</h1>
                         <p className="max-w-[400px] text-center font-sans text-sm font-light tracking-[2.4px] text-foreground">
                             This section is under construction. Please check back later for updates
