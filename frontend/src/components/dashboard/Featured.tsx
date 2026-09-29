@@ -1,6 +1,6 @@
 import Image from 'next/image';
 
-import { ClockDark } from '@/components/images';
+import { ClockTransparent } from '@/components/images';
 
 import { FeaturedWidgetCard } from './WidgetCards';
 
@@ -28,10 +28,10 @@ export default function Featured({ setSelectedWidget, setSelectedWidgetName }: F
                 description={'A futuristic time artifact designed for your daily interface.'}
                 preview={
                     <Image
-                        src={ClockDark}
+                        src={ClockTransparent}
                         alt="Modern Clock widget preview"
-                        width={250}
-                        height={250}
+                        width={232}
+                        height={232}
                         unoptimized
                     />
                 }

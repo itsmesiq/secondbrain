@@ -3,9 +3,10 @@
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
-import { BackgroundClock } from '@/components/icons';
 import { getWidgetColor, getWidgetTheme } from '@/lib/widgets/config';
 import type { WidgetProps } from '@/types/widgets.types';
+
+import { HUDCornersBL, HUDCornersBR, HUDCornersTL, HUDCornersTR } from '../icons';
 
 export default function Clock({ theme = 'dark', color = 'purple' }: WidgetProps) {
     const searchParams = useSearchParams();
@@ -60,29 +61,60 @@ export default function Clock({ theme = 'dark', color = 'purple' }: WidgetProps)
         })
         .split('-')[0];
 
-    const formattedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    const formattedWeekday = weekday.charAt(0).toUpperCase() + weekday.slice(1, 3);
 
     return (
         <div
             data-theme={resolvedTheme}
             data-color={resolvedColor}
-            className="relative flex h-72 w-72 flex-col items-center justify-center overflow-hidden rounded-4xl bg-widget-background font-orbitron shadow-[0_0_32px_0] shadow-[#0F0E0E]/20"
+            className="relative flex h-80 w-72 flex-col items-center justify-between overflow-hidden border border-etherea-purple/40 bg-[radial-gradient(70.71%_70.71%_at_50%_50%,rgba(155,48,255,0.08)_0%,rgba(15,14,14,1)_70%)] py-5 font-orbitron shadow-[0_0_32px_0] shadow-[#0F0E0E]/20"
         >
-            <div className="absolute top-7 right-7 z-10 flex items-center gap-1.5 text-widget-foreground">
-                <span>{formattedDate}</span>
-                <span className="opacity-35">{formattedWeekday}</span>
+            <HUDCornersBL className="absolute bottom-0 left-0 text-etherea-purple" />
+            <HUDCornersBR className="absolute right-0 bottom-0 text-etherea-purple" />
+            <HUDCornersTL className="absolute top-0 left-0 text-etherea-purple" />
+            <HUDCornersTR className="absolute top-0 right-0 text-etherea-purple" />
+
+            <div className="absolute z-10 h-60 w-60">
+                <div className="absolute top-0 left-1/2 size-3 -translate-x-1/2 rotate-45 border border-etherea-purple bg-[#3A2060]" />
+                <div className="absolute top-1/2 left-0 size-3 -translate-y-1/2 rotate-45 border border-etherea-purple bg-[#3A2060]" />
+                <div className="absolute top-1/2 right-0 size-3 -translate-y-1/2 rotate-45 border border-etherea-purple bg-[#3A2060]" />
+                <div className="absolute bottom-0 left-1/2 size-3 -translate-x-1/2 rotate-45 border border-etherea-purple bg-[#3A2060]" />
+
+                <svg viewBox="0 0 100 100" className="size-full">
+                    <circle cx="50" cy="50" r="48" fill="none" stroke="#24184A" strokeWidth="1.5" />
+
+                    <circle
+                        cx="50"
+                        cy="50"
+                        r="48"
+                        fill="none"
+                        stroke="#E52BFF"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeDasharray="60 15"
+                        strokeDashoffset="30"
+                    />
+                </svg>
+                <div className="absolute top-1/2 left-1/2 h-36 w-36 -translate-x-1/2 -translate-y-1/2 rounded-full bg-etherea-purple/5"></div>
             </div>
-            <div className="relative z-10 flex items-center justify-center gap-2 text-[56px] text-widget-foreground">
-                <div className="flex h-[132px] w-[110px] items-center justify-center rounded-xl border border-widget-foreground/10 bg-widget-foreground/5 shadow-[inset_0_0_4px_0] shadow-widget-foreground/10 backdrop-blur-xs">
-                    <span>{hours}</span>
+            <div className="relative flex h-60 w-60 flex-col items-center justify-center gap-2 rounded-full">
+                <div className="relative z-10 flex items-center justify-center gap-4 text-[56px] text-widget-foreground">
+                    <div className="font-mono text-4xl text-foreground">
+                        <span>{hours}</span>
+                    </div>
+                    <div className="h-7 w-[1px] bg-etherea-purple shadow-[0_0_6px_0_#9B30FF]"></div>
+                    <div className="font-mono text-4xl text-foreground">
+                        <span>{minutes}</span>
+                    </div>
                 </div>
-                <div className="flex h-[132px] w-[110px] items-center justify-center rounded-xl border border-widget-foreground/10 bg-widget-foreground/5 shadow-[inset_0_0_4px_0] shadow-widget-foreground/10 backdrop-blur-xs">
-                    <span>{minutes}</span>
+                <div className="flex items-center gap-6 font-mono text-sm text-text-secondary uppercase">
+                    <span>{formattedDate}</span>
+                    <span>{formattedWeekday}</span>
                 </div>
             </div>
-            <div className="absolute -bottom-[25%] z-0">
-                <BackgroundClock className="h-82 w-72 text-widget-accent blur-2xl" />
-            </div>
+            <span className="font-mono text-xs tracking-[3px] text-text-muted uppercase">
+                Temporal Core
+            </span>
         </div>
     );
 }
