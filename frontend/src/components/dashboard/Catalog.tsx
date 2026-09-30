@@ -4,10 +4,12 @@ import { WidgetCard } from '@/components/dashboard/WidgetCards';
 import { Clock, ProfileCard, Tasks } from '@/components/images';
 
 type CatalogProps = {
-    onClick: (widgetName: string) => void;
+    onCopy: (widgetId: string) => void;
+    copyingWidgetId: string | null;
+    copiedWidgetId: string | null;
 };
 
-export default function Catalog({ onClick }: CatalogProps) {
+export default function Catalog({ onCopy, copyingWidgetId, copiedWidgetId }: CatalogProps) {
     return (
         <div className="mb-10 flex flex-col gap-4">
             <div className="flex items-center gap-3 uppercase">
@@ -33,7 +35,9 @@ export default function Catalog({ onClick }: CatalogProps) {
                             unoptimized
                         />
                     }
-                    onClick={() => onClick('clock')}
+                    onClick={() => onCopy('clock')}
+                    isLoading={copyingWidgetId === 'clock'}
+                    isCopied={copiedWidgetId === 'clock'}
                 />
 
                 <WidgetCard
@@ -49,7 +53,9 @@ export default function Catalog({ onClick }: CatalogProps) {
                             unoptimized
                         />
                     }
-                    onClick={() => onClick('tasks')}
+                    onClick={() => onCopy('tasks')}
+                    isLoading={copyingWidgetId === 'tasks'}
+                    isCopied={copiedWidgetId === 'tasks'}
                 />
 
                 <WidgetCard
@@ -65,7 +71,9 @@ export default function Catalog({ onClick }: CatalogProps) {
                             unoptimized
                         />
                     }
-                    onClick={() => onClick('profile')}
+                    onClick={() => onCopy('profile')}
+                    isLoading={copyingWidgetId === 'profile'}
+                    isCopied={copiedWidgetId === 'profile'}
                 />
             </div>
         </div>
