@@ -17,4 +17,6 @@ export type GetWidgetProfile200 = {
     title: string;
     createdAt: string;
     updatedAt: string;
+    /** @nullable */
+    requiredXp: number | null;
 };

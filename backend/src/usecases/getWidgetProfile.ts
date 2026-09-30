@@ -10,6 +10,7 @@ import {
     getTitle,
 } from '../lib/notion.js';
 import type { Profile } from '../schemas/etherea/index.js';
+import { getLevels } from './getLevels.js';
 
 function mapProfile(result: any): Profile {
     return {
@@ -26,7 +27,9 @@ function mapProfile(result: any): Profile {
     };
 }
 
-export async function getWidgetProfile(userId: string): Promise<Profile> {
+export async function getWidgetProfile(
+    userId: string,
+): Promise<Profile & { requiredXp: number | null }> {
     const notion = await getNotionAdapter(userId);
 
     const dataSources = await notion.searchDataSources('Profile');
@@ -42,7 +45,17 @@ export async function getWidgetProfile(userId: string): Promise<Profile> {
     }
 
     for await (const result of notion.queryDataSource(dataSource.id)) {
-        return mapProfile(result);
+        const profile = mapProfile(result);
+        const levels = await getLevels(userId);
+
+        const nextLevel = levels
+            .filter(level => level.requiredXP > profile.xp)
+            .sort((a, b) => a.requiredXP - b.requiredXP)[0];
+
+        return {
+            ...profile,
+            requiredXp: nextLevel?.requiredXP ?? null,
+        };
     }
 
     throw new ProfileNotFoundError();
