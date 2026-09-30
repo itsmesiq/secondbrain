@@ -9,7 +9,7 @@ type ProfileInfo = {
     mysticOrder: string;
     level: number;
     xp: number;
-    requiredXp: number;
+    requiredXp: number | null;
     gold: number;
     title: string;
 };
@@ -29,7 +29,14 @@ export default function ProfileCard({
     gold,
     title,
 }: ProfileInfo) {
-    const levelPercentage = (xp / requiredXp) * 100;
+    const isMaxLevel = requiredXp === null;
+
+    const levelPercentage = isMaxLevel
+        ? 100
+        : requiredXp > 0
+          ? Math.min(Math.max((xp / requiredXp) * 100, 0), 100)
+          : 0;
+
     const bars: levelBar[] = [];
 
     const filledBars = (percentage: number) => {
@@ -86,6 +93,7 @@ export default function ProfileCard({
                         alt={`Character ${title}`}
                         fill
                         sizes="310px"
+                        unoptimized
                         className="object-cover object-top"
                     />
                 </div>
@@ -103,9 +111,15 @@ export default function ProfileCard({
                 <div className="mt-3">
                     <div className="flex items-center justify-between font-mono text-[10px] tracking-[2px] text-etherea-purple uppercase">
                         <div className="flex items-center gap-2">
-                            <span>Lv.{String(level).padStart(2, '0')}</span>
-                            <MoveRight className="size-3" />
-                            <span>Lv.{String(level + 1).padStart(2, '0')}</span>
+                            {isMaxLevel ? (
+                                <span>Max Level</span>
+                            ) : (
+                                <>
+                                    <span>Lv.{String(level).padStart(2, '0')}</span>
+                                    <MoveRight className="size-3" />
+                                    <span>Lv.{String(level + 1).padStart(2, '0')}</span>
+                                </>
+                            )}
                         </div>
                         <span>{levelPercentage.toFixed(0)}%</span>
                     </div>
