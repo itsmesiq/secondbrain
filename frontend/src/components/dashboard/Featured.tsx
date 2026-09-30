@@ -5,11 +5,12 @@ import { ClockTransparent } from '@/components/images';
 import { FeaturedWidgetCard } from './WidgetCards';
 
 type FeaturedProps = {
-    setSelectedWidget: (widget: string | null) => void;
-    setSelectedWidgetName: (name: string | null) => void;
+    onCopy: (widgetId: string) => void;
+    copyingWidgetId: string | null;
+    copiedWidgetId: string | null;
 };
 
-export default function Featured({ setSelectedWidget, setSelectedWidgetName }: FeaturedProps) {
+export default function Featured({ onCopy, copyingWidgetId, copiedWidgetId }: FeaturedProps) {
     return (
         <div className="mb-10 flex flex-col gap-4">
             <div className="flex items-center gap-3 uppercase">
@@ -35,10 +36,9 @@ export default function Featured({ setSelectedWidget, setSelectedWidgetName }: F
                         unoptimized
                     />
                 }
-                onClick={() => {
-                    setSelectedWidget('clock');
-                    setSelectedWidgetName('Modern Clock');
-                }}
+                onClick={() => onCopy('clock')}
+                isLoading={copyingWidgetId === 'clock'}
+                isCopied={copiedWidgetId === 'clock'}
             />
         </div>
     );
