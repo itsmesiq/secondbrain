@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import { WidgetCard } from '@/components/dashboard/WidgetCards';
-import { Clock, Tasks } from '@/components/images';
+import { Clock, ProfileCard, Tasks } from '@/components/images';
 
 type CatalogProps = {
     onClick: (widgetName: string) => void;
@@ -53,19 +53,19 @@ export default function Catalog({ onClick }: CatalogProps) {
                 />
 
                 <WidgetCard
-                    id={3}
-                    categories={['time']}
-                    name="Modern Clock"
+                    id={2}
+                    categories={['etherea', 'system']}
+                    name="Profile Card"
                     preview={
                         <Image
-                            src={Tasks}
-                            alt="Modern Clock widget preview"
+                            src={ProfileCard}
+                            alt="Profile Card widget preview"
                             width={330}
                             height={186}
                             unoptimized
                         />
                     }
-                    onClick={() => onClick('modern-clock')}
+                    onClick={() => onClick('profile')}
                 />
             </div>
         </div>

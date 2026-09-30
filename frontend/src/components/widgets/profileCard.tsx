@@ -1,7 +1,7 @@
 import { MoveRight } from 'lucide-react';
 import Image from 'next/image';
 
-import { PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../icons';
+import { ArcaneIcon, PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../icons';
 
 type ProfileInfo = {
     name: string;
@@ -63,11 +63,11 @@ export default function ProfileCard({
 
     return (
         <article className="border border-etherea-purple/30 bg-background">
-            <div className="flex w-full items-center justify-between bg-etherea-purple/10 px-3.5 py-2.5">
+            <div className="flex w-full items-center justify-between bg-etherea-purple/10 px-3.5 py-2">
                 <div className="flex items-center gap-2">
                     <div className="size-1.5 bg-etherea-purple shadow-[0_0_6px_0_#9B30FF]"></div>
                     <div className="font-mono text-[10px] tracking-[3px] text-etherea-magenta uppercase">
-                        Character
+                        Profile
                     </div>
                 </div>
                 <div className="flex items-center gap-1">
@@ -99,65 +99,93 @@ export default function ProfileCard({
                 </div>
             </div>
             <div className="h-[1px] w-full bg-[linear-gradient(90deg,rgba(42,31,74,0.00)_0%,#2A1F4A_20%,#9B30FF_50%,#2A1F4A_80%,rgba(42,31,74,0.00)_100%)]"></div>
-            <div className="px-4 pt-3">
-                <div className="flex items-center justify-between font-mono text-[10px] tracking-[2px] text-text-muted uppercase">
-                    <span>Name</span>
-                    <span>Level</span>
-                </div>
-                <div className="flex items-center justify-between font-mono text-lg tracking-[4px] text-text-primary uppercase">
-                    <span>{name}</span>
-                    <span className="text-etherea-purple">{String(level).padStart(2, '0')}</span>
-                </div>
-                <div className="mt-3">
-                    <div className="flex items-center justify-between font-mono text-[10px] tracking-[2px] text-etherea-purple uppercase">
-                        <div className="flex items-center gap-2">
-                            {isMaxLevel ? (
-                                <span>Max Level</span>
-                            ) : (
-                                <>
-                                    <span>Lv.{String(level).padStart(2, '0')}</span>
-                                    <MoveRight className="size-3" />
-                                    <span>Lv.{String(level + 1).padStart(2, '0')}</span>
-                                </>
-                            )}
+            <div className="px-4">
+                <div className="relative flex items-center justify-between">
+                    <PixelBorderTL className="absolute top-0 left-0 z-20 size-2" />
+                    <PixelBorderBL className="absolute bottom-0 left-0 z-20 size-2" />
+
+                    <div className="flex w-full items-start justify-between gap-[1px] bg-text-muted font-mono text-[10px] tracking-[2px] uppercase">
+                        <div className="flex w-full flex-col items-start bg-background pl-3">
+                            <span className="text-text-muted">Name</span>
+                            <span className="text-lg tracking-[4px] text-text-primary">{name}</span>
                         </div>
-                        <span>{levelPercentage.toFixed(0)}%</span>
+                        <div className="flex w-full flex-col items-end bg-background px-5">
+                            <span className="whitespace-nowrap text-text-muted">Mystic Order</span>
+                            <span className="text-lg tracking-[4px] text-etherea-purple">
+                                {mysticOrder}
+                            </span>
+                        </div>
                     </div>
-                    <div className="mt-1.5 flex items-center justify-between gap-1">
-                        {bars.map((bar) => {
-                            return (
-                                <div key={bar.id} className="relative h-3 w-full">
-                                    <div
-                                        className="absolute inset-0 z-10 h-3 bg-etherea-purple shadow-[0_0_8px_0] shadow-etherea-purple"
-                                        style={{ width: `${bar.percentage}%` }}
-                                    ></div>
-                                    <div className="relative z-0 h-3 w-full bg-text-muted/20"></div>
-                                </div>
-                            );
-                        })}
+                    <div className="relative flex items-center justify-center border-x border-etherea-purple/50 px-3 py-3">
+                        <PixelBorderBL className="absolute bottom-0 left-0 z-20 size-2" />
+                        <PixelBorderBR className="absolute right-0 bottom-0 z-20 size-2" />
+                        <PixelBorderTL className="absolute top-0 left-0 z-20 size-2" />
+                        <PixelBorderTR className="absolute top-0 right-0 z-20 size-2" />
+                        <ArcaneIcon className="size-13" />
                     </div>
                 </div>
-                <div className="mt-3 h-[1px] w-full bg-[linear-gradient(90deg,rgba(42,31,74,0.00)_0%,#2A1F4A_20%,#9B30FF_50%,#2A1F4A_80%,rgba(42,31,74,0.00)_100%)]"></div>
+
+                <div className="mb-3 h-[1px] w-full bg-[linear-gradient(90deg,rgba(42,31,74,0.00)_0%,#2A1F4A_20%,#9B30FF_50%,#2A1F4A_80%,rgba(42,31,74,0.00)_100%)]"></div>
+                <div className="flex items-center justify-between px-2 font-mono text-xs tracking-[2px] text-etherea-purple uppercase">
+                    <div className="flex items-center gap-2">
+                        {isMaxLevel ? (
+                            <span>Max Level</span>
+                        ) : (
+                            <>
+                                <span>Lv.{String(level).padStart(2, '0')}</span>
+                                <MoveRight className="size-3 opacity-40" />
+                                <span className="opacity-40">
+                                    Lv.{String(level + 1).padStart(2, '0')}
+                                </span>
+                            </>
+                        )}
+                    </div>
+                    <span>{levelPercentage.toFixed(0)}%</span>
+                </div>
+                <div className="mt-2.5 flex items-center justify-between gap-1 px-2 pb-5">
+                    {bars.map((bar) => {
+                        return (
+                            <div key={bar.id} className="relative h-3 w-full">
+                                <div
+                                    className="absolute inset-0 z-10 h-3 bg-etherea-magenta shadow-[0_0_8px_0] shadow-etherea-magenta"
+                                    style={{ width: `${bar.percentage}%` }}
+                                ></div>
+                                <div className="relative z-0 h-3 w-full bg-text-muted/20"></div>
+                            </div>
+                        );
+                    })}
+                </div>
+
+                <div className="h-[1px] w-full bg-[linear-gradient(90deg,rgba(42,31,74,0.00)_0%,#2A1F4A_20%,#9B30FF_50%,#2A1F4A_80%,rgba(42,31,74,0.00)_100%)]"></div>
                 <div className="flex items-center justify-between gap-0.5 bg-text-muted">
-                    <div className="w-full bg-background py-3 pr-3.5 font-mono text-xs text-text-muted uppercase">
-                        <div className="mb-1.5 flex items-center gap-2">
-                            <span className="text-text-primary">Total XP</span>
-                        </div>
+                    <div className="relative w-full bg-background py-3 pl-5 font-mono text-xs text-text-muted uppercase">
+                        <PixelBorderBL className="absolute bottom-0 left-0 z-20 size-2" />
+                        <PixelBorderBR className="absolute right-0 bottom-0 z-20 size-2" />
+                        <PixelBorderTL className="absolute top-0 left-0 z-20 size-2" />
+                        <PixelBorderTR className="absolute top-0 right-0 z-20 size-2" />
+
+                        <span className="text-text-primary">Total XP</span>
+
                         <div className="flex items-center gap-1">
-                            <span className="text-power-pink">{xp}</span>
+                            <span className="text-base text-power-pink">{xp}</span>
                             <span className="text-power-pink/50">XP</span>
                         </div>
                     </div>
-                    <div className="w-full bg-background py-3 pl-3.5 font-mono text-xs text-text-muted uppercase">
-                        <div className="mb-1.5 flex items-center gap-2">
-                            <span className="text-text-primary">Gold</span>
-                        </div>
+                    <div className="relative w-full bg-background py-3 pl-5 font-mono text-xs text-text-muted uppercase">
+                        <PixelBorderBL className="absolute bottom-0 left-0 z-20 size-2" />
+                        <PixelBorderBR className="absolute right-0 bottom-0 z-20 size-2" />
+                        <PixelBorderTL className="absolute top-0 left-0 z-20 size-2" />
+                        <PixelBorderTR className="absolute top-0 right-0 z-20 size-2" />
+
+                        <span className="text-text-primary">Gold</span>
+
                         <div className="flex items-center gap-1">
-                            <span className="text-body-yellow">{gold}</span>
+                            <span className="text-base text-body-yellow">{gold}</span>
                             <span className="text-body-yellow/50">G</span>
                         </div>
                     </div>
                 </div>
+                <div className="h-[1px] w-full bg-[linear-gradient(90deg,rgba(42,31,74,0.00)_0%,#2A1F4A_20%,#9B30FF_50%,#2A1F4A_80%,rgba(42,31,74,0.00)_100%)]"></div>
             </div>
             <div className="flex w-full items-center justify-between bg-etherea-purple/5 px-3.5 py-2">
                 <span className="font-mono text-[10px] tracking-[1px] text-text-muted uppercase">
