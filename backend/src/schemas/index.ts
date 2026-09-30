@@ -348,7 +348,9 @@ export const CreateHabitResponseSchema = z.object({
 
 export type CreateHabitResponse = z.infer<typeof CreateHabitResponseSchema>;
 
-export const GetProfileResponseSchema = ProfileSchema;
+export const GetProfileResponseSchema = ProfileSchema.extend({
+    requiredXp: z.number().nullable(),
+});
 
 export type GetProfileResponse = z.infer<typeof GetProfileResponseSchema>;
 
