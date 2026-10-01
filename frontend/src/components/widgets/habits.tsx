@@ -1,9 +1,12 @@
 'use client';
+import { useQueryClient } from '@tanstack/react-query';
 import { LoaderCircle, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 import { useWidgetAuth } from '@/app/widgets/_lib/context';
 import {
+    getGetWidgetHabitsQueryKey,
+    getGetWidgetHabitsQueryOptions,
     useCreateHabitCompletion,
     useCreateWidgetHabit,
     useGetWidgetHabits,
@@ -13,6 +16,8 @@ import { PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../i
 
 export default function HabitsWidget() {
     const { token } = useWidgetAuth();
+    const queryClient = useQueryClient();
+
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     const {
@@ -88,6 +93,10 @@ export default function HabitsWidget() {
         if (response.status !== 201) {
             return;
         }
+
+        queryClient.invalidateQueries({
+            queryKey: getGetWidgetHabitsQueryKey(),
+        });
     };
 
     const handleCreateHabit = async ({
