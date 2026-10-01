@@ -162,15 +162,17 @@ export async function createHabitCompletion({
     const bestStreak = Math.max(currentBestStreak, streakResult.currentStreak);
 
     await notion.updatePage(habitId, {
-        'Current Streak': {
-            number: streakResult.currentStreak,
-        },
-        'Best Streak': {
-            number: bestStreak,
-        },
-        'Last Completed': {
-            date: {
-                start: today,
+        properties: {
+            'Current Streak': {
+                number: streakResult.currentStreak,
+            },
+            'Best Streak': {
+                number: bestStreak,
+            },
+            'Last Completed': {
+                date: {
+                    start: today,
+                },
             },
         },
     });
