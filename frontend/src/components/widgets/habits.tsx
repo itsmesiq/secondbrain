@@ -69,6 +69,24 @@ export default function HabitsWidget() {
 
     const todayKey = getDateKey(new Date());
 
+    const HEATMAP_DAYS = 90;
+    const HEATMAP_COLUMNS = 23;
+
+    const getHeatmapDays = () => {
+        const days: string[] = [];
+        const today = new Date();
+
+        for (let index = HEATMAP_DAYS - 1; index >= 0; index--) {
+            const date = new Date(today);
+            date.setDate(today.getDate() - index);
+            days.push(getDateKey(date));
+        }
+
+        return days;
+    };
+
+    const heatmapDays = getHeatmapDays();
+
     const isHabitCompletedToday = (habitId: string) => {
         if (completedHabitIds.has(habitId)) {
             return true;
@@ -224,7 +242,29 @@ export default function HabitsWidget() {
                                     )}
                                 </button>
                             </div>
-                            <div></div>
+                            <div className="px-3 pb-3">
+                                <div
+                                    className="grid gap-1"
+                                    style={{
+                                        gridTemplateColumns: `repeat(${HEATMAP_COLUMNS}, minmax(0, 1fr))`,
+                                    }}
+                                >
+                                    {heatmapDays.map((day) => {
+                                        const isCompleted =
+                                            habit.completionDates.includes(day) ||
+                                            (day === todayKey && completedHabitIds.has(habit.id));
+                                        const isToday = day === todayKey;
+
+                                        return (
+                                            <div
+                                                key={day}
+                                                className={`aspect-square ${isCompleted ? 'bg-etherea-purple shadow-[0_0_5px_0_rgba(155,48,255,0.5)]' : isToday ? 'border border-etherea-purple bg-transparent' : 'bg-background'}`}
+                                                title={day}
+                                            ></div>
+                                        );
+                                    })}
+                                </div>
+                            </div>
                         </div>
                     );
                 })}
