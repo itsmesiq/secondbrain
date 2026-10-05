@@ -1,6 +1,6 @@
 'use client';
 import { useQueryClient } from '@tanstack/react-query';
-import { LoaderCircle, Plus } from 'lucide-react';
+import { Check, LoaderCircle, Plus } from 'lucide-react';
 import { useState } from 'react';
 
 import { useWidgetAuth } from '@/app/widgets/_lib/context';
@@ -19,6 +19,7 @@ export default function HabitsWidget() {
     const queryClient = useQueryClient();
 
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [completedHabitIds, setCompletedHabitIds] = useState<Set<string>>(new Set());
 
     const {
         data: habitsResponse,
@@ -69,16 +70,17 @@ export default function HabitsWidget() {
     const todayKey = getDateKey(new Date());
 
     const isHabitCompletedToday = (habitId: string) => {
+        if (completedHabitIds.has(habitId)) {
+            return true;
+        }
+
         const habit = habits.find((habit) => habit.id === habitId);
 
         if (!habit || !habit.lastCompletedAt) {
             return false;
         }
 
-        const lastCompletedDate = new Date(habit.lastCompletedAt);
-        const lastCompletedKey = getDateKey(lastCompletedDate);
-
-        return lastCompletedKey === todayKey;
+        return habit.lastCompletedAt.slice(0, 10) === todayKey;
     };
 
     const handleCompleteHabit = async (habitId: string) => {
@@ -86,18 +88,40 @@ export default function HabitsWidget() {
             return;
         }
 
-        const response = await createHabitCompletionMutation.mutateAsync({
-            id: habitId,
+        setCompletedHabitIds((prev) => {
+            const next = new Set(prev);
+            next.add(habitId);
+            return next;
         });
 
-        if (response.status !== 201) {
-            return;
+        try {
+            const response = await createHabitCompletionMutation.mutateAsync({
+                id: habitId,
+            });
+
+            if (response.status !== 201) {
+                setCompletedHabitIds((prev) => {
+                    const next = new Set(prev);
+                    next.delete(habitId);
+                    return next;
+                });
+
+                return;
+            }
+
+            queryClient.invalidateQueries({
+                queryKey: getGetWidgetHabitsQueryKey(),
+            });
+        } catch {
+            setCompletedHabitIds((prev) => {
+                const next = new Set(prev);
+                next.delete(habitId);
+                return next;
+            });
         }
-
-        queryClient.invalidateQueries({
-            queryKey: getGetWidgetHabitsQueryKey(),
-        });
     };
+
+    const completedHabits = habits.filter((habit) => isHabitCompletedToday(habit.id)).length;
 
     const handleCreateHabit = async ({
         name,
@@ -171,7 +195,7 @@ export default function HabitsWidget() {
                         Today&apos;s Progress
                     </span>
                     <span className="font-orbitron text-xs tracking-[1px] text-etherea-cyan">
-                        2 / {habits.length}
+                        {completedHabits} / {habits.length}
                     </span>
                 </div>
                 <div></div>
@@ -190,11 +214,13 @@ export default function HabitsWidget() {
                                         isCompleted || createHabitCompletionMutation.isPending
                                     }
                                     onClick={() => handleCompleteHabit(habit.id)}
-                                    className={`size-5 border transition-colors ${isCompleted ? 'border-etherea-purple bg-etherea-purple text-background' : 'border border-stroke-secondary text-text-muted hover:border-etherea-purple/50 hover:text-text-primary'} disabled:cursor-default`}
+                                    className={`flex size-5 items-center justify-center border transition-colors ${isCompleted ? 'border-etherea-purple bg-etherea-purple text-background' : 'border border-stroke-secondary text-text-muted hover:border-etherea-purple/50 hover:text-text-primary'} disabled:cursor-default`}
                                     aria-label={
                                         isCompleted ? 'Hábito completado' : 'Marcar como completado'
                                     }
-                                ></button>
+                                >
+                                    {isCompleted && <Check className="size-4 text-background" />}
+                                </button>
                             </div>
                             <div></div>
                         </div>
