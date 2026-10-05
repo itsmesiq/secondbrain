@@ -118,6 +118,7 @@ export const HabitSchema = z.object({
     currentStreak: z.number(),
     bestStreak: z.number(),
     lastCompletedAt: z.string().nullable(),
+    completionDates: z.array(z.string()),
     createdAt: z.string(),
 });
 
