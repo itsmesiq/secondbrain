@@ -31,7 +31,7 @@ function getTodayInSaoPaulo(): string {
 function getHeatmapStartDate(): string {
     const today = getTodayInSaoPaulo();
 
-    const date = new Date(`${today}T00:00L00Z`);
+    const date = new Date(`${today}T00:00:00Z`);
 
     date.setDate(date.getDate() - (HEATMAP_DAYS - 1));
 
