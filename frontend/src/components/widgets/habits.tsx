@@ -214,12 +214,14 @@ export default function HabitsWidget() {
                                         isCompleted || createHabitCompletionMutation.isPending
                                     }
                                     onClick={() => handleCompleteHabit(habit.id)}
-                                    className={`flex size-5 items-center justify-center border transition-colors ${isCompleted ? 'border-etherea-purple bg-etherea-purple text-background' : 'border border-stroke-secondary text-text-muted hover:border-etherea-purple/50 hover:text-text-primary'} disabled:cursor-default`}
+                                    className={`flex size-5 items-center justify-center border transition-colors ${isCompleted ? 'border-etherea-purple bg-etherea-purple/15 shadow-[0_0_8px_0_rgba(155,48,255,0.5)]' : 'border border-stroke-secondary text-text-muted hover:border-etherea-purple/50 hover:text-text-primary'} disabled:cursor-default`}
                                     aria-label={
                                         isCompleted ? 'Hábito completado' : 'Marcar como completado'
                                     }
                                 >
-                                    {isCompleted && <Check className="size-4 text-background" />}
+                                    {isCompleted && (
+                                        <Check className="size-4 text-etherea-purple" />
+                                    )}
                                 </button>
                             </div>
                             <div></div>
