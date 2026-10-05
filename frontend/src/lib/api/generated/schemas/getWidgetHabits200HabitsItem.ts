@@ -18,5 +18,6 @@ export type GetWidgetHabits200HabitsItem = {
     bestStreak: number;
     /** @nullable */
     lastCompletedAt: string | null;
+    completionDates: string[];
     createdAt: string;
 };
