@@ -15,7 +15,7 @@ type CreateHabitModalProps = {
     isSubmitting: boolean;
     specializations: SpecializationOption[];
     onClose: () => void;
-    onSubmit: (data: { name: string; specialization?: string[] }) => void;
+    onSubmit: (data: { name: string; specializationIds?: string[] }) => void;
 };
 
 export default function CreateHabitModal({
@@ -43,7 +43,7 @@ export default function CreateHabitModal({
 
         await onSubmit({
             name: trimmedName,
-            specialization: specializationId ? [specializationId] : undefined,
+            specializationIds: specializationId ? [specializationId] : undefined,
         });
     };
 
