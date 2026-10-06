@@ -220,12 +220,10 @@ export async function widgetRoutes(app: FastifyInstance) {
             },
         },
         handler: async request => {
-            return {
-                habits: await getWidgetHabits({
-                    userId: request.user!.id,
-                    ...request.query,
-                }),
-            };
+            return getWidgetHabits({
+                userId: request.user!.id,
+                ...request.query,
+            });
         },
     });
 

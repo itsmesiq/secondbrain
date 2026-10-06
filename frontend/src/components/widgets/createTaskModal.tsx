@@ -204,7 +204,7 @@ export default function CreateTaskModal({
                                     value={projectId}
                                     onChange={(event) => setProjectId(event.target.value)}
                                     disabled={isSubmitting}
-                                    className="appearance-none border border-stroke-secondary bg-background px-3 py-2 text-xs text-text-primary outline-none placeholder:text-text-muted/60 focus:border-etherea-purple disabled:cursor-default disabled:opacity-50"
+                                    className="border border-stroke-secondary bg-background px-3 py-2 text-xs text-text-primary outline-none placeholder:text-text-muted/60 focus:border-etherea-purple disabled:cursor-default disabled:opacity-50"
                                 >
                                     <option value="" disabled hidden>
                                         Select
@@ -233,7 +233,7 @@ export default function CreateTaskModal({
                                     value={specializationId}
                                     onChange={(event) => setSpecializationId(event.target.value)}
                                     disabled={isSubmitting}
-                                    className="w-full appearance-none border border-stroke-secondary bg-background px-3 py-2 text-xs text-text-primary outline-none placeholder:text-text-muted/60 focus:border-etherea-purple disabled:cursor-default disabled:opacity-50"
+                                    className="w-full border border-stroke-secondary bg-background px-3 py-2 text-xs text-text-primary outline-none placeholder:text-text-muted/60 focus:border-etherea-purple disabled:cursor-default disabled:opacity-50"
                                 >
                                     <option value="" disabled hidden>
                                         Select
