@@ -14,6 +14,11 @@ import {
 
 import { PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../icons';
 
+type habitProgress = {
+    id: number;
+    completed: boolean;
+};
+
 export default function HabitsWidget() {
     const { token } = useWidgetAuth();
     const queryClient = useQueryClient();
@@ -141,6 +146,15 @@ export default function HabitsWidget() {
 
     const completedHabits = habits.filter((habit) => isHabitCompletedToday(habit.id)).length;
 
+    const totalHabits = habits.length;
+
+    const sortedHabits = [...habits].sort((a, b) => {
+        const aCompleted = isHabitCompletedToday(a.id);
+        const bCompleted = isHabitCompletedToday(b.id);
+
+        return Number(bCompleted) - Number(aCompleted);
+    });
+
     const handleCreateHabit = async ({
         name,
         objectiveId,
@@ -186,7 +200,7 @@ export default function HabitsWidget() {
     }
 
     return (
-        <article className="relative min-h-[624px] w-[400px] border border-etherea-purple/30 bg-background">
+        <article className="nax-h-[710px] relative min-h-[624px] w-[400px] border border-etherea-purple/30 bg-background">
             <div className="flex w-full items-center justify-between bg-etherea-purple/10 px-4 py-3">
                 <div>
                     <div className="flex items-start gap-3 font-mono uppercase">
@@ -213,12 +227,26 @@ export default function HabitsWidget() {
                         Today&apos;s Progress
                     </span>
                     <span className="font-orbitron text-xs tracking-[1px] text-etherea-cyan">
-                        {completedHabits} / {habits.length}
+                        {completedHabits} / {totalHabits}
                     </span>
                 </div>
-                <div></div>
+                <div
+                    className="grid gap-1 px-4"
+                    style={{ gridTemplateColumns: `repeat(${totalHabits}, minmax(0, 1fr))` }}
+                >
+                    {sortedHabits.map((habit) => {
+                        const isCompleted = isHabitCompletedToday(habit.id);
+
+                        return (
+                            <div
+                                key={habit.id}
+                                className={`h-2 ${isCompleted ? 'bg-etherea-magenta shadow-[0_0_3px_0_#E040FB]' : 'border border-stroke-secondary bg-card'}`}
+                            ></div>
+                        );
+                    })}
+                </div>
             </div>
-            <div className="flex flex-col gap-2 px-3 py-2.5">
+            <div className="flex max-h-[600px] flex-col gap-2 overflow-y-auto px-3 py-2.5 pb-16">
                 {habits.map((habit) => {
                     const isCompleted = isHabitCompletedToday(habit.id);
 
@@ -269,7 +297,7 @@ export default function HabitsWidget() {
                     );
                 })}
             </div>
-            <div className="absolute bottom-0 z-0 flex w-full flex-col bg-etherea-purple/5 px-4 py-2.5 font-mono text-[10px] tracking-[2px] text-text-muted">
+            <div className="absolute bottom-0 z-0 flex w-full flex-col bg-[#10101A] px-4 py-2.5 font-mono text-[10px] tracking-[2px] text-text-muted">
                 <span className="text-etherea-purple">SMALL ACTIONS.</span>
                 <span>GREATER EVOLUTION.</span>
             </div>
