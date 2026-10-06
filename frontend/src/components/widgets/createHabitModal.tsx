@@ -114,8 +114,8 @@ export default function CreateHabitModal({
 
                             {specializations.map((specialization) => (
                                 <option
-                                    value={specializationId}
-                                    key={specializationId}
+                                    value={specialization.id}
+                                    key={specialization.id}
                                     className="font-mono uppercase"
                                 >
                                     {specialization.name}
