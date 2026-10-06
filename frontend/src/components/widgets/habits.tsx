@@ -172,6 +172,10 @@ export default function HabitsWidget() {
             return;
         }
 
+        await queryClient.invalidateQueries({
+            queryKey: getGetWidgetHabitsQueryKey(),
+        });
+
         setIsCreateModalOpen(false);
         return true;
     };
