@@ -6,7 +6,9 @@
  * OpenAPI spec version: 1.0.0
  */
 import type { GetWidgetHabits200HabitsItem } from './getWidgetHabits200HabitsItem';
+import type { GetWidgetHabits200SpecializationsItem } from './getWidgetHabits200SpecializationsItem';
 
 export type GetWidgetHabits200 = {
     habits: GetWidgetHabits200HabitsItem[];
+    specializations: GetWidgetHabits200SpecializationsItem[];
 };

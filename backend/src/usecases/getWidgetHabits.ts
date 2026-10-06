@@ -54,12 +54,13 @@ function mapHabit(result: any, completionDates: string[]): Habit {
     };
 }
 
-export async function getWidgetHabits({ userId, active }: GetWidgetHabits): Promise<Habit[]> {
+export async function getWidgetHabits({ userId, active }: GetWidgetHabits) {
     const notion = await getNotionAdapter(userId);
 
-    const [habitDataSources, completionDataSources] = await Promise.all([
+    const [habitDataSources, completionDataSources, specializationDataSources] = await Promise.all([
         notion.searchDataSources('Habits'),
         notion.searchDataSources('Habit Completions'),
+        notion.searchDataSources('Specializations'),
     ]);
 
     const habitDataSource = habitDataSources.find(result => result.object === 'data_source');
@@ -77,6 +78,17 @@ export async function getWidgetHabits({ userId, active }: GetWidgetHabits): Prom
 
     if (!completionDataSource) {
         throw new DataSourceNotFoundError('Habit Completions');
+    }
+
+    const specializationDataSource = specializationDataSources.find(
+        result =>
+            result.object === 'data_source' &&
+            'title' in result &&
+            result.title?.some(item => item.plain_text === 'Specializations'),
+    );
+
+    if (!specializationDataSource) {
+        throw new DataSourceNotFoundError('Specializations');
     }
 
     const completionDatesByHabit = new Map<string, string[]>();
@@ -130,5 +142,17 @@ export async function getWidgetHabits({ userId, active }: GetWidgetHabits): Prom
         habits.push(habit);
     }
 
-    return habits;
+    const specializations: Array<{ id: string; name: string }> = [];
+
+    for await (const result of notion.queryDataSource(specializationDataSource.id)) {
+        specializations.push({
+            id: result.id,
+            name: getTitle(result.properties.Nome),
+        });
+    }
+
+    return {
+        habits,
+        specializations,
+    };
 }
