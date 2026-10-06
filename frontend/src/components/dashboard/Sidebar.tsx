@@ -30,6 +30,7 @@ export default function Sidebar({
                     width={200}
                     height={100}
                     className="mb-8"
+                    unoptimized
                 />
             </div>
 

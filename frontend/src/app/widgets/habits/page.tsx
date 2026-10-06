@@ -12,7 +12,7 @@ function HabitsContent() {
     return (
         <section
             data-theme={urlTheme}
-            className="flex h-screen w-full items-center justify-center bg-notion-background"
+            className="flex h-screen w-full items-center justify-center bg-notion-background px-16"
         >
             <HabitsWidget />
         </section>
