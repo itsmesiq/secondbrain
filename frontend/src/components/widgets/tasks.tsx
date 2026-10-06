@@ -395,6 +395,8 @@ export default function TasksWidget() {
                     filteredTasks.map((task) => {
                         const isCompleted = task.status === 'Concluído';
 
+                        const project = projects.find((project) => project.id === task.projectId);
+
                         return (
                             <div
                                 key={task.id}
@@ -430,14 +432,11 @@ export default function TasksWidget() {
                                         </span>
                                     </div>
                                     <div className="my-1 flex flex-wrap items-center gap-3 text-[10px] text-text-muted uppercase">
-                                        {projects.map((project) => (
-                                            <span
-                                                className="border border-text-muted px-1.5 py-0.5"
-                                                key={project.id}
-                                            >
+                                        {project && (
+                                            <span className="border border-text-muted px-1.5 py-0.5">
                                                 {project.name}
                                             </span>
-                                        ))}
+                                        )}
 
                                         {task.dueDate && <span>{formatDueDate(task.dueDate)}</span>}
 

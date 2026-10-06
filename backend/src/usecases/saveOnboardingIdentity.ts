@@ -1,7 +1,34 @@
-import { DataSourceNotFoundError, ProfileAlreadyExistsError } from '../errors/index.js';
+import { DataSourceNotFoundError } from '../errors/index.js';
 import { getNotionAdapter } from '../lib/notion.js';
 import type { SaveOnboardingIdentity } from '../schemas/onboarding.js';
 import { createWidgetProfile } from './createWidgetProfile.js';
+
+async function getPrimaryObjective(userId: string) {
+    const notion = await getNotionAdapter(userId);
+
+    const dataSources = await notion.searchDataSources('Objectives');
+
+    const dataSource = dataSources.find(
+        result =>
+            result.object === 'data_source' &&
+            'title' in result &&
+            result.title?.some(item => item.plain_text === 'Objectives'),
+    );
+
+    if (!dataSource) {
+        throw new DataSourceNotFoundError('Objectives');
+    }
+
+    for await (const result of notion.queryDataSource(dataSource.id)) {
+        const priority = result.properties.Priority;
+
+        if (priority?.type === 'select' && priority.select?.name === 'Primary') {
+            return result;
+        }
+
+        return null;
+    }
+}
 
 async function createPrimaryObjective(userId: string, objective: string) {
     const notion = await getNotionAdapter(userId);
@@ -63,17 +90,18 @@ export async function saveOnboardingIdentity(
 
     const firstProfile = await profileIterator.next();
 
-    if (!firstProfile.done) {
-        throw new ProfileAlreadyExistsError();
-    }
+    const profile = !firstProfile.done
+        ? firstProfile.value
+        : await createWidgetProfile({
+              userId,
+              name,
+              avatar,
+          });
 
-    const profile = await createWidgetProfile({
-        userId,
-        name,
-        avatar,
-    });
+    const existingPrimaryObjective = await getPrimaryObjective(userId);
 
-    const objectivePage = await createPrimaryObjective(userId, objective);
+    const objectivePage =
+        existingPrimaryObjective ?? (await createPrimaryObjective(userId, objective));
 
     return {
         profileId: profile.id,

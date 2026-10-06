@@ -1,7 +1,18 @@
 import { MoveRight } from 'lucide-react';
 import Image from 'next/image';
 
-import { ArcaneIcon, PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../icons';
+import {
+    ArcaneIcon,
+    BalladIcon,
+    ForgeIcon,
+    PixelBorderBL,
+    PixelBorderBR,
+    PixelBorderTL,
+    PixelBorderTR,
+    VanguardIcon,
+    VeilIcon,
+    VerdantIcon,
+} from '../icons';
 
 type ProfileInfo = {
     name: string;
@@ -19,6 +30,15 @@ type levelBar = {
     percentage: number;
 };
 
+const orderIcons = {
+    Arcane: ArcaneIcon,
+    Vanguard: VanguardIcon,
+    Verdant: VerdantIcon,
+    Forge: ForgeIcon,
+    Veil: VeilIcon,
+    Ballad: BalladIcon,
+} as const;
+
 export default function ProfileCard({
     name,
     avatar,
@@ -30,6 +50,8 @@ export default function ProfileCard({
     title,
 }: ProfileInfo) {
     const isMaxLevel = requiredXp === null;
+
+    const OrderIcon = orderIcons[mysticOrder as keyof typeof orderIcons] ?? ArcaneIcon;
 
     const levelPercentage = isMaxLevel
         ? 100
@@ -121,7 +143,7 @@ export default function ProfileCard({
                         <PixelBorderBR className="absolute right-0 bottom-0 z-20 size-2" />
                         <PixelBorderTL className="absolute top-0 left-0 z-20 size-2" />
                         <PixelBorderTR className="absolute top-0 right-0 z-20 size-2" />
-                        <ArcaneIcon className="size-13" />
+                        <OrderIcon className="size-13" />
                     </div>
                 </div>
 
