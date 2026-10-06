@@ -2,6 +2,7 @@ export { default as Clock } from '@/assets/images/clock.jpg';
 export { default as ClockTransparent } from '@/assets/images/clock.png';
 export { default as EthereaLogo } from '@/assets/images/etherea-logo.png';
 export { default as EthereaLogoV2 } from '@/assets/images/etherea-logo-purple.png';
+export { default as Habits } from '@/assets/images/habits.jpg';
 export { default as ProfileCard } from '@/assets/images/profile.jpg';
 export { default as TaskOverviewDark } from '@/assets/images/task-overview-dark.png';
 export { default as Tasks } from '@/assets/images/tasks.jpg';
