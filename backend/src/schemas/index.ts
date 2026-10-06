@@ -319,6 +319,12 @@ export type GetHabitsQuery = z.infer<typeof GetHabitsQuerySchema>;
 
 export const GetHabitsResponseSchema = z.object({
     habits: z.array(HabitSchema),
+    specializations: z.array(
+        z.object({
+            id: z.string(),
+            name: z.string(),
+        }),
+    ),
 });
 
 export type GetHabitsResponse = z.infer<typeof GetHabitsResponseSchema>;

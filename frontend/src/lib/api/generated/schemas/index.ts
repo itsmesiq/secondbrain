@@ -96,6 +96,7 @@ export * from './getWidgetClock401';
 export * from './getWidgetClock500';
 export * from './getWidgetHabits200';
 export * from './getWidgetHabits200HabitsItem';
+export * from './getWidgetHabits200SpecializationsItem';
 export * from './getWidgetHabits401';
 export * from './getWidgetHabits404';
 export * from './getWidgetHabits500';
