@@ -1,7 +1,7 @@
 import Image from 'next/image';
 
 import { WidgetCard } from '@/components/dashboard/WidgetCards';
-import { Clock, ProfileCard, Tasks } from '@/components/images';
+import { Clock, Habits, ProfileCard, Tasks } from '@/components/images';
 
 type CatalogProps = {
     onCopy: (widgetId: string) => void;
@@ -74,6 +74,24 @@ export default function Catalog({ onCopy, copyingWidgetId, copiedWidgetId }: Cat
                     onClick={() => onCopy('profile')}
                     isLoading={copyingWidgetId === 'profile'}
                     isCopied={copiedWidgetId === 'profile'}
+                />
+
+                <WidgetCard
+                    id={3}
+                    categories={['productivity']}
+                    name="Habits"
+                    preview={
+                        <Image
+                            src={Habits}
+                            alt="Habits widget preview"
+                            width={330}
+                            height={186}
+                            unoptimized
+                        />
+                    }
+                    onClick={() => onCopy('habits')}
+                    isLoading={copyingWidgetId === 'habits'}
+                    isCopied={copiedWidgetId === 'habits'}
                 />
             </div>
         </div>
