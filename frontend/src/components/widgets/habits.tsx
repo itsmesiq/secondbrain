@@ -200,7 +200,7 @@ export default function HabitsWidget() {
     }
 
     return (
-        <article className="nax-h-[710px] relative min-h-[624px] w-[400px] border border-etherea-purple/30 bg-background">
+        <article className="relative max-h-[710px] min-h-[624px] w-full border border-etherea-purple/30 bg-background">
             {isCreateModalOpen && (
                 <CreateHabitModal
                     isOpen={isCreateModalOpen}
@@ -256,13 +256,13 @@ export default function HabitsWidget() {
                     })}
                 </div>
             </div>
-            <div className="flex max-h-[600px] flex-col gap-2 overflow-y-auto px-3 py-2.5 pb-16">
+            <div className="grid grid-cols-[repeat(auto-fit,minmax(280px,1fr))] gap-2 overflow-y-auto px-3 py-2.5 pb-16">
                 {habits.map((habit) => {
                     const isCompleted = isHabitCompletedToday(habit.id);
 
                     return (
                         <div key={habit.id} className="border border-stroke-secondary bg-surface">
-                            <div className="flex w-full items-center justify-between px-3 py-2.5 font-mono text-[10px] tracking-[2px] text-text-muted uppercase">
+                            <div className="flex w-full items-center justify-between px-3 py-2.5 font-mono text-[10px] tracking-[2px] text-text-primary uppercase">
                                 <span>{habit.name}</span>
                                 <button
                                     type="button"
@@ -270,7 +270,7 @@ export default function HabitsWidget() {
                                         isCompleted || createHabitCompletionMutation.isPending
                                     }
                                     onClick={() => handleCompleteHabit(habit.id)}
-                                    className={`flex size-5 items-center justify-center border transition-colors ${isCompleted ? 'border-etherea-purple bg-etherea-purple/15 shadow-[0_0_8px_0_rgba(155,48,255,0.5)]' : 'border border-stroke-secondary text-text-muted hover:border-etherea-purple/50 hover:text-text-primary'} disabled:cursor-default`}
+                                    className={`flex size-5 items-center justify-center border transition-colors ${isCompleted ? 'border-etherea-purple bg-etherea-purple/15 shadow-[0_0_8px_0_rgba(155,48,255,0.5)]' : 'border border-stroke-primary text-text-muted hover:border-etherea-purple/50 hover:text-text-primary'} disabled:cursor-default`}
                                     aria-label={
                                         isCompleted ? 'Hábito completado' : 'Marcar como completado'
                                     }
@@ -296,7 +296,7 @@ export default function HabitsWidget() {
                                         return (
                                             <div
                                                 key={day}
-                                                className={`aspect-square ${isCompleted ? 'bg-etherea-purple shadow-[0_0_5px_0_rgba(155,48,255,0.5)]' : isToday ? 'border border-etherea-purple bg-transparent' : 'bg-background'}`}
+                                                className={`aspect-square ${isCompleted ? 'bg-etherea-purple shadow-[0_0_5px_0_rgba(155,48,255,0.5)]' : isToday ? 'border border-etherea-purple bg-transparent' : 'bg-card'}`}
                                                 title={day}
                                             ></div>
                                         );

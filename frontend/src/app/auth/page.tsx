@@ -64,7 +64,12 @@ export default function AuthPage() {
     if (isSessionPending) {
         return (
             <div className="flex h-screen items-center justify-center bg-background">
-                <Image src={EthereaLogo} alt="Etherea Logo" className="max-w-lg animate-pulse" />
+                <Image
+                    src={EthereaLogo}
+                    alt="Etherea Logo"
+                    className="max-w-lg animate-pulse"
+                    unoptimized
+                />
             </div>
         );
     }
