@@ -6,18 +6,13 @@ import { useState } from 'react';
 import { useWidgetAuth } from '@/app/widgets/_lib/context';
 import {
     getGetWidgetHabitsQueryKey,
-    getGetWidgetHabitsQueryOptions,
     useCreateHabitCompletion,
     useCreateWidgetHabit,
     useGetWidgetHabits,
 } from '@/lib/api/generated/endpoints/widgets/widgets';
 
 import { PixelBorderBL, PixelBorderBR, PixelBorderTL, PixelBorderTR } from '../icons';
-
-type habitProgress = {
-    id: number;
-    completed: boolean;
-};
+import CreateHabitModal from './createHabitModal';
 
 export default function HabitsWidget() {
     const { token } = useWidgetAuth();
@@ -41,6 +36,7 @@ export default function HabitsWidget() {
     });
 
     const data = habitsResponse?.status === 200 ? habitsResponse.data : null;
+    const specializations = data?.specializations ?? [];
 
     const habits = data?.habits ?? [];
 
@@ -201,6 +197,15 @@ export default function HabitsWidget() {
 
     return (
         <article className="nax-h-[710px] relative min-h-[624px] w-[400px] border border-etherea-purple/30 bg-background">
+            {isCreateModalOpen && (
+                <CreateHabitModal
+                    isOpen={isCreateModalOpen}
+                    isSubmitting={createHabitMutation.isPending}
+                    specializations={specializations}
+                    onClose={() => setIsCreateModalOpen(false)}
+                    onSubmit={handleCreateHabit}
+                />
+            )}
             <div className="flex w-full items-center justify-between bg-etherea-purple/10 px-4 py-3">
                 <div>
                     <div className="flex items-start gap-3 font-mono uppercase">
@@ -215,8 +220,9 @@ export default function HabitsWidget() {
                 </div>
                 <button
                     type="button"
-                    aria-label="Add new Habit"
-                    className="flex h-7 w-7 items-center justify-center border border-stroke-secondary"
+                    onClick={() => setIsCreateModalOpen(true)}
+                    aria-label="Adicionar Hábito"
+                    className="flex h-7 w-7 cursor-pointer items-center justify-center border border-stroke-secondary transition duration-300 ease-in-out hover:border-etherea-purple hover:bg-etherea-purple/10 hover:text-etherea-purple hover:shadow-etherea-purple/25"
                 >
                     <Plus className="size-4 text-text-muted" />
                 </button>
